@@ -4,11 +4,20 @@
   "description": "React components for Bitcoin amount display and input",
   "author": "Stefano Tron",
   "license": "MIT",
-  "keywords": ["bitcoin", "ui", "react", "sats", "btc", "components"],
+  "keywords": [
+    "bitcoin",
+    "ui",
+    "react",
+    "sats",
+    "btc",
+    "components"
+  ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -45,6 +54,7 @@
     "react-dom": "^19.2.0",
     "storybook": "^10.0.0",
     "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
     "tsup": "^8.5.0",
     "typescript": "^5.9.0"
   }

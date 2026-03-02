@@ -1,2 +1,2 @@
-export * from "./components";
-export * from "./icons";
+// Placeholder - components will be exported here
+export {};
