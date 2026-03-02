@@ -73,6 +73,8 @@ export function BTCAmount({
   fontFamily = "inherit",
   animate: shouldAnimate = true,
 }: BTCAmountProps) {
+  const clamped = Math.max(0, Math.trunc(isNaN(amount) ? 0 : amount));
+
   const formatted = useMemo(
     () => formatDigits(amount, activeColor, inactiveColor, btcSeparator, satsSeparator),
     [amount, activeColor, inactiveColor, btcSeparator, satsSeparator],
@@ -81,6 +83,7 @@ export function BTCAmount({
   return (
     <span
       data-testid="btc-amount"
+      aria-label={`${(clamped / 100_000_000).toFixed(8)} BTC`}
       style={{ fontFamily, display: "inline-flex", alignItems: "baseline" }}
     >
       {formatted.map((item) =>

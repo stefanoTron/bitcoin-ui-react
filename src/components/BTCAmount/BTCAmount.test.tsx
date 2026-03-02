@@ -81,4 +81,10 @@ describe("BTCAmount", () => {
     const container = screen.getByTestId("btc-amount");
     expect(container).toHaveStyle({ fontFamily: "monospace" });
   });
+
+  test("renders correctly with animate={false}", () => {
+    render(<BTCAmount amount={100_000_000} animate={false} />);
+    const container = screen.getByTestId("btc-amount");
+    expect(container.textContent).toMatch(/1[.]00.000.000/);
+  });
 });
