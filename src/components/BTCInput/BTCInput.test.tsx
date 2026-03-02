@@ -18,10 +18,14 @@ describe("BTCInput", () => {
     expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
-  test("displays formatted amount", () => {
+  test("displays formatted amount for 1000 sats", () => {
     render(<BTCInput {...defaultProps} amount={1000} />);
     const input = screen.getByRole("textbox") as HTMLInputElement;
-    expect(input.value).toBeTruthy();
+    // 1000 sats = 0.00 001 000 (with thin space separators)
+    expect(input.value).toContain("0");
+    expect(input.value).toContain("001");
+    expect(input.value).toContain("000");
+    expect(input.value.replace(/\s/g, "")).toBe("0.00001000");
   });
 
   test("calls onAmountChange when user types digits", async () => {
@@ -37,13 +41,16 @@ describe("BTCInput", () => {
     const onAmountChange = jest.fn();
     render(<BTCInput amount={0} onAmountChange={onAmountChange} />);
     const input = screen.getByRole("textbox");
-    await userEvent.clear(input);
     await userEvent.type(input, "abc123");
-    const lastCall = onAmountChange.mock.calls[onAmountChange.mock.calls.length - 1];
-    if (lastCall) {
-      expect(typeof lastCall[0]).toBe("number");
-      expect(lastCall[0]).toBeGreaterThanOrEqual(0);
-    }
+    // Controlled input: each keystroke calls onAmountChange independently
+    // Non-digit chars ("a","b","c") produce 0, digit chars produce their numeric value
+    expect(onAmountChange).toHaveBeenCalled();
+    const allValues = onAmountChange.mock.calls.map((c: [number]) => c[0]);
+    // Every value must be a non-negative number (non-digits stripped)
+    allValues.forEach((v: number) => {
+      expect(typeof v).toBe("number");
+      expect(v).toBeGreaterThanOrEqual(0);
+    });
   });
 
   test("disables input when disabled prop is true", () => {
@@ -59,7 +66,10 @@ describe("BTCInput", () => {
         onAmountChange={onAmountChange}
       />,
     );
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+    // Should display max supply value, not the over-limit value
+    const digitsOnly = input.value.replace(/\D/g, "");
+    expect(parseInt(digitsOnly, 10)).toBeLessThanOrEqual(2_100_000_000_000_000);
   });
 
   test("renders placeholder when amount is 0", () => {
