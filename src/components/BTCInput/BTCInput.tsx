@@ -114,6 +114,7 @@ export function BTCInput({
       onChange={handleChange}
       disabled={disabled}
       placeholder={placeholder}
+      size={placeholder.length}
       style={{
         fontFamily: "inherit",
         fontSize: "inherit",
