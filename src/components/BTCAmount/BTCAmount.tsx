@@ -1,112 +1,113 @@
-import React, {
-  FC,
-  Fragment,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useMemo } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { BTCAmountProps } from "./BTCAmount.types";
-import styles from "./BTCAmount.module.css";
-import { useInView, useMotionValue, useSpring } from "framer-motion";
-import { motion, AnimatePresence } from "framer-motion";
 
-const BTCAmount: FC<BTCAmountProps> = ({
-  activeColor = "#000000",
-  inactiveColor = "#e7e7e7",
-  satsSeparator = " ",
+/**
+ * Format a satoshi amount into an array of digits, separators, and their colors.
+ * Always produces format: X.XX XXX XXX (minimum 9 digits + separators).
+ */
+function formatDigits(
+  amount: number,
+  activeColor: string,
+  inactiveColor: string,
+  btcSeparator: string,
+  satsSeparator: string,
+) {
+  // Clamp to valid range
+  const clamped = Math.max(0, Math.trunc(isNaN(amount) ? 0 : amount));
+  const digits = clamped.toString().split("");
+
+  // Pad to minimum 9 digits
+  while (digits.length < 9) {
+    digits.unshift("0");
+  }
+
+  // Find the first non-zero digit to determine active range
+  const firstNonZero = digits.findIndex((d) => d !== "0");
+
+  const result: { char: string; color: string; key: string; isDigit: boolean }[] = [];
+
+  for (let i = 0; i < digits.length; i++) {
+    const posFromRight = digits.length - 1 - i;
+    const isActive = firstNonZero !== -1 && i >= firstNonZero;
+    const color = isActive ? activeColor : inactiveColor;
+
+    result.push({
+      char: digits[i],
+      color,
+      key: `d-${posFromRight}`,
+      isDigit: true,
+    });
+
+    // Insert BTC separator after the "ones" BTC digit (8 positions from right)
+    if (posFromRight === 8) {
+      const sepColor = isActive ? activeColor : inactiveColor;
+      result.push({
+        char: btcSeparator,
+        color: sepColor,
+        key: "btc-sep",
+        isDigit: false,
+      });
+    }
+
+    // Insert sats separator at positions 6 and 3 from right
+    if (posFromRight === 6 || posFromRight === 3) {
+      result.push({
+        char: satsSeparator,
+        color: "inherit",
+        key: `sats-sep-${posFromRight}`,
+        isDigit: false,
+      });
+    }
+  }
+
+  return result;
+}
+
+export function BTCAmount({
+  amount,
+  activeColor = "currentColor",
+  inactiveColor = "#999999",
+  satsSeparator = "\u2009",
   btcSeparator = ".",
-  amount = 0,
-  fontFamily = "SF Mono, Menlo, Futura, D-DIN",
-}) => {
-  useEffect(() => {
-    formatValue(amount);
-  }, [amount]);
-
-  //slashed zero 0̷
-  const formatValue = (value = 0) => {
-    let formattedString: React.ReactNode[] = []; //0.00 000 000
-    if (isNaN(value)) {
-      value = 0;
-    }
-    const valueStringArray = Math.trunc(value).toString().split("");
-    const max = Math.max(valueStringArray.length, 9);
-    for (let i = 0; i < max; i++) {
-      const index = valueStringArray.length - 1 - i;
-      let val;
-      if (valueStringArray[index]) {
-        val = (
-          <div style={{ display: "inline", color: activeColor }}>
-            {valueStringArray[index]?.toString()}
-          </div>
-        );
-      } else {
-        val = <div style={{ display: "inline", color: inactiveColor }}>0</div>;
-      }
-
-      if (i === 3 || i === 6) {
-        formattedString = [satsSeparator, ...formattedString];
-      }
-      if (i === 8) {
-        let color = inactiveColor;
-        if (value >= 100000000) {
-          color = activeColor;
-        }
-        formattedString = [
-          <div style={{ display: "inline", color }}>{btcSeparator}</div>,
-          ...formattedString,
-        ];
-      }
-      formattedString = [val, ...formattedString];
-    }
-    return <>{formattedString}</>;
-  }; /*
-
-
-  
-
-   return (
-    <div
-      style={{
-        fontFamily,
-      }}
-    >
-      {formatValue(amount)}
-    </div>
-  );*/
-
-  const direction: string = "up";
-  const ref = useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(direction === "down" ? amount : 0);
-  const springValue = useSpring(motionValue, {
-    damping: 100,
-    stiffness: 10,
-  });
-
-  useEffect(() => {
-    motionValue.set(direction === "down" ? 0 : amount);
-  }, [motionValue, amount]);
-
-  useEffect(
-    () =>
-      springValue.on("change", (latest) => {
-        if (ref.current) {
-          /*ref.current.textContent = Intl.NumberFormat("en-US").format(
-            latest.toFixed(0)
-          );*/
-          //  ref.current.appendChild(formatValue(latest));
-          ref.current.innerHTML = "";
-          ref.current.appendChild(document.createElement(formatValue(latest)));
-        }
-      }),
-    [springValue]
+  fontFamily = "inherit",
+  animate: shouldAnimate = true,
+}: BTCAmountProps) {
+  const formatted = useMemo(
+    () => formatDigits(amount, activeColor, inactiveColor, btcSeparator, satsSeparator),
+    [amount, activeColor, inactiveColor, btcSeparator, satsSeparator],
   );
 
   return (
-    <>
-      <span ref={ref} />
-    </>
+    <span
+      data-testid="btc-amount"
+      style={{ fontFamily, display: "inline-flex", alignItems: "baseline" }}
+    >
+      {formatted.map((item) =>
+        item.isDigit && shouldAnimate ? (
+          <AnimatePresence mode="popLayout" key={item.key}>
+            <motion.span
+              key={`${item.key}-${item.char}`}
+              data-digit={item.char}
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 10, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{ display: "inline-block", color: item.color }}
+            >
+              {item.char}
+            </motion.span>
+          </AnimatePresence>
+        ) : (
+          <span
+            key={item.key}
+            data-digit={item.isDigit ? item.char : undefined}
+            style={{ color: item.color }}
+          >
+            {item.char}
+          </span>
+        ),
+      )}
+    </span>
   );
-};
-
-export default BTCAmount;
+}
