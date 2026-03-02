@@ -1,71 +1,96 @@
-# Bitcoin UI Library
+# bitcoin-ui-react
 
-## Installation
+React components for displaying and inputting Bitcoin amounts with satoshi precision.
 
-You can install this UI library using yarn or npm:
+## Install
 
-```
-yarn add bitcoin-ui-lib
-```
-
-```
-npm install bitcoin-ui-lib
+```bash
+npm install bitcoin-ui-react
 ```
 
-## Usage
+Peer dependencies: `react >= 18`, `react-dom >= 18`
 
-To use this UI library in your project, import the components you need from the library and use them in your React components.
+## Components
 
-```jsx
-import React from "react";
-import { Input, Button } from "@timonwa/demo-ui-library";
+### BTCAmount
 
-function App() {
-  return (
-    <div>
-      <Input
-        id="name"
-        disabled={false}
-        label="Enter your name"
-        message="This field is required"
-        error={false}
-        success={false}
-        onChange={(e) => console.log(e.target.value)}
-        placeholder="Enter your name here"
-      />
-      <Button
-        size="medium"
-        primary={true}
-        disabled={false}
-        text="Click me!"
-        onClick={() => alert("Button clicked!")}
-      />
-    </div>
-  );
-}
+Display a formatted Bitcoin amount from satoshis with color-coded digits and animated transitions.
 
-export default App;
+```tsx
+import { BTCAmount } from "bitcoin-ui-react";
+
+<BTCAmount amount={12537829} />
+// Renders: 0.12 537 829
 ```
 
-## Contributing
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `amount` | `number` | required | Amount in satoshis |
+| `activeColor` | `string` | `'currentColor'` | Color for significant digits |
+| `inactiveColor` | `string` | `'#999999'` | Color for zero-padded digits |
+| `satsSeparator` | `string` | `' '` (thin space) | Separator between 3-digit groups |
+| `btcSeparator` | `string` | `'.'` | Decimal separator |
+| `fontFamily` | `string` | `'inherit'` | Font family override |
+| `animate` | `boolean` | `true` | Animate digit changes |
 
-### Steps
+### BTCInput
 
-- Fork the repository.
-- Clone the repository to your local machine.
-- Install the dependencies using `yarn`.
-- View the components in the browser using `yarn storybook`.
-- Make your changes.
-- Test the changes using `yarn test`.
-- Build the library using `yarn build`.
-- Commit the changes and push them to your forked repository.
-- Publish the package on [npm](https://www.npmjs.com/).
-- Install and use the package in your project.
+Controlled input for entering Bitcoin amounts. Formats as user types.
+
+```tsx
+import { useState } from "react";
+import { BTCInput } from "bitcoin-ui-react";
+
+const [sats, setSats] = useState(0);
+<BTCInput amount={sats} onAmountChange={setSats} />
+```
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `amount` | `number` | required | Amount in satoshis |
+| `onAmountChange` | `(sats: number) => void` | required | Callback when amount changes |
+| `activeColor` | `string` | `'currentColor'` | Color for significant digits |
+| `inactiveColor` | `string` | `'#999999'` | Color for zero-padded digits |
+| `satsSeparator` | `string` | `' '` (thin space) | Separator between 3-digit groups |
+| `btcSeparator` | `string` | `'.'` | Decimal separator |
+| `disabled` | `boolean` | `false` | Disable the input |
+| `placeholder` | `string` | `'0.00 000 000'` | Placeholder text |
+
+### BitcoinIcon
+
+SVG Bitcoin logo icon.
+
+```tsx
+import { BitcoinIcon } from "bitcoin-ui-react";
+
+<BitcoinIcon size={32} />
+```
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `number` | `16` | Icon size in pixels |
+| `color` | `string` | `'#ffffff'` | Symbol color |
+| `backgroundColor` | `string` | `'#f7931a'` | Background color |
+| `alt` | `string` | `'Bitcoin'` | Accessibility label |
+
+### SatsIcon
+
+SVG Satoshis icon.
+
+```tsx
+import { SatsIcon } from "bitcoin-ui-react";
+
+<SatsIcon size={32} tilted />
+```
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `number` | `16` | Icon size in pixels |
+| `color` | `string` | `'#000000'` | Symbol color |
+| `backgroundColor` | `string` | `'transparent'` | Background color |
+| `alt` | `string` | `'Satoshis'` | Accessibility label |
+| `tilted` | `boolean` | `false` | Apply tilt rotation |
 
 ## License
 
-This demo UI library is licensed under the [MIT License](https://github.com/Timonwa/demo-ui-library/blob/main/license).
-
-## Connect
-
-More of my articles can be found in [Timonwa's Notes](https://blog.timonwa.com). Connect with me on Twitter: [@timonwa\_](https://twitter.com/timonwa_)
+MIT
