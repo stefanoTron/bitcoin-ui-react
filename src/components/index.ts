@@ -1,3 +1,4 @@
-export * from "./Button";
-export * from "./Input";
-export * from "./BTCInput/BTCInput";
+export { BTCAmount } from "./BTCAmount";
+export type { BTCAmountProps } from "./BTCAmount";
+export { BTCInput } from "./BTCInput";
+export type { BTCInputProps } from "./BTCInput";
