@@ -41,11 +41,6 @@ function countDigitsAfter(str: string, start: number): number {
   return count;
 }
 
-/** Count total digit characters in str. */
-function countAllDigits(str: string): number {
-  return countDigitsAfter(str, 0);
-}
-
 /** Find the character position right after the Nth digit from the left. */
 function charPosAfterNthDigit(str: string, n: number): number {
   if (n <= 0) return 0;
@@ -83,38 +78,25 @@ export function BTCInput({
       const rawValue = input.value;
       const cursorPos = input.selectionStart ?? rawValue.length;
 
-      // Count how many digits are AFTER the cursor in the user-edited string.
-      // This is stable across reformatting because digits shift from the left (padding).
-      const digitsAfter = countDigitsAfter(rawValue, cursorPos);
+      // Count digits AFTER the cursor — this is stable across reformatting
+      // because the rightmost digits don't shift when zero-padding changes.
+      cursorRef.current = countDigitsAfter(rawValue, cursorPos);
 
       const newSats = parseSats(rawValue);
-
-      // If amount won't change, React won't re-render — restore manually.
-      if (newSats === amount) {
-        const formatted = newSats === 0 ? "" : formatSats(newSats, btcSeparator, satsSeparator);
-        input.value = formatted;
-        const total = countAllDigits(formatted);
-        const charPos = charPosAfterNthDigit(formatted, Math.max(0, total - digitsAfter));
-        input.setSelectionRange(charPos, charPos);
-        cursorRef.current = null;
-        return;
-      }
-
-      cursorRef.current = digitsAfter;
       onAmountChange(newSats);
     },
-    [onAmountChange, amount, btcSeparator, satsSeparator],
+    [onAmountChange],
   );
 
-  // Restore cursor position after React updates the controlled value.
+  // Restore cursor position after React updates the controlled input value.
   useLayoutEffect(() => {
     const input = inputRef.current;
     if (!input || cursorRef.current === null) return;
 
     const digitsAfter = cursorRef.current;
     const formatted = input.value;
-    const total = countAllDigits(formatted);
-    const charPos = charPosAfterNthDigit(formatted, Math.max(0, total - digitsAfter));
+    const totalDigits = countDigitsAfter(formatted, 0);
+    const charPos = charPosAfterNthDigit(formatted, Math.max(0, totalDigits - digitsAfter));
     input.setSelectionRange(charPos, charPos);
     cursorRef.current = null;
   });
