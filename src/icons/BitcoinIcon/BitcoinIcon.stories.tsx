@@ -1,32 +1,52 @@
-import React from "react";
-import { Meta, StoryObj } from "@storybook/react";
-import BitcoinIcon from "./BitcoinIcon";
+import type { Meta, StoryObj } from "@storybook/react";
+import { BitcoinIcon } from "./BitcoinIcon";
 
 const meta: Meta<typeof BitcoinIcon> = {
-  component: BitcoinIcon,
   title: "Icons/BitcoinIcon",
-  argTypes: {},
+  component: BitcoinIcon,
+  tags: ["autodocs"],
+  argTypes: {
+    size: { control: { type: "number", min: 8, max: 512, step: 8 } },
+    color: { control: "color" },
+    backgroundColor: { control: "color" },
+    alt: { control: "text" },
+  },
 };
-export default meta;
 
+export default meta;
 type Story = StoryObj<typeof BitcoinIcon>;
 
-export const Default: Story = (args) => [
-  <BitcoinIcon {...args} />,
-  <BitcoinIcon size={args.size * 2} />,
-  <BitcoinIcon size={args.size * 3} />,
-  <BitcoinIcon size={args.size * 4} />,
-];
-Default.args = {
-  alt: "Alt description",
-  backgroundColor: "#f7931a",
-  color: "#FFF",
-  size: 16,
+export const Default: Story = {
+  args: { size: 32 },
 };
 
-export const Colored: Story = (args) => <BitcoinIcon {...args} />;
-Colored.args = {
-  backgroundColor: "pink",
-  color: "rgb(255,0,0)",
-  size: 256,
+export const Small: Story = {
+  args: { size: 16 },
+};
+
+export const Large: Story = {
+  args: { size: 128 },
+};
+
+export const ExtraLarge: Story = {
+  args: { size: 256 },
+};
+
+export const CustomColors: Story = {
+  args: {
+    size: 128,
+    backgroundColor: "#4a0e8f",
+    color: "#ffd700",
+  },
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <BitcoinIcon size={16} />
+      <BitcoinIcon size={32} />
+      <BitcoinIcon size={64} />
+      <BitcoinIcon size={128} />
+    </div>
+  ),
 };
