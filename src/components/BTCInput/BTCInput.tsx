@@ -121,6 +121,7 @@ export function BTCInput({
         caretColor: activeColor,
         border: "none",
         outline: "none",
+        textAlign: "right",
         background: "transparent",
         padding: 0,
         opacity: disabled ? 0.5 : 1,
