@@ -1,12 +1,11 @@
-import React from "react";
 import { BitcoinIconProps } from "./BitcoinIcon.types";
 
-const Button: React.FC<BitcoinIconProps> = ({
-  alt = "Bitcoin Logo",
+export function BitcoinIcon({
+  alt = "Bitcoin",
   backgroundColor = "#f7931a",
   color = "#ffffff",
   size = 16,
-}) => {
+}: BitcoinIconProps) {
   return (
     <svg
       height={size}
@@ -26,6 +25,4 @@ const Button: React.FC<BitcoinIconProps> = ({
       />
     </svg>
   );
-};
-
-export default Button;
+}
