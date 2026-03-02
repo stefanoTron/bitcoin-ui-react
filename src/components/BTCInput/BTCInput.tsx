@@ -121,6 +121,8 @@ export function BTCInput({
         border: "none",
         background: "transparent",
         padding: 0,
+        opacity: disabled ? 0.5 : 1,
+        cursor: disabled ? "not-allowed" : "text",
       }}
     />
   );
