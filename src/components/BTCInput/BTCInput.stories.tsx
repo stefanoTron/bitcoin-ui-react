@@ -16,6 +16,13 @@ const meta: Meta<typeof BTCInput> = {
     disabled: { control: "boolean" },
     placeholder: { control: "text" },
   },
+  decorators: [
+    (Story) => (
+      <div style={{ fontSize: 24, fontFamily: "monospace" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
@@ -26,12 +33,12 @@ export const Interactive: Story = {
   render: () => {
     const [amount, setAmount] = useState(0);
     return (
-      <div style={{ fontFamily: "monospace", fontSize: 24 }}>
+      <>
         <BTCInput amount={amount} onAmountChange={setAmount} />
         <p style={{ fontSize: 14, color: "#666", marginTop: 8 }}>
           Raw satoshis: {amount.toLocaleString()}
         </p>
-      </div>
+      </>
     );
   },
 };
@@ -41,7 +48,7 @@ export const WithDisplay: Story = {
   render: () => {
     const [amount, setAmount] = useState(50_000);
     return (
-      <div style={{ fontFamily: "monospace", fontSize: 24 }}>
+      <>
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontSize: 14, color: "#666", display: "block", marginBottom: 4 }}>
             Input:
@@ -57,7 +64,7 @@ export const WithDisplay: Story = {
         <p style={{ fontSize: 14, color: "#666", marginTop: 8 }}>
           {amount.toLocaleString()} satoshis
         </p>
-      </div>
+      </>
     );
   },
 };
@@ -74,7 +81,7 @@ export const CustomColors: Story = {
   render: () => {
     const [amount, setAmount] = useState(1_234_567);
     return (
-      <div style={{ fontFamily: "monospace", fontSize: 24, background: "#1a1a2e", padding: 24 }}>
+      <div style={{ background: "#1a1a2e", padding: 24 }}>
         <BTCInput
           amount={amount}
           onAmountChange={setAmount}
@@ -89,10 +96,6 @@ export const CustomColors: Story = {
 export const PrefilledOneBTC: Story = {
   render: () => {
     const [amount, setAmount] = useState(100_000_000);
-    return (
-      <div style={{ fontFamily: "monospace", fontSize: 24 }}>
-        <BTCInput amount={amount} onAmountChange={setAmount} />
-      </div>
-    );
+    return <BTCInput amount={amount} onAmountChange={setAmount} />;
   },
 };
