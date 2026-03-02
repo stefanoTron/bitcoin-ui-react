@@ -13,6 +13,7 @@ const meta: Meta<typeof BTCAmount> = {
     btcSeparator: { control: "text" },
     fontFamily: { control: "text" },
     animate: { control: "boolean" },
+    symbol: { control: "select", options: [undefined, "btc", "sats"] },
   },
   decorators: [
     (Story) => (
@@ -81,5 +82,19 @@ export const CustomFont: Story = {
   args: {
     amount: 42_000_000,
     fontFamily: "SF Mono, Menlo, monospace",
+  },
+};
+
+export const WithBTCSymbol: Story = {
+  args: {
+    amount: 100_000_000,
+    symbol: "btc",
+  },
+};
+
+export const WithSatsSymbol: Story = {
+  args: {
+    amount: 50_000,
+    symbol: "sats",
   },
 };

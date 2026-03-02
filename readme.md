@@ -32,6 +32,7 @@ import { BTCAmount } from "bitcoin-ui-react";
 | `btcSeparator` | `string` | `'.'` | Decimal separator |
 | `fontFamily` | `string` | `'inherit'` | Font family override |
 | `animate` | `boolean` | `true` | Animate digit changes |
+| `symbol` | `'btc' \| 'sats'` | — | Show a symbol icon before the amount |
 
 ### BTCInput
 

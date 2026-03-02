@@ -1,6 +1,6 @@
 export interface SatsIconProps {
-  /** Icon size in pixels. Default: 16 */
-  size?: number;
+  /** Icon size in pixels or CSS length (e.g. '1em'). Default: 16 */
+  size?: number | string;
   /** Symbol color. Default: '#000000' */
   color?: string;
   /** Background circle color. Default: 'transparent' */

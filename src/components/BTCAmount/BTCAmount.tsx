@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMotionValue, useSpring } from "motion/react";
 import { BTCAmountProps } from "./BTCAmount.types";
+import { BitcoinIcon } from "../../icons/BitcoinIcon/BitcoinIcon";
+import { SatsIcon } from "../../icons/SatsIcon/SatsIcon";
 
 /**
  * Format a satoshi amount into an array of digits, separators, and their colors.
@@ -67,9 +69,10 @@ export function BTCAmount({
   btcSeparator = ".",
   fontFamily = "inherit",
   animate: shouldAnimate = true,
+  symbol,
 }: BTCAmountProps) {
   const motionValue = useMotionValue(shouldAnimate ? 0 : amount);
-  const springValue = useSpring(motionValue, { damping: 50, stiffness: 120 });
+  const springValue = useSpring(motionValue, { damping: 40, stiffness: 300 });
   const [displayAmount, setDisplayAmount] = useState(shouldAnimate ? 0 : amount);
 
   useEffect(() => {
@@ -98,8 +101,10 @@ export function BTCAmount({
     <span
       data-testid="btc-amount"
       aria-label={`${(clamped / 100_000_000).toFixed(8)} BTC`}
-      style={{ fontFamily, display: "inline-flex", alignItems: "baseline" }}
+      style={{ fontFamily, display: "inline-flex", alignItems: "baseline", gap: symbol ? "0.2em" : undefined }}
     >
+      {symbol === "btc" && <BitcoinIcon size="1em" />}
+      {symbol === "sats" && <SatsIcon size="1em" tilted />}
       {formatted.map((item) => (
         <span
           key={item.key}

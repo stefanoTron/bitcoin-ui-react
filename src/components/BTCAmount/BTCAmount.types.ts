@@ -13,4 +13,6 @@ export interface BTCAmountProps {
   fontFamily?: string;
   /** Whether to animate value changes. Default: true */
   animate?: boolean;
+  /** Show a symbol icon before the amount. */
+  symbol?: "btc" | "sats";
 }

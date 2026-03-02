@@ -10,11 +10,18 @@ jest.mock("motion/react", () => ({
   },
   useSpring: (motionValue: any) => ({
     on: (_event: string, callback: (v: number) => void) => {
-      // Immediately call with the current value to simulate spring settling
       callback(motionValue._current);
       return () => {};
     },
   }),
+}));
+
+// Mock icons to simple spans for testability
+jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({
+  BitcoinIcon: (props: any) => <span data-testid="bitcoin-icon" data-size={props.size} />,
+}));
+jest.mock("../../icons/SatsIcon/SatsIcon", () => ({
+  SatsIcon: (props: any) => <span data-testid="sats-icon" data-size={props.size} />,
 }));
 
 describe("BTCAmount", () => {
@@ -93,5 +100,25 @@ describe("BTCAmount", () => {
     render(<BTCAmount amount={100_000_000} animate={false} />);
     const container = screen.getByTestId("btc-amount");
     expect(container.textContent).toMatch(/1[.]00.000.000/);
+  });
+
+  test("renders bitcoin icon when symbol='btc'", () => {
+    render(<BTCAmount amount={100_000_000} symbol="btc" />);
+    expect(screen.getByTestId("bitcoin-icon")).toBeInTheDocument();
+    expect(screen.getByTestId("bitcoin-icon")).toHaveAttribute("data-size", "1em");
+    expect(screen.queryByTestId("sats-icon")).not.toBeInTheDocument();
+  });
+
+  test("renders sats icon when symbol='sats'", () => {
+    render(<BTCAmount amount={100_000_000} symbol="sats" />);
+    expect(screen.getByTestId("sats-icon")).toBeInTheDocument();
+    expect(screen.getByTestId("sats-icon")).toHaveAttribute("data-size", "1em");
+    expect(screen.queryByTestId("bitcoin-icon")).not.toBeInTheDocument();
+  });
+
+  test("renders no icon when symbol is not set", () => {
+    render(<BTCAmount amount={100_000_000} />);
+    expect(screen.queryByTestId("bitcoin-icon")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("sats-icon")).not.toBeInTheDocument();
   });
 });
