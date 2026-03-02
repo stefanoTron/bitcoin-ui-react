@@ -56,6 +56,7 @@ const [sats, setSats] = useState(0);
 | `btcSeparator` | `string` | `'.'` | Decimal separator |
 | `disabled` | `boolean` | `false` | Disable the input |
 | `placeholder` | `string` | `'0.00 000 000'` | Placeholder text |
+| `style` | `React.CSSProperties` | — | Additional inline styles for the input |
 
 ### BitcoinIcon
 

@@ -63,6 +63,7 @@ export function BTCInput({
   btcSeparator = ".",
   disabled = false,
   placeholder = "0.00\u2009000\u2009000",
+  style: userStyle,
 }: BTCInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const cursorRef = useRef<number | null>(null);
@@ -119,10 +120,12 @@ export function BTCInput({
         color: clampedAmount > 0 ? activeColor : inactiveColor,
         caretColor: activeColor,
         border: "none",
+        outline: "none",
         background: "transparent",
         padding: 0,
         opacity: disabled ? 0.5 : 1,
         cursor: disabled ? "not-allowed" : "text",
+        ...userStyle,
       }}
     />
   );

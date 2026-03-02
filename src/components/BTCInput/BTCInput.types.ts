@@ -15,4 +15,6 @@ export interface BTCInputProps {
   disabled?: boolean;
   /** Placeholder text. Default: '0.00\u2009000\u2009000' */
   placeholder?: string;
+  /** Additional inline styles merged onto the input element. */
+  style?: React.CSSProperties;
 }
