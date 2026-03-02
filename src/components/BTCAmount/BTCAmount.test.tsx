@@ -2,12 +2,19 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { BTCAmount } from "./BTCAmount";
 
-// Mock motion to avoid animation complexity in tests
+// Mock motion hooks to avoid animation complexity in tests
 jest.mock("motion/react", () => ({
-  motion: {
-    span: ({ children, ...props }: any) => <span {...props}>{children}</span>,
+  useMotionValue: (initial: number) => {
+    const value = { _current: initial, set: (v: number) => { value._current = v; } };
+    return value;
   },
-  AnimatePresence: ({ children }: any) => <>{children}</>,
+  useSpring: (motionValue: any) => ({
+    on: (_event: string, callback: (v: number) => void) => {
+      // Immediately call with the current value to simulate spring settling
+      callback(motionValue._current);
+      return () => {};
+    },
+  }),
 }));
 
 describe("BTCAmount", () => {
