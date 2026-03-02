@@ -115,7 +115,8 @@ export function BTCInput({
       disabled={disabled}
       placeholder={placeholder}
       style={{
-        width: "10ch",
+        width: "100%",
+        boxSizing: "border-box",
         fontFamily: "inherit",
         fontSize: "inherit",
         color: clampedAmount > 0 ? activeColor : inactiveColor,
