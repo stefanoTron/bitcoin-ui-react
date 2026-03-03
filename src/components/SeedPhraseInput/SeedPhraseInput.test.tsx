@@ -232,4 +232,65 @@ describe("SeedPhraseInput", () => {
     const options = screen.getAllByRole("option");
     expect(options.length).toBeLessThanOrEqual(8);
   });
+
+  test("auto-focuses next empty field after selecting a suggestion", async () => {
+    let currentWords = Array(12).fill("");
+    const onWordsChange = jest.fn((newWords: string[]) => {
+      currentWords = newWords;
+    });
+    const { rerender } = render(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    // Type "ab" in field 0
+    for (const char of "ab") {
+      rerender(
+        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+      );
+      await userEvent.type(inputs[0], char);
+    }
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    // Click "abandon"
+    const options = screen.getAllByRole("option");
+    await userEvent.click(options[0]);
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    // Field 1 should now have focus
+    expect(inputs[1]).toHaveFocus();
+  });
+
+  test("Enter key selects first suggestion and advances focus", async () => {
+    let currentWords = Array(12).fill("");
+    const onWordsChange = jest.fn((newWords: string[]) => {
+      currentWords = newWords;
+    });
+    const { rerender } = render(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    // Type "ab" in field 0
+    for (const char of "ab") {
+      rerender(
+        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+      );
+      await userEvent.type(inputs[0], char);
+    }
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    // Press Enter to select first suggestion
+    await userEvent.keyboard("{Enter}");
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    // Verify "abandon" was selected
+    const lastCall =
+      onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    expect(lastCall[0]).toBe("abandon");
+    // Field 1 should have focus
+    expect(inputs[1]).toHaveFocus();
+  });
 });

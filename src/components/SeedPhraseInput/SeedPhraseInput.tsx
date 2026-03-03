@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { SeedPhraseInputProps } from "./SeedPhraseInput.types";
 import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
 
@@ -15,6 +15,7 @@ export function SeedPhraseInput({
   style,
 }: SeedPhraseInputProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = useCallback(
     (index: number, value: string) => {
@@ -25,14 +26,27 @@ export function SeedPhraseInput({
     [words, onWordsChange],
   );
 
+  const focusNextEmpty = useCallback(
+    (afterIndex: number, updatedWords: string[]) => {
+      for (let i = afterIndex + 1; i < wordCount; i++) {
+        if (!updatedWords[i]) {
+          inputRefs.current[i]?.focus();
+          return;
+        }
+      }
+    },
+    [wordCount],
+  );
+
   const handleSelect = useCallback(
     (index: number, word: string) => {
       const updated = [...words];
       updated[index] = word;
       onWordsChange(updated);
       setActiveIndex(null);
+      focusNextEmpty(index, updated);
     },
-    [words, onWordsChange],
+    [words, onWordsChange, focusNextEmpty],
   );
 
   const currentValue = activeIndex !== null ? (words[activeIndex] ?? "") : "";
@@ -42,6 +56,16 @@ export function SeedPhraseInput({
       w.startsWith(currentValue.toLowerCase()),
     ).slice(0, MAX_SUGGESTIONS);
   }, [activeIndex, currentValue]);
+
+  const handleKeyDown = useCallback(
+    (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter" && suggestions.length > 0) {
+        e.preventDefault();
+        handleSelect(index, suggestions[0]);
+      }
+    },
+    [suggestions, handleSelect],
+  );
 
   return (
     <div
@@ -82,6 +106,9 @@ export function SeedPhraseInput({
           ) : (
             <>
               <input
+                ref={(el) => {
+                  inputRefs.current[i] = el;
+                }}
                 id={`seed-word-${i}`}
                 type="text"
                 autoComplete="off"
@@ -91,6 +118,7 @@ export function SeedPhraseInput({
                 onBlur={() => {
                   setTimeout(() => setActiveIndex(null), 150);
                 }}
+                onKeyDown={(e) => handleKeyDown(i, e)}
                 style={{
                   flex: 1,
                   padding: "4px 8px",
