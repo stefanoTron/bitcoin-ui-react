@@ -126,4 +126,110 @@ describe("SeedPhraseInput", () => {
     // No inputs to interact with; onWordsChange should never be called
     expect(onWordsChange).not.toHaveBeenCalled();
   });
+
+  test("shows autocomplete suggestions when typing ab", async () => {
+    let currentWords = Array(12).fill("");
+    const onWordsChange = jest.fn((newWords: string[]) => {
+      currentWords = newWords;
+    });
+    const { rerender } = render(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    for (const char of "ab") {
+      rerender(
+        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+      );
+      await userEvent.type(inputs[0], char);
+    }
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const listbox = screen.getByRole("listbox");
+    expect(listbox).toBeInTheDocument();
+    const options = screen.getAllByRole("option");
+    const optionTexts = options.map((o) => o.textContent);
+    expect(optionTexts).toEqual([
+      "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract",
+    ]);
+  });
+
+  test("hides autocomplete when input is cleared", async () => {
+    let currentWords = Array(12).fill("");
+    const onWordsChange = jest.fn((newWords: string[]) => {
+      currentWords = newWords;
+    });
+    const { rerender } = render(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    // Type "ab" to trigger suggestions
+    for (const char of "ab") {
+      rerender(
+        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+      );
+      await userEvent.type(inputs[0], char);
+    }
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+    // Clear the input
+    await userEvent.clear(inputs[0]);
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  test("fills field and closes dropdown when suggestion is clicked", async () => {
+    let currentWords = Array(12).fill("");
+    const onWordsChange = jest.fn((newWords: string[]) => {
+      currentWords = newWords;
+    });
+    const { rerender } = render(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    // Type "ab" to trigger suggestions
+    for (const char of "ab") {
+      rerender(
+        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+      );
+      await userEvent.type(inputs[0], char);
+    }
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    // Click the first suggestion ("abandon")
+    const options = screen.getAllByRole("option");
+    await userEvent.click(options[0]);
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    // Verify onWordsChange was called with "abandon"
+    const lastCall =
+      onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    expect(lastCall[0]).toBe("abandon");
+    // Dropdown should be closed
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  test("limits visible suggestions to 8 items max", async () => {
+    let currentWords = Array(12).fill("");
+    const onWordsChange = jest.fn((newWords: string[]) => {
+      currentWords = newWords;
+    });
+    const { rerender } = render(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    // Type "a" which matches many words
+    await userEvent.type(inputs[0], "a");
+    rerender(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const options = screen.getAllByRole("option");
+    expect(options.length).toBeLessThanOrEqual(8);
+  });
 });
