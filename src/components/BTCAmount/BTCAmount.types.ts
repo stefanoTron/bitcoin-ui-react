@@ -11,8 +11,10 @@ export interface BTCAmountProps {
   btcSeparator?: string;
   /** Whether to animate value changes. Default: true */
   animate?: boolean;
-  /** Show a symbol icon before the amount. */
+  /** Show a symbol icon next to the amount. */
   symbol?: "btc" | "sats";
+  /** Position of the symbol icon. Default: 'left' */
+  symbolPosition?: "left" | "right";
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */

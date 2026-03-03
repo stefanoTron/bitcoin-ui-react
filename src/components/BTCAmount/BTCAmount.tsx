@@ -69,6 +69,7 @@ export function BTCAmount({
   btcSeparator = ".",
   animate: shouldAnimate = true,
   symbol,
+  symbolPosition = "left",
   className,
   style: userStyle,
 }: BTCAmountProps) {
@@ -103,10 +104,9 @@ export function BTCAmount({
       data-testid="btc-amount"
       aria-label={`${(clamped / 100_000_000).toFixed(8)} BTC`}
       className={className}
-      style={{ display: "inline-flex", alignItems: "baseline", gap: symbol ? "0.2em" : undefined, ...userStyle }}
+      style={{ display: "inline-flex", alignItems: "center", gap: symbol ? "0.2em" : undefined, ...userStyle }}
     >
-      {symbol === "btc" && <BitcoinIcon size="1em" />}
-      {symbol === "sats" && <SatsIcon size="1em" tilted />}
+      {symbol && symbolPosition === "left" && (symbol === "btc" ? <BitcoinIcon size="1em" /> : <SatsIcon size="1em" tilted />)}
       {formatted.map((item) => (
         <span
           key={item.key}
@@ -116,6 +116,7 @@ export function BTCAmount({
           {item.char}
         </span>
       ))}
+      {symbol && symbolPosition === "right" && (symbol === "btc" ? <BitcoinIcon size="1em" /> : <SatsIcon size="1em" tilted />)}
     </span>
   );
 }

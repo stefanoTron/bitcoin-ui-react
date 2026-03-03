@@ -9,8 +9,10 @@ export interface TransactionAmountProps {
   inactiveColor?: string;
   /** Show +/- sign prefix. Default: true */
   showSign?: boolean;
-  /** Show a symbol icon before the amount. */
+  /** Show a symbol icon next to the amount. */
   symbol?: "btc" | "sats";
+  /** Position of the symbol icon. Default: 'left' */
+  symbolPosition?: "left" | "right";
   /** Font family. Default: 'inherit' */
   fontFamily?: string;
   /** Separator between 3-digit satoshi groups. Default: '\u2009' (thin space) */

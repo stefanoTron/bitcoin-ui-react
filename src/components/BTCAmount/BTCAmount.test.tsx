@@ -122,6 +122,22 @@ describe("BTCAmount", () => {
     expect(screen.queryByTestId("bitcoin-icon")).not.toBeInTheDocument();
   });
 
+  test("renders symbol on the right when symbolPosition='right'", () => {
+    render(<BTCAmount amount={100_000_000} symbol="btc" symbolPosition="right" />);
+    const container = screen.getByTestId("btc-amount");
+    const icon = screen.getByTestId("bitcoin-icon");
+    // Icon should be the last child
+    expect(container.lastElementChild).toBe(icon);
+  });
+
+  test("renders symbol on the left by default", () => {
+    render(<BTCAmount amount={100_000_000} symbol="btc" />);
+    const container = screen.getByTestId("btc-amount");
+    const icon = screen.getByTestId("bitcoin-icon");
+    // Icon should be the first child
+    expect(container.firstElementChild).toBe(icon);
+  });
+
   test("renders no icon when symbol is not set", () => {
     render(<BTCAmount amount={100_000_000} />);
     expect(screen.queryByTestId("bitcoin-icon")).not.toBeInTheDocument();

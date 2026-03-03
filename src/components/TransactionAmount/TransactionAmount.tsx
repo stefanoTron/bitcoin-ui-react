@@ -8,6 +8,7 @@ export function TransactionAmount({
   inactiveColor = "#999999",
   showSign = true,
   symbol,
+  symbolPosition = "left",
   fontFamily = "inherit",
   satsSeparator = "\u2009",
   btcSeparator = ".",
@@ -26,7 +27,7 @@ export function TransactionAmount({
       className={className}
       style={{
         display: "inline-flex",
-        alignItems: "baseline",
+        alignItems: "center",
         color: activeColor,
         fontFamily,
         ...style,
@@ -40,6 +41,7 @@ export function TransactionAmount({
         satsSeparator={satsSeparator}
         btcSeparator={btcSeparator}
         symbol={symbol}
+        symbolPosition={symbolPosition}
         animate={false}
       />
     </span>
