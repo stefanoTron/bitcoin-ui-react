@@ -15,6 +15,7 @@ const meta: Meta<typeof BTCAmount> = {
     className: { control: "text" },
     style: { control: "object" },
     symbol: { control: "select", options: [undefined, "btc", "sats"] },
+    symbolPosition: { control: "select", options: ["left", "right"] },
   },
   decorators: [
     (Story) => (
@@ -97,5 +98,21 @@ export const WithSatsSymbol: Story = {
   args: {
     amount: 50_000,
     symbol: "sats",
+  },
+};
+
+export const SymbolOnRight: Story = {
+  args: {
+    amount: 100_000_000,
+    symbol: "btc",
+    symbolPosition: "right",
+  },
+};
+
+export const SatsSymbolOnRight: Story = {
+  args: {
+    amount: 50_000,
+    symbol: "sats",
+    symbolPosition: "right",
   },
 };

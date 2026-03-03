@@ -17,6 +17,7 @@ const meta: Meta<typeof TransactionAmount> = {
     amount: { control: { type: "number" } },
     showSign: { control: "boolean" },
     symbol: { control: { type: "select", options: [undefined, "btc", "sats"] } },
+    symbolPosition: { control: { type: "select", options: ["left", "right"] } },
     positiveColor: { control: "color" },
     negativeColor: { control: "color" },
     inactiveColor: { control: "color" },
@@ -60,6 +61,15 @@ export const WithSatsSymbol: Story = {
   args: {
     amount: -500_000,
     symbol: "sats",
+  },
+};
+
+/** Symbol on the right side */
+export const SymbolOnRight: Story = {
+  args: {
+    amount: 150_000,
+    symbol: "btc",
+    symbolPosition: "right",
   },
 };
 
