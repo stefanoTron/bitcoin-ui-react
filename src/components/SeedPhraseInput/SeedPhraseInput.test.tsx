@@ -30,4 +30,33 @@ describe("SeedPhraseInput", () => {
     render(<SeedPhraseInput {...defaultProps} />);
     expect(screen.getByTestId("seed-phrase-input")).toBeInTheDocument();
   });
+
+  test("calls onWordsChange with updated array when user types", async () => {
+    let currentWords = Array(12).fill("");
+    const onWordsChange = jest.fn((newWords: string[]) => {
+      currentWords = newWords;
+    });
+    const { rerender } = render(
+      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    for (const char of "abandon") {
+      rerender(
+        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
+      );
+      await userEvent.type(inputs[0], char);
+    }
+    const lastCall =
+      onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    expect(lastCall[0]).toBe("abandon");
+  });
+
+  test("displays pre-filled words", () => {
+    const words = ["abandon", "ability", "able", ...Array(9).fill("")];
+    render(<SeedPhraseInput words={words} onWordsChange={jest.fn()} />);
+    const inputs = screen.getAllByRole("textbox") as HTMLInputElement[];
+    expect(inputs[0].value).toBe("abandon");
+    expect(inputs[1].value).toBe("ability");
+    expect(inputs[2].value).toBe("able");
+  });
 });
