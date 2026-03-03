@@ -357,4 +357,47 @@ describe("SeedPhraseInput", () => {
     const root = screen.getByTestId("seed-phrase-input");
     expect(root.style.maxWidth).toBe("400px");
   });
+
+  test("calls onComplete when all 24 words are valid BIP39 words", () => {
+    const onComplete = jest.fn();
+    const validWords = [
+      "abandon", "ability", "able", "about", "above", "absent",
+      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+      "account", "accuse", "achieve", "acid", "acoustic", "acquire",
+      "across", "act", "action", "actor", "actress", "actual",
+    ];
+    render(
+      <SeedPhraseInput
+        words={validWords}
+        onWordsChange={jest.fn()}
+        wordCount={24}
+        onComplete={onComplete}
+      />,
+    );
+    expect(onComplete).toHaveBeenCalledWith(validWords);
+  });
+
+  test("does not fire onComplete again on re-render with same valid words", () => {
+    const onComplete = jest.fn();
+    const validWords = [
+      "abandon", "ability", "able", "about", "above", "absent",
+      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+    ];
+    const { rerender } = render(
+      <SeedPhraseInput
+        words={validWords}
+        onWordsChange={jest.fn()}
+        onComplete={onComplete}
+      />,
+    );
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    rerender(
+      <SeedPhraseInput
+        words={[...validWords]}
+        onWordsChange={jest.fn()}
+        onComplete={onComplete}
+      />,
+    );
+    expect(onComplete).toHaveBeenCalledTimes(1);
+  });
 });

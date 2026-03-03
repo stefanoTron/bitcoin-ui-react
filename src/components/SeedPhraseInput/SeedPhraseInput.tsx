@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SeedPhraseInputProps } from "./SeedPhraseInput.types";
 import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
 
+const BIP39_WORD_SET = new Set(BIP39_ENGLISH_WORDLIST);
 const MAX_SUGGESTIONS = 8;
 
 export function SeedPhraseInput({
@@ -16,6 +17,7 @@ export function SeedPhraseInput({
 }: SeedPhraseInputProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const prevCompleteRef = useRef(false);
 
   const handleChange = useCallback(
     (index: number, value: string) => {
@@ -70,13 +72,13 @@ export function SeedPhraseInput({
   useEffect(() => {
     if (!onComplete) return;
     const relevantWords = words.slice(0, wordCount);
-    if (relevantWords.length < wordCount) return;
-    const allValid = relevantWords.every(
-      (w) => w !== "" && BIP39_ENGLISH_WORDLIST.includes(w),
+    const allValid = relevantWords.length >= wordCount && relevantWords.every(
+      (w) => w !== "" && BIP39_WORD_SET.has(w),
     );
-    if (allValid) {
+    if (allValid && !prevCompleteRef.current) {
       onComplete(relevantWords);
     }
+    prevCompleteRef.current = allValid;
   }, [words, wordCount, onComplete]);
 
   return (
@@ -124,6 +126,9 @@ export function SeedPhraseInput({
                 id={`seed-word-${i}`}
                 type="text"
                 autoComplete="off"
+                spellCheck={false}
+                autoCapitalize="none"
+                autoCorrect="off"
                 value={words[i] ?? ""}
                 onChange={(e) => handleChange(i, e.target.value)}
                 onFocus={() => setActiveIndex(i)}
