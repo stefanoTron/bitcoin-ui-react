@@ -9,10 +9,12 @@ export interface BTCAmountProps {
   satsSeparator?: string;
   /** Separator between BTC whole part and decimals. Default: '.' */
   btcSeparator?: string;
-  /** Font family override. Default: 'inherit' */
-  fontFamily?: string;
   /** Whether to animate value changes. Default: true */
   animate?: boolean;
   /** Show a symbol icon before the amount. */
   symbol?: "btc" | "sats";
+  /** CSS class name. */
+  className?: string;
+  /** Additional inline styles. */
+  style?: React.CSSProperties;
 }

@@ -67,9 +67,10 @@ export function BTCAmount({
   inactiveColor = "#999999",
   satsSeparator = "\u2009",
   btcSeparator = ".",
-  fontFamily = "inherit",
   animate: shouldAnimate = true,
   symbol,
+  className,
+  style: userStyle,
 }: BTCAmountProps) {
   const motionValue = useMotionValue(shouldAnimate ? 0 : amount);
   const springValue = useSpring(motionValue, { damping: 40, stiffness: 300 });
@@ -101,7 +102,8 @@ export function BTCAmount({
     <span
       data-testid="btc-amount"
       aria-label={`${(clamped / 100_000_000).toFixed(8)} BTC`}
-      style={{ fontFamily, display: "inline-flex", alignItems: "baseline", gap: symbol ? "0.2em" : undefined }}
+      className={className}
+      style={{ display: "inline-flex", alignItems: "baseline", gap: symbol ? "0.2em" : undefined, ...userStyle }}
     >
       {symbol === "btc" && <BitcoinIcon size="1em" />}
       {symbol === "sats" && <SatsIcon size="1em" tilted />}

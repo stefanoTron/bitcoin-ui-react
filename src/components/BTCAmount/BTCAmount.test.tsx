@@ -90,10 +90,16 @@ describe("BTCAmount", () => {
     expect(container.textContent).toContain(",");
   });
 
-  test("applies fontFamily style", () => {
-    render(<BTCAmount amount={0} fontFamily="monospace" />);
+  test("applies className", () => {
+    render(<BTCAmount amount={0} className="custom-class" />);
     const container = screen.getByTestId("btc-amount");
-    expect(container).toHaveStyle({ fontFamily: "monospace" });
+    expect(container).toHaveClass("custom-class");
+  });
+
+  test("applies style prop", () => {
+    render(<BTCAmount amount={0} style={{ fontSize: 32 }} />);
+    const container = screen.getByTestId("btc-amount");
+    expect(container).toHaveStyle({ fontSize: "32px" });
   });
 
   test("renders correctly with animate={false}", () => {
