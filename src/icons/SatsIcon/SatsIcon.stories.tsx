@@ -38,11 +38,11 @@ export const TiltComparison: Story = {
     <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
       <div style={{ textAlign: "center" }}>
         <SatsIcon size={64} />
-        <p>Default (rotated)</p>
+        <p>Upright (default)</p>
       </div>
       <div style={{ textAlign: "center" }}>
         <SatsIcon size={64} tilted />
-        <p>Tilted (original angle)</p>
+        <p>Tilted</p>
       </div>
     </div>
   ),

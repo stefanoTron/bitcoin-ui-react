@@ -22,20 +22,27 @@ describe("SatsIcon", () => {
     expect(svg).toHaveAttribute("height", "128");
   });
 
-  test("applies rotation when not tilted (default)", () => {
+  test("renders upright by default (no rotation)", () => {
     render(<SatsIcon />);
-    const svg = screen.getByTitle("Satoshis").closest("svg")!;
-    expect(svg).toHaveAttribute("transform");
+    const svg = screen.getByRole("img");
+    expect(svg).not.toHaveAttribute("transform");
   });
 
-  test("does not apply rotation when tilted", () => {
+  test("applies tilt rotation when tilted={true}", () => {
     render(<SatsIcon tilted />);
-    const svg = screen.getByTitle("Satoshis").closest("svg")!;
-    expect(svg).not.toHaveAttribute("transform");
+    const svg = screen.getByRole("img");
+    expect(svg).toHaveAttribute("transform");
   });
 
   test("has role=img for accessibility", () => {
     render(<SatsIcon />);
     expect(screen.getByRole("img")).toBeInTheDocument();
+  });
+
+  test("applies className and style", () => {
+    render(<SatsIcon className="my-icon" style={{ opacity: 0.5 }} />);
+    const svg = screen.getByRole("img");
+    expect(svg).toHaveClass("my-icon");
+    expect(svg).toHaveStyle({ opacity: "0.5" });
   });
 });

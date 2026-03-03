@@ -3,18 +3,22 @@ import { SatsIconProps } from "./SatsIcon.types";
 export function SatsIcon({
   alt = "Satoshis",
   backgroundColor = "transparent",
+  className,
   color = "#000000",
   size = 16,
+  style,
   tilted = false,
 }: SatsIconProps) {
   return (
     <svg
+      className={className}
       height={size}
       role="img"
+      style={style}
       viewBox="1 1 512 512"
       width={size}
       xmlns="http://www.w3.org/2000/svg"
-      {...(!tilted ? { transform: "rotate(-14 0 0)" } : {})}
+      {...(tilted ? { transform: "rotate(14 0 0)" } : {})}
     >
       <title>{alt}</title>
       <circle cx={257} cy={257} r={256} fill={backgroundColor} />

@@ -9,4 +9,8 @@ export interface SatsIconProps {
   alt?: string;
   /** Apply a tilt rotation to the icon. Default: false */
   tilted?: boolean;
+  /** CSS class name. */
+  className?: string;
+  /** Additional inline styles applied to the SVG element. */
+  style?: React.CSSProperties;
 }
