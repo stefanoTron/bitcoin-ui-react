@@ -341,4 +341,20 @@ describe("SeedPhraseInput", () => {
     );
     expect(onComplete).not.toHaveBeenCalled();
   });
+
+  test("applies className to root element", () => {
+    render(
+      <SeedPhraseInput {...defaultProps} className="my-seed-phrase" />,
+    );
+    const root = screen.getByTestId("seed-phrase-input");
+    expect(root).toHaveClass("my-seed-phrase");
+  });
+
+  test("applies style to root element", () => {
+    render(
+      <SeedPhraseInput {...defaultProps} style={{ maxWidth: 400 }} />,
+    );
+    const root = screen.getByTestId("seed-phrase-input");
+    expect(root.style.maxWidth).toBe("400px");
+  });
 });
