@@ -7,4 +7,8 @@ export interface BitcoinIconProps {
   backgroundColor?: string;
   /** Accessibility label. Default: 'Bitcoin' */
   alt?: string;
+  /** CSS class name. */
+  className?: string;
+  /** Additional inline styles applied to the SVG element. */
+  style?: React.CSSProperties;
 }

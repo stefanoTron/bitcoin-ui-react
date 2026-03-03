@@ -5,11 +5,15 @@ export function BitcoinIcon({
   backgroundColor = "#f7931a",
   color = "#ffffff",
   size = 16,
+  className,
+  style,
 }: BitcoinIconProps) {
   return (
     <svg
+      className={className}
       height={size}
       role="img"
+      style={style}
       viewBox="0 0 512 512"
       width={size}
       xmlns="http://www.w3.org/2000/svg"

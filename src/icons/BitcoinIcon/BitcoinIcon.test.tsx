@@ -31,4 +31,11 @@ describe("BitcoinIcon", () => {
     render(<BitcoinIcon />);
     expect(screen.getByRole("img")).toBeInTheDocument();
   });
+
+  test("applies className and style", () => {
+    render(<BitcoinIcon className="my-icon" style={{ opacity: 0.5 }} />);
+    const svg = screen.getByRole("img");
+    expect(svg).toHaveClass("my-icon");
+    expect(svg).toHaveStyle({ opacity: "0.5" });
+  });
 });
