@@ -92,4 +92,38 @@ describe("SeedPhraseInput", () => {
     const root = screen.getByTestId("seed-phrase-input");
     expect(root.style.gridTemplateColumns).toBe("repeat(3, 1fr)");
   });
+
+  test("renders spans instead of inputs in readOnly mode", () => {
+    const words = [
+      "abandon", "ability", "able", "about", "above", "absent",
+      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+    ];
+    render(
+      <SeedPhraseInput
+        words={words}
+        onWordsChange={jest.fn()}
+        readOnly
+      />,
+    );
+    const inputs = screen.queryAllByRole("textbox");
+    expect(inputs).toHaveLength(0);
+    expect(screen.getByText("abandon")).toBeInTheDocument();
+  });
+
+  test("does not call onWordsChange in readOnly mode", () => {
+    const onWordsChange = jest.fn();
+    const words = [
+      "abandon", "ability", "able", "about", "above", "absent",
+      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+    ];
+    render(
+      <SeedPhraseInput
+        words={words}
+        onWordsChange={onWordsChange}
+        readOnly
+      />,
+    );
+    // No inputs to interact with; onWordsChange should never be called
+    expect(onWordsChange).not.toHaveBeenCalled();
+  });
 });

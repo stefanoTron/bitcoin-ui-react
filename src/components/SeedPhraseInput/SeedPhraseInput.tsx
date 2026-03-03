@@ -34,24 +34,35 @@ export function SeedPhraseInput({
       {Array.from({ length: wordCount }, (_, i) => (
         <div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <label
-            htmlFor={`seed-word-${i}`}
+            htmlFor={readOnly ? undefined : `seed-word-${i}`}
             style={{ minWidth: 28, textAlign: "right" }}
           >
             {i + 1}.
           </label>
-          <input
-            id={`seed-word-${i}`}
-            type="text"
-            autoComplete="off"
-            value={words[i] ?? ""}
-            onChange={(e) => handleChange(i, e.target.value)}
-            style={{
-              flex: 1,
-              padding: "4px 8px",
-              border: "1px solid #ccc",
-              borderRadius: 4,
-            }}
-          />
+          {readOnly ? (
+            <span
+              style={{
+                flex: 1,
+                padding: "4px 8px",
+              }}
+            >
+              {words[i] ?? ""}
+            </span>
+          ) : (
+            <input
+              id={`seed-word-${i}`}
+              type="text"
+              autoComplete="off"
+              value={words[i] ?? ""}
+              onChange={(e) => handleChange(i, e.target.value)}
+              style={{
+                flex: 1,
+                padding: "4px 8px",
+                border: "1px solid #ccc",
+                borderRadius: 4,
+              }}
+            />
+          )}
         </div>
       ))}
     </div>
