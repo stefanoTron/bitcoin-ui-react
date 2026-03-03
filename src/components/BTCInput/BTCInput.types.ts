@@ -17,4 +17,6 @@ export interface BTCInputProps {
   placeholder?: string;
   /** Additional inline styles merged onto the input element. */
   style?: React.CSSProperties;
+  /** CSS class name. */
+  className?: string;
 }

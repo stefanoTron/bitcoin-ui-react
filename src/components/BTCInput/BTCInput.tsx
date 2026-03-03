@@ -64,6 +64,7 @@ export function BTCInput({
   disabled = false,
   placeholder = "0.00\u2009000\u2009000",
   style: userStyle,
+  className,
 }: BTCInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const cursorRef = useRef<number | null>(null);
@@ -107,6 +108,7 @@ export function BTCInput({
   return (
     <input
       ref={inputRef}
+      className={className}
       type="text"
       inputMode="numeric"
       role="textbox"

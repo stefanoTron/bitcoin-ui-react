@@ -72,6 +72,12 @@ describe("BTCInput", () => {
     expect(parseInt(digitsOnly, 10)).toBeLessThanOrEqual(2_100_000_000_000_000);
   });
 
+  test("applies className", () => {
+    render(<BTCInput {...defaultProps} className="custom-input" />);
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveClass("custom-input");
+  });
+
   test("renders placeholder when amount is 0", () => {
     render(<BTCInput {...defaultProps} placeholder="Enter amount" />);
     const input = screen.getByRole("textbox") as HTMLInputElement;
