@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SeedPhraseInputProps } from "./SeedPhraseInput.types";
 import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
 
@@ -66,6 +66,18 @@ export function SeedPhraseInput({
     },
     [suggestions, handleSelect],
   );
+
+  useEffect(() => {
+    if (!onComplete) return;
+    const relevantWords = words.slice(0, wordCount);
+    if (relevantWords.length < wordCount) return;
+    const allValid = relevantWords.every(
+      (w) => w !== "" && BIP39_ENGLISH_WORDLIST.includes(w),
+    );
+    if (allValid) {
+      onComplete(relevantWords);
+    }
+  }, [words, wordCount, onComplete]);
 
   return (
     <div

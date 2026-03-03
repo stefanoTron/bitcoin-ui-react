@@ -293,4 +293,52 @@ describe("SeedPhraseInput", () => {
     // Field 1 should have focus
     expect(inputs[1]).toHaveFocus();
   });
+
+  test("calls onComplete when all 12 words are valid BIP39 words", () => {
+    const onComplete = jest.fn();
+    const validWords = [
+      "abandon", "ability", "able", "about", "above", "absent",
+      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+    ];
+    render(
+      <SeedPhraseInput
+        words={validWords}
+        onWordsChange={jest.fn()}
+        onComplete={onComplete}
+      />,
+    );
+    expect(onComplete).toHaveBeenCalledWith(validWords);
+  });
+
+  test("does not call onComplete when some words are invalid", () => {
+    const onComplete = jest.fn();
+    const invalidWords = [
+      "abandon", "ability", "able", "about", "above", "absent",
+      "absorb", "abstract", "absurd", "abuse", "access", "notaword",
+    ];
+    render(
+      <SeedPhraseInput
+        words={invalidWords}
+        onWordsChange={jest.fn()}
+        onComplete={onComplete}
+      />,
+    );
+    expect(onComplete).not.toHaveBeenCalled();
+  });
+
+  test("does not call onComplete when some words are empty", () => {
+    const onComplete = jest.fn();
+    const partialWords = [
+      "abandon", "ability", "able", "about", "above", "absent",
+      "absorb", "abstract", "absurd", "abuse", "access", "",
+    ];
+    render(
+      <SeedPhraseInput
+        words={partialWords}
+        onWordsChange={jest.fn()}
+        onComplete={onComplete}
+      />,
+    );
+    expect(onComplete).not.toHaveBeenCalled();
+  });
 });
