@@ -73,6 +73,16 @@ export const SymbolOnRight: Story = {
   },
 };
 
+/** Custom element as symbol */
+export const CustomSymbol: Story = {
+  render: () => (
+    <TransactionAmount
+      amount={150_000}
+      symbol={<span style={{ fontSize: "0.75em" }}>BTC</span>}
+    />
+  ),
+};
+
 /** Amount without sign prefix */
 export const NoSign: Story = {
   args: {

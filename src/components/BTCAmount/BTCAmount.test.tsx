@@ -143,4 +143,10 @@ describe("BTCAmount", () => {
     expect(screen.queryByTestId("bitcoin-icon")).not.toBeInTheDocument();
     expect(screen.queryByTestId("sats-icon")).not.toBeInTheDocument();
   });
+
+  test("renders a custom element as symbol", () => {
+    render(<BTCAmount amount={100_000_000} symbol={<span data-testid="custom-icon">$</span>} />);
+    expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
+    expect(screen.queryByTestId("bitcoin-icon")).not.toBeInTheDocument();
+  });
 });

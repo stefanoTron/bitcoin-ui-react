@@ -31,8 +31,8 @@ import { BTCAmount } from "bitcoin-ui-react";
 | `satsSeparator` | `string` | `' '` (thin space) | Separator between 3-digit groups |
 | `btcSeparator` | `string` | `'.'` | Decimal separator |
 | `animate` | `boolean` | `true` | Animate digit changes |
-| `symbol` | `'btc' \| 'sats'` | — | Show a symbol icon next to the amount |
-| `symbolPosition` | `'left' \| 'right'` | `'left'` | Position of the symbol icon |
+| `symbol` | `'btc' \| 'sats' \| ReactElement` | — | Built-in icon shorthand or custom element |
+| `symbolPosition` | `'left' \| 'right'` | `'left'` | Position of the symbol |
 | `className` | `string` | — | CSS class name |
 | `style` | `CSSProperties` | — | Additional inline styles |
 
@@ -106,8 +106,8 @@ import { TransactionAmount } from "bitcoin-ui-react";
 | `negativeColor` | `string` | `'#ef4444'` | Color for negative amounts |
 | `inactiveColor` | `string` | `'#999999'` | Color for zero-padded digits |
 | `showSign` | `boolean` | `true` | Show +/− sign prefix |
-| `symbol` | `'btc' \| 'sats'` | — | Symbol icon next to amount |
-| `symbolPosition` | `'left' \| 'right'` | `'left'` | Position of the symbol icon |
+| `symbol` | `'btc' \| 'sats' \| ReactElement` | — | Built-in icon shorthand or custom element |
+| `symbolPosition` | `'left' \| 'right'` | `'left'` | Position of the symbol |
 | `fontFamily` | `string` | `'inherit'` | Font family |
 | `satsSeparator` | `string` | `' '` (thin space) | Separator between groups |
 | `btcSeparator` | `string` | `'.'` | Decimal separator |

@@ -9,9 +9,9 @@ export interface TransactionAmountProps {
   inactiveColor?: string;
   /** Show +/- sign prefix. Default: true */
   showSign?: boolean;
-  /** Show a symbol icon next to the amount. */
-  symbol?: "btc" | "sats";
-  /** Position of the symbol icon. Default: 'left' */
+  /** Symbol shown next to the amount. Use "btc" or "sats" for built-in icons, or pass a custom React element. */
+  symbol?: "btc" | "sats" | React.ReactElement;
+  /** Position of the symbol. Default: 'left' */
   symbolPosition?: "left" | "right";
   /** Font family. Default: 'inherit' */
   fontFamily?: string;

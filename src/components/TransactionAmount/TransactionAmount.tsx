@@ -1,3 +1,4 @@
+import { isValidElement } from "react";
 import { TransactionAmountProps } from "./TransactionAmount.types";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
 import { BitcoinIcon } from "../../icons/BitcoinIcon/BitcoinIcon";
@@ -23,9 +24,13 @@ export function TransactionAmount({
   const sign = showSign && isPositive ? "+" : showSign && isNegative ? "\u2212" : "";
   const absAmount = Math.abs(amount);
 
-  const iconEl = symbol
-    ? symbol === "btc" ? <BitcoinIcon size="1em" /> : <SatsIcon size="1em" tilted />
-    : null;
+  const iconEl = symbol === "btc"
+    ? <BitcoinIcon size="1em" />
+    : symbol === "sats"
+      ? <SatsIcon size="1em" tilted />
+      : isValidElement(symbol)
+        ? symbol
+        : null;
 
   return (
     <span
@@ -34,7 +39,7 @@ export function TransactionAmount({
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: symbol ? "0.2em" : undefined,
+        gap: iconEl ? "0.2em" : undefined,
         color: activeColor,
         fontFamily,
         ...style,

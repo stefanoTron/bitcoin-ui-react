@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { isValidElement, useEffect, useMemo, useState } from "react";
 import { useMotionValue, useSpring } from "motion/react";
 import { BTCAmountProps } from "./BTCAmount.types";
 import { BitcoinIcon } from "../../icons/BitcoinIcon/BitcoinIcon";
@@ -99,14 +99,22 @@ export function BTCAmount({
     [displayAmount, activeColor, inactiveColor, btcSeparator, satsSeparator],
   );
 
+  const symbolEl = symbol === "btc"
+    ? <BitcoinIcon size="1em" />
+    : symbol === "sats"
+      ? <SatsIcon size="1em" tilted />
+      : isValidElement(symbol)
+        ? symbol
+        : null;
+
   return (
     <span
       data-testid="btc-amount"
       aria-label={`${(clamped / 100_000_000).toFixed(8)} BTC`}
       className={className}
-      style={{ display: "inline-flex", alignItems: "center", gap: symbol ? "0.2em" : undefined, ...userStyle }}
+      style={{ display: "inline-flex", alignItems: "center", gap: symbolEl ? "0.2em" : undefined, ...userStyle }}
     >
-      {symbol && symbolPosition === "left" && (symbol === "btc" ? <BitcoinIcon size="1em" /> : <SatsIcon size="1em" tilted />)}
+      {symbolEl && symbolPosition === "left" && symbolEl}
       {formatted.map((item) => (
         <span
           key={item.key}
@@ -116,7 +124,7 @@ export function BTCAmount({
           {item.char}
         </span>
       ))}
-      {symbol && symbolPosition === "right" && (symbol === "btc" ? <BitcoinIcon size="1em" /> : <SatsIcon size="1em" tilted />)}
+      {symbolEl && symbolPosition === "right" && symbolEl}
     </span>
   );
 }
