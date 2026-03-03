@@ -59,4 +59,37 @@ describe("SeedPhraseInput", () => {
     expect(inputs[1].value).toBe("ability");
     expect(inputs[2].value).toBe("able");
   });
+
+  test("renders 24 input fields when wordCount is 24", () => {
+    render(
+      <SeedPhraseInput
+        words={Array(24).fill("")}
+        onWordsChange={jest.fn()}
+        wordCount={24}
+      />,
+    );
+    const inputs = screen.getAllByRole("textbox");
+    expect(inputs).toHaveLength(24);
+  });
+
+  test("renders numbered labels up to 24", () => {
+    render(
+      <SeedPhraseInput
+        words={Array(24).fill("")}
+        onWordsChange={jest.fn()}
+        wordCount={24}
+      />,
+    );
+    for (let i = 1; i <= 24; i++) {
+      expect(screen.getByText(`${i}.`)).toBeInTheDocument();
+    }
+  });
+
+  test("applies columns prop to grid layout", () => {
+    render(
+      <SeedPhraseInput {...defaultProps} columns={3} />,
+    );
+    const root = screen.getByTestId("seed-phrase-input");
+    expect(root.style.gridTemplateColumns).toBe("repeat(3, 1fr)");
+  });
 });
