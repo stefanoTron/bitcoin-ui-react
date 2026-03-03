@@ -4,6 +4,7 @@ export {
   AddressDisplay,
   TransactionAmount,
   ConfirmationBadge,
+  SeedPhraseInput,
 } from "./components";
 export type {
   BTCAmountProps,
@@ -11,6 +12,8 @@ export type {
   AddressDisplayProps,
   TransactionAmountProps,
   ConfirmationBadgeProps,
+  SeedPhraseInputProps,
 } from "./components";
 export { BitcoinIcon, SatsIcon } from "./icons";
 export type { BitcoinIconProps, SatsIconProps } from "./icons";
+export { BIP39_ENGLISH_WORDLIST } from "./data/bip39-english";

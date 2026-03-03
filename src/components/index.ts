@@ -8,3 +8,5 @@ export { TransactionAmount } from "./TransactionAmount";
 export type { TransactionAmountProps } from "./TransactionAmount";
 export { ConfirmationBadge } from "./ConfirmationBadge";
 export type { ConfirmationBadgeProps } from "./ConfirmationBadge";
+export { SeedPhraseInput } from "./SeedPhraseInput";
+export type { SeedPhraseInputProps } from "./SeedPhraseInput";
