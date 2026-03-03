@@ -40,8 +40,8 @@ export function TransactionAmount({
         ...style,
       }}
     >
-      {sign && <span>{sign}</span>}
       {iconEl && symbolPosition === "left" && iconEl}
+      {sign && <span>{sign}</span>}
       <BTCAmount
         amount={absAmount}
         activeColor={activeColor}
