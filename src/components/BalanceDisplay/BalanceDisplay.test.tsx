@@ -156,4 +156,28 @@ describe("BalanceDisplay", () => {
     const el = screen.getByTestId("balance-display");
     expect(el.textContent).toMatch(/0[.]00/);
   });
+
+  test("toggle button has aria-label", () => {
+    render(<BalanceDisplay amount={100_000_000} />);
+    const toggle = screen.getByTestId("balance-toggle");
+    expect(toggle).toHaveAttribute("aria-label", "Switch display unit");
+  });
+
+  test("supports custom toggleAriaLabel", () => {
+    render(<BalanceDisplay amount={100_000_000} toggleAriaLabel="Cambiar unidad" />);
+    expect(screen.getByTestId("balance-toggle")).toHaveAttribute("aria-label", "Cambiar unidad");
+  });
+
+  test("value region has aria-live", () => {
+    render(<BalanceDisplay amount={100_000_000} />);
+    const liveRegion = screen.getByTestId("balance-display").querySelector("[aria-live]");
+    expect(liveRegion).toHaveAttribute("aria-live", "polite");
+  });
+
+  test("supports custom btcLabel and satsLabel", async () => {
+    render(<BalanceDisplay amount={100_000_000} btcLabel="Bitcoin" satsLabel="satoshis" />);
+    expect(screen.getByText("Bitcoin")).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId("balance-toggle"));
+    expect(screen.getByText("satoshis")).toBeInTheDocument();
+  });
 });

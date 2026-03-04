@@ -5,8 +5,8 @@ import { BTCAmount } from "../BTCAmount/BTCAmount";
 
 type Unit = "btc" | "sats" | "fiat";
 
-function formatSatsNumber(sats: number): string {
-  return new Intl.NumberFormat("en-US").format(Math.max(0, Math.trunc(isNaN(sats) ? 0 : sats)));
+function formatSatsNumber(sats: number, locale: string): string {
+  return new Intl.NumberFormat(locale).format(Math.max(0, Math.trunc(isNaN(sats) ? 0 : sats)));
 }
 
 function formatFiat(value: number, code: string, locale: string): string {
@@ -21,8 +21,11 @@ export function BalanceDisplay({
   unit: controlledUnit,
   onUnitChange,
   activeColor = "currentColor",
-  labelColor = "#999",
+  labelColor = "#999999",
   showToggle = true,
+  btcLabel = "BTC",
+  satsLabel = "sats",
+  toggleAriaLabel = "Switch display unit",
   className,
   style,
 }: BalanceDisplayProps) {
@@ -41,7 +44,7 @@ export function BalanceDisplay({
     onUnitChange?.(next);
   };
 
-  const label = currentUnit === "btc" ? "BTC" : currentUnit === "sats" ? "sats" : fiatCode;
+  const label = currentUnit === "btc" ? btcLabel : currentUnit === "sats" ? satsLabel : fiatCode;
 
   return (
     <div
@@ -54,31 +57,38 @@ export function BalanceDisplay({
         ...style,
       }}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentUnit}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          style={{ color: activeColor }}
-        >
-          {currentUnit === "btc" && (
-            <BTCAmount amount={amount} activeColor={activeColor} animate={false} />
-          )}
-          {currentUnit === "sats" && (
-            <span>{formatSatsNumber(amount)}</span>
-          )}
-          {currentUnit === "fiat" && fiatValue !== undefined && (
-            <span>{formatFiat(fiatValue, fiatCode, fiatLocale)}</span>
-          )}
-        </motion.div>
-      </AnimatePresence>
+      <div aria-live="polite">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentUnit}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            style={{ color: activeColor }}
+          >
+            {currentUnit === "btc" && (
+              <BTCAmount amount={amount} activeColor={activeColor} animate={false} />
+            )}
+            {currentUnit === "sats" && (
+              <span aria-label={`${formatSatsNumber(amount, fiatLocale)} ${satsLabel}`}>
+                {formatSatsNumber(amount, fiatLocale)}
+              </span>
+            )}
+            {currentUnit === "fiat" && fiatValue !== undefined && (
+              <span aria-label={formatFiat(fiatValue, fiatCode, fiatLocale)}>
+                {formatFiat(fiatValue, fiatCode, fiatLocale)}
+              </span>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
       {showToggle ? (
         <button
           type="button"
           onClick={handleToggle}
           data-testid="balance-toggle"
+          aria-label={toggleAriaLabel}
           style={{
             background: "none",
             border: "none",
