@@ -17,6 +17,7 @@ export function AddressDisplay({
   fontFamily = "inherit",
   className,
   style,
+  ref,
 }: AddressDisplayProps) {
   const [copied, setCopied] = useState(false);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -47,6 +48,7 @@ export function AddressDisplay({
 
   return (
     <span
+      ref={ref}
       data-testid="address-display"
       aria-label={address}
       className={className}

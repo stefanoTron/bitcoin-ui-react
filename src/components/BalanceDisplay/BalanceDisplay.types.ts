@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface BalanceDisplayProps {
   /** Balance in satoshis. */
   amount: number;
@@ -21,10 +23,14 @@ export interface BalanceDisplayProps {
   btcLabel?: string;
   /** Label for sats unit. Default: 'sats' */
   satsLabel?: string;
+  /** Font family. Default: 'inherit' */
+  fontFamily?: string;
   /** Accessible label for the toggle button. Default: 'Switch display unit' */
   toggleAriaLabel?: string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */
   style?: React.CSSProperties;
+  /** Ref forwarded to the root div element. */
+  ref?: Ref<HTMLDivElement>;
 }

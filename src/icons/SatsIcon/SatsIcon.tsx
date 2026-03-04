@@ -9,9 +9,11 @@ export function SatsIcon({
   size = 16,
   style,
   tilted = false,
+  ref,
 }: SatsIconProps) {
   return (
     <svg
+      ref={ref}
       className={className}
       height={size}
       role={decorative ? undefined : "img"}

@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface BTCInputProps {
   /** Current amount in satoshis (integer). */
   amount: number;
@@ -13,6 +15,8 @@ export interface BTCInputProps {
   btcSeparator?: string;
   /** Whether the input is disabled. Default: false */
   disabled?: boolean;
+  /** Font family. Default: 'inherit' */
+  fontFamily?: string;
   /** Placeholder text. Default: '0.00\u2009000\u2009000' */
   placeholder?: string;
   /** Additional inline styles merged onto the input element. */
@@ -21,4 +25,6 @@ export interface BTCInputProps {
   ariaLabel?: string;
   /** CSS class name. */
   className?: string;
+  /** Ref forwarded to the input element. */
+  ref?: Ref<HTMLInputElement>;
 }

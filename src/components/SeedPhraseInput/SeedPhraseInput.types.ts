@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface SeedPhraseInputProps {
   /** The current words array. Length should match wordCount. */
   words: string[];
@@ -17,10 +19,14 @@ export interface SeedPhraseInputProps {
   dropdownStyle?: React.CSSProperties;
   /** Custom BIP39 wordlist. Default: built-in English wordlist */
   wordlist?: string[];
+  /** Font family. Default: 'inherit' */
+  fontFamily?: string;
   /** Accessible label for the input group. Default: 'Seed phrase' */
   groupLabel?: string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */
   style?: React.CSSProperties;
+  /** Ref forwarded to the root div element. */
+  ref?: Ref<HTMLDivElement>;
 }

@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface ConfirmationBadgeProps {
   /** Number of confirmations. */
   confirmations: number;
@@ -23,4 +25,6 @@ export interface ConfirmationBadgeProps {
   className?: string;
   /** Additional inline styles. */
   style?: React.CSSProperties;
+  /** Ref forwarded to the root span element. */
+  ref?: Ref<HTMLSpanElement>;
 }

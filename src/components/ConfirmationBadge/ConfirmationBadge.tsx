@@ -13,6 +13,7 @@ export function ConfirmationBadge({
   fontFamily = "inherit",
   className,
   style,
+  ref,
 }: ConfirmationBadgeProps) {
   const clamped = Math.max(0, Math.trunc(confirmations));
   const isUnconfirmed = clamped === 0;
@@ -41,6 +42,7 @@ export function ConfirmationBadge({
 
   return (
     <span
+      ref={ref}
       data-testid="confirmation-badge"
       role="status"
       aria-label={ariaLabel}

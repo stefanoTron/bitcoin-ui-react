@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface TransactionAmountProps {
   /** Signed amount in satoshis. Positive = received, negative = sent. */
   amount: number;
@@ -25,4 +27,6 @@ export interface TransactionAmountProps {
   className?: string;
   /** Additional inline styles. */
   style?: React.CSSProperties;
+  /** Ref forwarded to the root span element. */
+  ref?: Ref<HTMLSpanElement>;
 }

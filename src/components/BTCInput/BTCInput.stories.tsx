@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, within } from "storybook/test";
 import { BTCInput } from "./BTCInput";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
 import { BitcoinIcon } from "../../icons/BitcoinIcon/BitcoinIcon";
@@ -35,6 +36,13 @@ export const Default: Story = {
         </p>
       </div>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox", { name: "Amount in BTC" });
+    await userEvent.click(input);
+    await userEvent.type(input, "123");
+    await expect(input).toHaveValue(expect.stringContaining("123"));
   },
 };
 

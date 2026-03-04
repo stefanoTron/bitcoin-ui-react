@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, within } from "storybook/test";
 import { BalanceDisplay } from "./BalanceDisplay";
 
 const meta: Meta<typeof BalanceDisplay> = {
@@ -27,9 +28,24 @@ const meta: Meta<typeof BalanceDisplay> = {
 export default meta;
 type Story = StoryObj<typeof BalanceDisplay>;
 
-/** Default — tap label to toggle BTC/sats */
+/** Default -- tap label to toggle BTC/sats */
 export const Default: Story = {
   args: { amount: 123_456_789 },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = canvas.getByTestId("balance-toggle");
+
+    // Initially in BTC mode
+    await expect(toggle).toHaveTextContent("BTC");
+
+    // Click to switch to sats
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveTextContent("sats");
+
+    // Click again to cycle back to BTC (no fiat, so BTC -> sats -> BTC)
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveTextContent("BTC");
+  },
 };
 
 /** Starts in sats mode */

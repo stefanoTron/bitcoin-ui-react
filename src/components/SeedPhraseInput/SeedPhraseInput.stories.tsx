@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, within } from "storybook/test";
 import { SeedPhraseInput } from "./SeedPhraseInput";
 
 const meta: Meta<typeof SeedPhraseInput> = {
@@ -35,11 +36,25 @@ const SAMPLE_24 = [
   "across", "act", "action", "actor", "actress", "actual",
 ];
 
-/** Empty 12-word grid — default state */
+/** Empty 12-word grid -- default state */
 export const Empty12: Story = {
   render: () => {
     const [words, setWords] = useState(Array(12).fill(""));
     return <SeedPhraseInput words={words} onWordsChange={setWords} />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const firstInput = canvas.getByRole("combobox", { name: "Word 1" });
+
+    // Focus and type a prefix to trigger suggestions
+    await userEvent.click(firstInput);
+    await userEvent.type(firstInput, "ab");
+
+    // Verify the suggestion dropdown appeared with matching BIP39 words
+    const listbox = canvas.getByRole("listbox");
+    await expect(listbox).toBeInTheDocument();
+    const options = canvas.getAllByRole("option");
+    await expect(options.length).toBeGreaterThan(0);
   },
 };
 

@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface SatsIconProps {
   /** Icon size in pixels or CSS length (e.g. '1em'). Default: 16 */
   size?: number | string;
@@ -15,4 +17,6 @@ export interface SatsIconProps {
   className?: string;
   /** Additional inline styles applied to the SVG element. */
   style?: React.CSSProperties;
+  /** Ref forwarded to the SVG element. */
+  ref?: Ref<SVGSVGElement>;
 }

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect, userEvent, within } from "storybook/test";
 import { AddressDisplay } from "./AddressDisplay";
 import { TransactionAmount } from "../TransactionAmount/TransactionAmount";
 
@@ -36,6 +37,12 @@ type Story = StoryObj<typeof AddressDisplay>;
 export const Default: Story = {
   args: {
     address: MAINNET_ADDRESS,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const copyButton = canvas.getByRole("button", { name: "Copy address" });
+    await userEvent.click(copyButton);
+    await expect(canvas.getByText("Copied!")).toBeInTheDocument();
   },
 };
 

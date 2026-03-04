@@ -62,12 +62,19 @@ export function BTCInput({
   satsSeparator = "\u2009",
   btcSeparator = ".",
   disabled = false,
+  fontFamily = "inherit",
   placeholder = "0.00\u2009000\u2009000",
   ariaLabel = "Amount in BTC",
   style: userStyle,
   className,
+  ref,
 }: BTCInputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const internalRef = useRef<HTMLInputElement>(null);
+  const mergedRef = useCallback((node: HTMLInputElement | null) => {
+    internalRef.current = node;
+    if (typeof ref === "function") ref(node);
+    else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
+  }, [ref]);
   const cursorRef = useRef<number | null>(null);
 
   const displayValue = useMemo(
@@ -93,7 +100,7 @@ export function BTCInput({
 
   // Restore cursor position after React updates the controlled input value.
   useLayoutEffect(() => {
-    const input = inputRef.current;
+    const input = internalRef.current;
     if (!input || cursorRef.current === null) return;
 
     const digitsAfter = cursorRef.current;
@@ -108,7 +115,7 @@ export function BTCInput({
 
   return (
     <input
-      ref={inputRef}
+      ref={mergedRef}
       className={className}
       type="text"
       inputMode="numeric"
@@ -120,7 +127,7 @@ export function BTCInput({
       style={{
         width: "100%",
         boxSizing: "border-box",
-        fontFamily: "inherit",
+        fontFamily,
         fontSize: "inherit",
         color: clampedAmount > 0 ? activeColor : inactiveColor,
         caretColor: activeColor,

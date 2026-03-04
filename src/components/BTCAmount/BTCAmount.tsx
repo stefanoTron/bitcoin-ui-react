@@ -1,8 +1,8 @@
-import { isValidElement, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMotionValue, useSpring } from "motion/react";
 import { BTCAmountProps } from "./BTCAmount.types";
-import { BitcoinIcon } from "../../icons/BitcoinIcon/BitcoinIcon";
-import { SatsIcon } from "../../icons/SatsIcon/SatsIcon";
+import { clampSats } from "../../utils/clampSats";
+import { resolveSymbol } from "../../utils/resolveSymbol";
 
 /**
  * Format a satoshi amount into an array of digits, separators, and their colors.
@@ -15,7 +15,7 @@ function formatDigits(
   btcSeparator: string,
   satsSeparator: string,
 ) {
-  const clamped = Math.max(0, Math.trunc(isNaN(amount) ? 0 : amount));
+  const clamped = clampSats(amount);
   const digits = clamped.toString().split("");
 
   while (digits.length < 9) {
@@ -70,9 +70,11 @@ export function BTCAmount({
   animate: shouldAnimate = true,
   symbol,
   symbolPosition = "left",
+  fontFamily = "inherit",
   ariaLabel: customAriaLabel,
   className,
   style: userStyle,
+  ref,
 }: BTCAmountProps) {
   const motionValue = useMotionValue(shouldAnimate ? 0 : amount);
   const springValue = useSpring(motionValue, { damping: 40, stiffness: 300 });
@@ -98,20 +100,15 @@ export function BTCAmount({
     [displayAmount, activeColor, inactiveColor, btcSeparator, satsSeparator],
   );
 
-  const symbolEl = symbol === "btc"
-    ? <BitcoinIcon size="1em" />
-    : symbol === "sats"
-      ? <SatsIcon size="1em" tilted />
-      : isValidElement(symbol)
-        ? symbol
-        : null;
+  const symbolEl = resolveSymbol(symbol);
 
   return (
     <span
+      ref={ref}
       data-testid="btc-amount"
-      aria-label={customAriaLabel ?? `${(Math.max(0, Math.trunc(isNaN(displayAmount) ? 0 : displayAmount)) / 100_000_000).toFixed(8)} BTC`}
+      aria-label={customAriaLabel ?? `${(clampSats(displayAmount) / 100_000_000).toFixed(8)} BTC`}
       className={className}
-      style={{ display: "inline-flex", alignItems: "center", gap: symbolEl ? "0.2em" : undefined, ...userStyle }}
+      style={{ display: "inline-flex", alignItems: "center", gap: symbolEl ? "0.2em" : undefined, fontFamily, ...userStyle }}
     >
       {symbolEl && symbolPosition === "left" && symbolEl}
       {formatted.map((item) => (

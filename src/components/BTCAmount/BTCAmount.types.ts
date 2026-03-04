@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface BTCAmountProps {
   /** Amount in satoshis (integer). */
   amount: number;
@@ -15,10 +17,14 @@ export interface BTCAmountProps {
   symbol?: "btc" | "sats" | React.ReactElement;
   /** Position of the symbol. Default: 'left' */
   symbolPosition?: "left" | "right";
+  /** Font family. Default: 'inherit' */
+  fontFamily?: string;
   /** Custom aria-label override. If omitted, auto-generated from amount. */
   ariaLabel?: string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */
   style?: React.CSSProperties;
+  /** Ref forwarded to the root span element. */
+  ref?: Ref<HTMLSpanElement>;
 }

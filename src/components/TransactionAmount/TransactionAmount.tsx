@@ -1,8 +1,7 @@
-import { isValidElement } from "react";
 import { TransactionAmountProps } from "./TransactionAmount.types";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
-import { BitcoinIcon } from "../../icons/BitcoinIcon/BitcoinIcon";
-import { SatsIcon } from "../../icons/SatsIcon/SatsIcon";
+import { clampSats } from "../../utils/clampSats";
+import { resolveSymbol } from "../../utils/resolveSymbol";
 
 export function TransactionAmount({
   amount,
@@ -18,26 +17,22 @@ export function TransactionAmount({
   ariaLabel: customAriaLabel,
   className,
   style,
+  ref,
 }: TransactionAmountProps) {
   const isPositive = amount > 0;
   const isNegative = amount < 0;
   const activeColor = isPositive ? positiveColor : isNegative ? negativeColor : inactiveColor;
   const sign = showSign && isPositive ? "+" : showSign && isNegative ? "\u2212" : "";
   const absAmount = Math.abs(amount);
-  const btcValue = (Math.max(0, Math.trunc(isNaN(absAmount) ? 0 : absAmount)) / 100_000_000).toFixed(8);
+  const btcValue = (clampSats(absAmount) / 100_000_000).toFixed(8);
   const direction = amount >= 0 ? "Received" : "Sent";
   const defaultAriaLabel = `${direction} ${btcValue} BTC`;
 
-  const iconEl = symbol === "btc"
-    ? <BitcoinIcon size="1em" />
-    : symbol === "sats"
-      ? <SatsIcon size="1em" tilted />
-      : isValidElement(symbol)
-        ? symbol
-        : null;
+  const iconEl = resolveSymbol(symbol);
 
   return (
     <span
+      ref={ref}
       data-testid="transaction-amount"
       aria-label={customAriaLabel ?? defaultAriaLabel}
       className={className}

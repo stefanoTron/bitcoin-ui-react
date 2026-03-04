@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export interface AddressDisplayProps {
   /** Bitcoin address string. */
   address: string;
@@ -29,4 +31,6 @@ export interface AddressDisplayProps {
   className?: string;
   /** Additional inline styles. */
   style?: React.CSSProperties;
+  /** Ref forwarded to the root span element. */
+  ref?: Ref<HTMLSpanElement>;
 }

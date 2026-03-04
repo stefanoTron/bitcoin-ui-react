@@ -8,9 +8,11 @@ export function BitcoinIcon({
   size = 16,
   className,
   style,
+  ref,
 }: BitcoinIconProps) {
   return (
     <svg
+      ref={ref}
       className={className}
       height={size}
       role={decorative ? undefined : "img"}

@@ -2,11 +2,12 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { BalanceDisplayProps } from "./BalanceDisplay.types";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
+import { clampSats } from "../../utils/clampSats";
 
 type Unit = "btc" | "sats" | "fiat";
 
 function formatSatsNumber(sats: number, locale: string): string {
-  return new Intl.NumberFormat(locale).format(Math.max(0, Math.trunc(isNaN(sats) ? 0 : sats)));
+  return new Intl.NumberFormat(locale).format(clampSats(sats));
 }
 
 function formatFiat(value: number, code: string, locale: string): string {
@@ -25,9 +26,11 @@ export function BalanceDisplay({
   showToggle = true,
   btcLabel = "BTC",
   satsLabel = "sats",
+  fontFamily = "inherit",
   toggleAriaLabel = "Switch display unit",
   className,
   style,
+  ref,
 }: BalanceDisplayProps) {
   const hasFiat = fiatValue !== undefined;
   const units: Unit[] = hasFiat ? ["btc", "sats", "fiat"] : ["btc", "sats"];
@@ -48,12 +51,14 @@ export function BalanceDisplay({
 
   return (
     <div
+      ref={ref}
       data-testid="balance-display"
       className={className}
       style={{
         display: "inline-flex",
         flexDirection: "column",
         alignItems: "center",
+        fontFamily,
         ...style,
       }}
     >

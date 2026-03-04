@@ -33,9 +33,11 @@ export function SeedPhraseInput({
   inputStyle: userInputStyle,
   dropdownStyle: userDropdownStyle,
   wordlist: userWordlist,
+  fontFamily = "inherit",
   groupLabel = "Seed phrase",
   className,
   style,
+  ref,
 }: SeedPhraseInputProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -155,6 +157,7 @@ export function SeedPhraseInput({
 
   return (
     <div
+      ref={ref}
       data-testid="seed-phrase-input"
       role="group"
       aria-label={groupLabel}
@@ -234,7 +237,7 @@ export function SeedPhraseInput({
                   padding: "4px 8px",
                   border: "1px solid #ccc",
                   borderRadius: 4,
-                  fontFamily: "inherit",
+                  fontFamily,
                   fontSize: "inherit",
                   background: "transparent",
                   color: "inherit",
