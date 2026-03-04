@@ -39,6 +39,14 @@ describe("SatsIcon", () => {
     expect(screen.getByRole("img")).toBeInTheDocument();
   });
 
+  test("hides from screen readers when decorative", () => {
+    render(<SatsIcon decorative />);
+    const svg = document.querySelector("svg");
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+    expect(svg).not.toHaveAttribute("role");
+    expect(svg?.querySelector("title")).toBeNull();
+  });
+
   test("applies className and style", () => {
     render(<SatsIcon className="my-icon" style={{ opacity: 0.5 }} />);
     const svg = screen.getByRole("img");

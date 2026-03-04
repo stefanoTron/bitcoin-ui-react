@@ -7,6 +7,8 @@ export interface SatsIconProps {
   backgroundColor?: string;
   /** Accessibility label. Default: 'Satoshis' */
   alt?: string;
+  /** Hide from screen readers when used decoratively. Default: false */
+  decorative?: boolean;
   /** Apply a tilt rotation to the icon. Default: false */
   tilted?: boolean;
   /** CSS class name. */

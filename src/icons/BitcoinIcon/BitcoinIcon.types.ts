@@ -7,6 +7,8 @@ export interface BitcoinIconProps {
   backgroundColor?: string;
   /** Accessibility label. Default: 'Bitcoin' */
   alt?: string;
+  /** Hide from screen readers when used decoratively. Default: false */
+  decorative?: boolean;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles applied to the SVG element. */

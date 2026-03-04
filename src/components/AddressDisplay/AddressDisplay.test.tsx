@@ -71,6 +71,29 @@ describe("AddressDisplay", () => {
     expect(el).toHaveStyle({ fontSize: "14px" });
   });
 
+  test("shows full address when truncate=false", () => {
+    render(<AddressDisplay address={TEST_ADDR} truncate={false} />);
+    const el = screen.getByTestId("address-display");
+    expect(el.textContent).toContain(TEST_ADDR);
+    expect(el.textContent).not.toContain("...");
+  });
+
+  test("root has full address as aria-label", () => {
+    render(<AddressDisplay address={TEST_ADDR} />);
+    expect(screen.getByTestId("address-display")).toHaveAttribute("aria-label", TEST_ADDR);
+  });
+
+  test("supports custom copyAriaLabel", () => {
+    render(<AddressDisplay address={TEST_ADDR} copyAriaLabel="Copiar dirección" />);
+    expect(screen.getByLabelText("Copiar dirección")).toBeInTheDocument();
+  });
+
+  test("copy button has aria-live for state changes", () => {
+    render(<AddressDisplay address={TEST_ADDR} />);
+    const button = screen.getByRole("button");
+    expect(button).toHaveAttribute("aria-live", "polite");
+  });
+
   test("applies custom colors", () => {
     render(
       <AddressDisplay

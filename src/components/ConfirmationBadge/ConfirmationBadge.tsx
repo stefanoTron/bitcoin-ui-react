@@ -8,6 +8,7 @@ export function ConfirmationBadge({
   confirmedColor = "#22c55e",
   unconfirmedLabel = "Unconfirmed",
   confirmedLabel = "Confirmed",
+  confirmingLabel,
   showCount = true,
   fontFamily = "inherit",
   className,
@@ -32,9 +33,17 @@ export function ConfirmationBadge({
     label = showCount ? `${clamped}/${threshold}` : "";
   }
 
+  const ariaLabel = clamped === 0
+    ? unconfirmedLabel
+    : clamped >= threshold
+      ? confirmedLabel
+      : confirmingLabel ?? `${clamped} of ${threshold} confirmations`;
+
   return (
     <span
       data-testid="confirmation-badge"
+      role="status"
+      aria-label={ariaLabel}
       className={className}
       style={{
         display: "inline-flex",

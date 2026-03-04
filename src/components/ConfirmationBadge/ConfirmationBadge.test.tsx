@@ -61,6 +61,31 @@ describe("ConfirmationBadge", () => {
     expect(screen.queryByText("3/6")).not.toBeInTheDocument();
   });
 
+  test("has role status", () => {
+    render(<ConfirmationBadge confirmations={3} />);
+    expect(screen.getByRole("status")).toBeInTheDocument();
+  });
+
+  test("has descriptive aria-label for confirming state", () => {
+    render(<ConfirmationBadge confirmations={3} />);
+    expect(screen.getByRole("status")).toHaveAttribute("aria-label", "3 of 6 confirmations");
+  });
+
+  test("has aria-label for unconfirmed state", () => {
+    render(<ConfirmationBadge confirmations={0} />);
+    expect(screen.getByRole("status")).toHaveAttribute("aria-label", "Unconfirmed");
+  });
+
+  test("has aria-label for confirmed state", () => {
+    render(<ConfirmationBadge confirmations={10} />);
+    expect(screen.getByRole("status")).toHaveAttribute("aria-label", "Confirmed");
+  });
+
+  test("supports custom confirmingLabel", () => {
+    render(<ConfirmationBadge confirmations={3} confirmingLabel="3 de 6 confirmaciones" />);
+    expect(screen.getByRole("status")).toHaveAttribute("aria-label", "3 de 6 confirmaciones");
+  });
+
   test("applies className and style", () => {
     render(<ConfirmationBadge confirmations={0} className="badge" style={{ padding: 8 }} />);
     const el = screen.getByTestId("confirmation-badge");

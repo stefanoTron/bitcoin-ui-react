@@ -5,8 +5,10 @@ export function AddressDisplay({
   address,
   prefixChars = 8,
   suffixChars = 5,
+  truncate = true,
   separator = "...",
   copyable = true,
+  copyAriaLabel = "Copy address",
   onCopy,
   addressColor = "currentColor",
   separatorColor = "#999999",
@@ -18,7 +20,7 @@ export function AddressDisplay({
 }: AddressDisplayProps) {
   const [copied, setCopied] = useState(false);
 
-  const needsTruncation = address.length > prefixChars + suffixChars;
+  const needsTruncation = truncate && address.length > prefixChars + suffixChars;
   const prefix = needsTruncation ? address.slice(0, prefixChars) : address;
   const suffix = needsTruncation ? address.slice(-suffixChars) : "";
 
@@ -36,6 +38,7 @@ export function AddressDisplay({
   return (
     <span
       data-testid="address-display"
+      aria-label={address}
       className={className}
       style={{
         display: "inline-flex",
@@ -56,7 +59,8 @@ export function AddressDisplay({
         <button
           type="button"
           onClick={handleCopy}
-          aria-label="Copy address"
+          aria-label={copyAriaLabel}
+          aria-live="polite"
           style={{
             background: "none",
             border: "none",
@@ -71,7 +75,7 @@ export function AddressDisplay({
           {copied ? (
             <span style={{ fontSize: "0.75em", color: copyIconColor }}>{copiedLabel}</span>
           ) : (
-            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <svg aria-hidden="true" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
               <rect x={9} y={9} width={13} height={13} rx={2} />
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>

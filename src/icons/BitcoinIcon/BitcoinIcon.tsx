@@ -4,6 +4,7 @@ export function BitcoinIcon({
   alt = "Bitcoin",
   backgroundColor = "#f7931a",
   color = "#ffffff",
+  decorative = false,
   size = 16,
   className,
   style,
@@ -12,13 +13,14 @@ export function BitcoinIcon({
     <svg
       className={className}
       height={size}
-      role="img"
+      role={decorative ? undefined : "img"}
+      aria-hidden={decorative || undefined}
       style={style}
       viewBox="0 0 512 512"
       width={size}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <title>{alt}</title>
+      {!decorative && <title>{alt}</title>}
       <path
         fill={backgroundColor}
         d="M504.342 317.927C470.147 455.071 331.226 538.534 194.05 504.335 56.93 470.145-26.542 331.23 7.667 194.099 41.847 56.939 180.767-26.53 317.902 7.66 455.068 41.851 538.536 180.78 504.338 317.93l.002-.003z"

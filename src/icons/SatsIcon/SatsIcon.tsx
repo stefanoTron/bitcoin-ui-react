@@ -5,6 +5,7 @@ export function SatsIcon({
   backgroundColor = "transparent",
   className,
   color = "#000000",
+  decorative = false,
   size = 16,
   style,
   tilted = false,
@@ -13,14 +14,15 @@ export function SatsIcon({
     <svg
       className={className}
       height={size}
-      role="img"
+      role={decorative ? undefined : "img"}
+      aria-hidden={decorative || undefined}
       style={style}
       viewBox="1 1 512 512"
       width={size}
       xmlns="http://www.w3.org/2000/svg"
       {...(tilted ? { transform: "rotate(14 0 0)" } : {})}
     >
-      <title>{alt}</title>
+      {!decorative && <title>{alt}</title>}
       <circle cx={257} cy={257} r={256} fill={backgroundColor} />
       <path
         fill={color}
