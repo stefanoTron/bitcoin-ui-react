@@ -61,7 +61,11 @@ function formatDigits(
   return result;
 }
 
-/** Formatted BTC amount display with color-coded significant digits and spring animation. */
+/**
+ * Formatted BTC amount display with color-coded significant digits and spring animation.
+ *
+ * For lists with many simultaneous animations, set `animate={false}` to avoid per-frame re-renders.
+ */
 export function BTCAmount({
   amount,
   activeColor = "currentColor",

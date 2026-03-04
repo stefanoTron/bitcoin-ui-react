@@ -6,6 +6,36 @@ import { BTCInput } from "./BTCInput";
 // Thin space used as default satsSeparator
 const THIN = "\u2009";
 
+function getCursorAfterChange(
+  initialAmount: number,
+  rawValue: string,
+  selectionStart: number,
+): number | null {
+  let currentAmount = initialAmount;
+  const onAmountChange = jest.fn((sats: number) => {
+    currentAmount = sats;
+  });
+
+  const { rerender } = render(
+    <BTCInput amount={currentAmount} onAmountChange={onAmountChange} />,
+  );
+  const input = screen.getByRole("textbox") as HTMLInputElement;
+  const spy = jest.spyOn(input, "setSelectionRange");
+
+  Object.defineProperty(input, "value", { writable: true, value: rawValue });
+  Object.defineProperty(input, "selectionStart", {
+    writable: true,
+    value: selectionStart,
+  });
+  fireEvent.change(input);
+  rerender(<BTCInput amount={currentAmount} onAmountChange={onAmountChange} />);
+
+  if (spy.mock.calls.length === 0) return null;
+  const result = spy.mock.calls[spy.mock.calls.length - 1][0] as number;
+  spy.mockRestore();
+  return result;
+}
+
 describe("BTCInput", () => {
   const defaultProps = {
     amount: 0,
@@ -391,36 +421,6 @@ describe("BTCInput — countDigitsAfter (indirect)", () => {
   // We test countDigitsAfter indirectly by firing change events with known
   // cursor positions and checking the resulting cursor placement.
 
-  function getCursorAfterChange(
-    initialAmount: number,
-    rawValue: string,
-    selectionStart: number,
-  ): number | null {
-    let currentAmount = initialAmount;
-    const onAmountChange = jest.fn((sats: number) => {
-      currentAmount = sats;
-    });
-
-    const { rerender } = render(
-      <BTCInput amount={currentAmount} onAmountChange={onAmountChange} />,
-    );
-    const input = screen.getByRole("textbox") as HTMLInputElement;
-    const spy = jest.spyOn(input, "setSelectionRange");
-
-    Object.defineProperty(input, "value", { writable: true, value: rawValue });
-    Object.defineProperty(input, "selectionStart", {
-      writable: true,
-      value: selectionStart,
-    });
-    fireEvent.change(input);
-    rerender(<BTCInput amount={currentAmount} onAmountChange={onAmountChange} />);
-
-    if (spy.mock.calls.length === 0) return null;
-    const result = spy.mock.calls[spy.mock.calls.length - 1][0] as number;
-    spy.mockRestore();
-    return result;
-  }
-
   test("cursor at end of string means 0 digits after", () => {
     // "12345" cursor at 5 (end) -> digitsAfter = 0
     // parseSats("12345") = 12345
@@ -466,36 +466,6 @@ describe("BTCInput — countDigitsAfter (indirect)", () => {
 describe("BTCInput — charPosAfterNthDigit (indirect)", () => {
   // This function is exercised during cursor restoration. We verify it via
   // the end-to-end cursor position returned by setSelectionRange.
-
-  function getCursorAfterChange(
-    initialAmount: number,
-    rawValue: string,
-    selectionStart: number,
-  ): number | null {
-    let currentAmount = initialAmount;
-    const onAmountChange = jest.fn((sats: number) => {
-      currentAmount = sats;
-    });
-
-    const { rerender } = render(
-      <BTCInput amount={currentAmount} onAmountChange={onAmountChange} />,
-    );
-    const input = screen.getByRole("textbox") as HTMLInputElement;
-    const spy = jest.spyOn(input, "setSelectionRange");
-
-    Object.defineProperty(input, "value", { writable: true, value: rawValue });
-    Object.defineProperty(input, "selectionStart", {
-      writable: true,
-      value: selectionStart,
-    });
-    fireEvent.change(input);
-    rerender(<BTCInput amount={currentAmount} onAmountChange={onAmountChange} />);
-
-    if (spy.mock.calls.length === 0) return null;
-    const result = spy.mock.calls[spy.mock.calls.length - 1][0] as number;
-    spy.mockRestore();
-    return result;
-  }
 
   test("n=0 returns position 0 (cursor before all digits)", () => {
     // To get n=0 (totalDigits - digitsAfter = 0), we need digitsAfter = totalDigits

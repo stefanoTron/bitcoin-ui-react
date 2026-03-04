@@ -72,7 +72,7 @@ export function AddressDisplay({
         <button
           type="button"
           onClick={handleCopy}
-          aria-label={copyAriaLabel}
+          aria-label={copied ? copiedLabel : copyAriaLabel}
           aria-live="polite"
           style={{
             background: "none",

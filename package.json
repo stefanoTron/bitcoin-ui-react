@@ -4,6 +4,7 @@
   "description": "React components for Bitcoin amount display and input",
   "author": "Stefano Tron",
   "license": "MIT",
+  "sideEffects": false,
   "keywords": [
     "bitcoin",
     "ui",

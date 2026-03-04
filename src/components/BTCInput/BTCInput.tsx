@@ -1,14 +1,13 @@
 import { useCallback, useId, useLayoutEffect, useMemo, useRef } from "react";
 import { BTCInputProps } from "./BTCInput.types";
 import { mergeRefs } from "../../utils/mergeRefs";
-
-const MAX_SATS = 2_100_000_000_000_000; // 21 million BTC in satoshis
+import { clampSats } from "../../utils/clampSats";
 
 /**
  * Format satoshis into a display string: X.XX XXX XXX
  */
 function formatSats(sats: number, btcSep: string, satsSep: string): string {
-  const clamped = Math.max(0, Math.min(MAX_SATS, Math.trunc(isNaN(sats) ? 0 : sats)));
+  const clamped = clampSats(sats);
   const str = clamped.toString().padStart(9, "0");
 
   // Split into BTC part and 8-digit decimal part
@@ -30,8 +29,7 @@ function formatSats(sats: number, btcSep: string, satsSep: string): string {
 function parseSats(display: string): number {
   const digitsOnly = display.replace(/\D/g, "");
   const parsed = parseInt(digitsOnly, 10);
-  if (isNaN(parsed)) return 0;
-  return Math.min(parsed, MAX_SATS);
+  return clampSats(parsed);
 }
 
 /** Count digit characters in str from position `start` to end. */
@@ -111,7 +109,7 @@ export function BTCInput({
     cursorRef.current = null;
   });
 
-  const clampedAmount = Math.max(0, Math.min(MAX_SATS, Math.trunc(isNaN(amount) ? 0 : amount)));
+  const clampedAmount = clampSats(amount);
   const btcDescription = `${(clampedAmount / 100_000_000).toFixed(8)} BTC`;
 
   return (

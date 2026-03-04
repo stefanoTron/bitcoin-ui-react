@@ -123,6 +123,14 @@ describe("AddressDisplay", () => {
     expect(colors).toContain("blue");
   });
 
+  test("copy button aria-label changes to copiedLabel after copy", async () => {
+    render(<AddressDisplay address={TEST_ADDR} copiedLabel="Done!" />);
+    const button = screen.getByRole("button");
+    expect(button).toHaveAttribute("aria-label", "Copy address");
+    await userEvent.click(button);
+    expect(button).toHaveAttribute("aria-label", "Done!");
+  });
+
   test("does not throw when clipboard.writeText rejects", async () => {
     (navigator.clipboard.writeText as jest.Mock).mockRejectedValueOnce(new Error("Not allowed"));
     render(<AddressDisplay address={TEST_ADDR} />);
