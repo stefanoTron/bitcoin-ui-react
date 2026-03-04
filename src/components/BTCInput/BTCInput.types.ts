@@ -17,6 +17,8 @@ export interface BTCInputProps {
   placeholder?: string;
   /** Additional inline styles merged onto the input element. */
   style?: React.CSSProperties;
+  /** Accessible label for the input. Default: 'Amount in BTC' */
+  ariaLabel?: string;
   /** CSS class name. */
   className?: string;
 }

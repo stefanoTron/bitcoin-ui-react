@@ -19,6 +19,8 @@ export interface TransactionAmountProps {
   satsSeparator?: string;
   /** Separator between BTC whole part and decimals. Default: '.' */
   btcSeparator?: string;
+  /** Custom aria-label override. If omitted, auto-generated with sign and amount. */
+  ariaLabel?: string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */

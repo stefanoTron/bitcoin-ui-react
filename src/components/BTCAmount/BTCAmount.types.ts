@@ -15,6 +15,8 @@ export interface BTCAmountProps {
   symbol?: "btc" | "sats" | React.ReactElement;
   /** Position of the symbol. Default: 'left' */
   symbolPosition?: "left" | "right";
+  /** Custom aria-label override. If omitted, auto-generated from amount. */
+  ariaLabel?: string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */

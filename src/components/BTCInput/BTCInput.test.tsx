@@ -83,4 +83,15 @@ describe("BTCInput", () => {
     const input = screen.getByRole("textbox") as HTMLInputElement;
     expect(input).toHaveAttribute("placeholder", "Enter amount");
   });
+
+  test("has aria-label", () => {
+    render(<BTCInput amount={0} onAmountChange={() => {}} />);
+    const input = screen.getByLabelText("Amount in BTC");
+    expect(input).toBeInTheDocument();
+  });
+
+  test("supports custom ariaLabel", () => {
+    render(<BTCInput amount={0} onAmountChange={() => {}} ariaLabel="Monto en BTC" />);
+    expect(screen.getByLabelText("Monto en BTC")).toBeInTheDocument();
+  });
 });

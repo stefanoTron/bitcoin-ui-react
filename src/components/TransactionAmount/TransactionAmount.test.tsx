@@ -73,4 +73,19 @@ describe("TransactionAmount", () => {
     expect(el).toHaveClass("tx");
     expect(el).toHaveStyle({ fontSize: "20px" });
   });
+
+  test("has aria-label with direction for positive amount", () => {
+    render(<TransactionAmount amount={50_000_000} />);
+    expect(screen.getByLabelText("Received 0.50000000 BTC")).toBeInTheDocument();
+  });
+
+  test("has aria-label with direction for negative amount", () => {
+    render(<TransactionAmount amount={-50_000_000} />);
+    expect(screen.getByLabelText("Sent 0.50000000 BTC")).toBeInTheDocument();
+  });
+
+  test("supports custom ariaLabel", () => {
+    render(<TransactionAmount amount={50_000_000} ariaLabel="Recibido 0.5 BTC" />);
+    expect(screen.getByLabelText("Recibido 0.5 BTC")).toBeInTheDocument();
+  });
 });

@@ -63,6 +63,7 @@ export function BTCInput({
   btcSeparator = ".",
   disabled = false,
   placeholder = "0.00\u2009000\u2009000",
+  ariaLabel = "Amount in BTC",
   style: userStyle,
   className,
 }: BTCInputProps) {
@@ -111,7 +112,7 @@ export function BTCInput({
       className={className}
       type="text"
       inputMode="numeric"
-      role="textbox"
+      aria-label={ariaLabel}
       value={displayValue}
       onChange={handleChange}
       disabled={disabled}

@@ -15,6 +15,7 @@ export function TransactionAmount({
   fontFamily = "inherit",
   satsSeparator = "\u2009",
   btcSeparator = ".",
+  ariaLabel: customAriaLabel,
   className,
   style,
 }: TransactionAmountProps) {
@@ -23,6 +24,9 @@ export function TransactionAmount({
   const activeColor = isPositive ? positiveColor : isNegative ? negativeColor : inactiveColor;
   const sign = showSign && isPositive ? "+" : showSign && isNegative ? "\u2212" : "";
   const absAmount = Math.abs(amount);
+  const btcValue = (Math.max(0, Math.trunc(isNaN(absAmount) ? 0 : absAmount)) / 100_000_000).toFixed(8);
+  const direction = amount >= 0 ? "Received" : "Sent";
+  const defaultAriaLabel = `${direction} ${btcValue} BTC`;
 
   const iconEl = symbol === "btc"
     ? <BitcoinIcon size="1em" />
@@ -35,6 +39,7 @@ export function TransactionAmount({
   return (
     <span
       data-testid="transaction-amount"
+      aria-label={customAriaLabel ?? defaultAriaLabel}
       className={className}
       style={{
         display: "inline-flex",

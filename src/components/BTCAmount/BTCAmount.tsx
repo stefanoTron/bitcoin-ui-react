@@ -70,6 +70,7 @@ export function BTCAmount({
   animate: shouldAnimate = true,
   symbol,
   symbolPosition = "left",
+  ariaLabel: customAriaLabel,
   className,
   style: userStyle,
 }: BTCAmountProps) {
@@ -110,7 +111,7 @@ export function BTCAmount({
   return (
     <span
       data-testid="btc-amount"
-      aria-label={`${(clamped / 100_000_000).toFixed(8)} BTC`}
+      aria-label={customAriaLabel ?? `${(clamped / 100_000_000).toFixed(8)} BTC`}
       className={className}
       style={{ display: "inline-flex", alignItems: "center", gap: symbolEl ? "0.2em" : undefined, ...userStyle }}
     >

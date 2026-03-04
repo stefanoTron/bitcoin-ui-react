@@ -149,4 +149,9 @@ describe("BTCAmount", () => {
     expect(screen.getByTestId("custom-icon")).toBeInTheDocument();
     expect(screen.queryByTestId("bitcoin-icon")).not.toBeInTheDocument();
   });
+
+  test("supports custom ariaLabel", () => {
+    render(<BTCAmount amount={100_000_000} ariaLabel="1 Bitcoin" />);
+    expect(screen.getByLabelText("1 Bitcoin")).toBeInTheDocument();
+  });
 });
