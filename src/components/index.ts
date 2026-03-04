@@ -10,3 +10,5 @@ export { ConfirmationBadge } from "./ConfirmationBadge";
 export type { ConfirmationBadgeProps } from "./ConfirmationBadge";
 export { SeedPhraseInput } from "./SeedPhraseInput";
 export type { SeedPhraseInputProps } from "./SeedPhraseInput";
+export { BalanceDisplay } from "./BalanceDisplay";
+export type { BalanceDisplayProps } from "./BalanceDisplay";
