@@ -11,6 +11,10 @@ export interface SeedPhraseInputProps {
   onComplete?: (words: string[]) => void;
   /** Number of columns in the grid. Default: 2. */
   columns?: 2 | 3 | 4;
+  /** Custom inline styles for each input field. Merged with defaults. */
+  inputStyle?: React.CSSProperties;
+  /** Custom inline styles for the autocomplete dropdown. Merged with defaults. */
+  dropdownStyle?: React.CSSProperties;
   /** Custom class name for the root element. */
   className?: string;
   /** Custom inline styles for the root element. */

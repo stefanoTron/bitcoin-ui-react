@@ -4,6 +4,25 @@ import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
 
 const BIP39_WORD_SET = new Set(BIP39_ENGLISH_WORDLIST);
 const MAX_SUGGESTIONS = 8;
+const BLUR_DELAY_MS = 150;
+
+/** Binary search for first word >= prefix in sorted wordlist, then collect matches. */
+function findSuggestions(prefix: string): string[] {
+  if (prefix.length === 0) return [];
+  let lo = 0;
+  let hi = BIP39_ENGLISH_WORDLIST.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >>> 1;
+    if (BIP39_ENGLISH_WORDLIST[mid] < prefix) lo = mid + 1;
+    else hi = mid;
+  }
+  const result: string[] = [];
+  for (let i = lo; i < BIP39_ENGLISH_WORDLIST.length && result.length < MAX_SUGGESTIONS; i++) {
+    if (BIP39_ENGLISH_WORDLIST[i].startsWith(prefix)) result.push(BIP39_ENGLISH_WORDLIST[i]);
+    else break;
+  }
+  return result;
+}
 
 export function SeedPhraseInput({
   words,
@@ -12,20 +31,39 @@ export function SeedPhraseInput({
   readOnly = false,
   onComplete,
   columns = 2,
+  inputStyle: userInputStyle,
+  dropdownStyle: userDropdownStyle,
   className,
   style,
 }: SeedPhraseInputProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevCompleteRef = useRef(false);
+  const wordsRef = useRef(words);
+  wordsRef.current = words;
+
+  // Cleanup blur timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current);
+    };
+  }, []);
+
+  // Normalize words to always match wordCount
+  const normalizedWords = useMemo(() => {
+    const arr = words.slice(0, wordCount);
+    while (arr.length < wordCount) arr.push("");
+    return arr;
+  }, [words, wordCount]);
 
   const handleChange = useCallback(
     (index: number, value: string) => {
-      const updated = [...words];
+      const updated = [...wordsRef.current];
       updated[index] = value;
       onWordsChange(updated);
     },
-    [words, onWordsChange],
+    [onWordsChange],
   );
 
   const focusNextEmpty = useCallback(
@@ -42,36 +80,37 @@ export function SeedPhraseInput({
 
   const handleSelect = useCallback(
     (index: number, word: string) => {
-      const updated = [...words];
+      const updated = [...wordsRef.current];
       updated[index] = word;
       onWordsChange(updated);
       setActiveIndex(null);
       focusNextEmpty(index, updated);
     },
-    [words, onWordsChange, focusNextEmpty],
+    [onWordsChange, focusNextEmpty],
   );
 
-  const currentValue = activeIndex !== null ? (words[activeIndex] ?? "") : "";
   const suggestions = useMemo(() => {
-    if (activeIndex === null || currentValue.length === 0) return [];
-    return BIP39_ENGLISH_WORDLIST.filter((w) =>
-      w.startsWith(currentValue.toLowerCase()),
-    ).slice(0, MAX_SUGGESTIONS);
-  }, [activeIndex, currentValue]);
+    if (activeIndex === null) return [];
+    const prefix = (normalizedWords[activeIndex] ?? "").toLowerCase();
+    return findSuggestions(prefix);
+  }, [activeIndex, normalizedWords]);
+
+  const suggestionsRef = useRef(suggestions);
+  suggestionsRef.current = suggestions;
 
   const handleKeyDown = useCallback(
     (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && suggestions.length > 0) {
+      if (e.key === "Enter" && suggestionsRef.current.length > 0) {
         e.preventDefault();
-        handleSelect(index, suggestions[0]);
+        handleSelect(index, suggestionsRef.current[0]);
       }
     },
-    [suggestions, handleSelect],
+    [handleSelect],
   );
 
   useEffect(() => {
     if (!onComplete) return;
-    const relevantWords = words.slice(0, wordCount);
+    const relevantWords = normalizedWords.slice(0, wordCount);
     const allValid = relevantWords.length >= wordCount && relevantWords.every(
       (w) => w !== "" && BIP39_WORD_SET.has(w),
     );
@@ -79,7 +118,7 @@ export function SeedPhraseInput({
       onComplete(relevantWords);
     }
     prevCompleteRef.current = allValid;
-  }, [words, wordCount, onComplete]);
+  }, [normalizedWords, wordCount, onComplete]);
 
   return (
     <div
@@ -87,7 +126,8 @@ export function SeedPhraseInput({
       className={className}
       style={{
         display: "grid",
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
+        gridTemplateRows: `repeat(${Math.ceil(wordCount / columns)}, auto)`,
+        gridAutoFlow: "column",
         gap: 8,
         ...style,
       }}
@@ -115,7 +155,7 @@ export function SeedPhraseInput({
                 padding: "4px 8px",
               }}
             >
-              {words[i] ?? ""}
+              {normalizedWords[i]}
             </span>
           ) : (
             <>
@@ -129,11 +169,20 @@ export function SeedPhraseInput({
                 spellCheck={false}
                 autoCapitalize="none"
                 autoCorrect="off"
-                value={words[i] ?? ""}
+                value={normalizedWords[i]}
                 onChange={(e) => handleChange(i, e.target.value)}
-                onFocus={() => setActiveIndex(i)}
+                onFocus={() => {
+                  if (blurTimeoutRef.current) {
+                    clearTimeout(blurTimeoutRef.current);
+                    blurTimeoutRef.current = null;
+                  }
+                  setActiveIndex(i);
+                }}
                 onBlur={() => {
-                  setTimeout(() => setActiveIndex(null), 150);
+                  blurTimeoutRef.current = setTimeout(() => {
+                    setActiveIndex(null);
+                    blurTimeoutRef.current = null;
+                  }, BLUR_DELAY_MS);
                 }}
                 onKeyDown={(e) => handleKeyDown(i, e)}
                 style={{
@@ -141,6 +190,11 @@ export function SeedPhraseInput({
                   padding: "4px 8px",
                   border: "1px solid #ccc",
                   borderRadius: 4,
+                  fontFamily: "inherit",
+                  fontSize: "inherit",
+                  background: "transparent",
+                  color: "inherit",
+                  ...userInputStyle,
                 }}
               />
               {activeIndex === i && suggestions.length > 0 && (
@@ -157,9 +211,11 @@ export function SeedPhraseInput({
                     border: "1px solid #ccc",
                     borderRadius: 4,
                     background: "#fff",
+                    color: "#000",
                     zIndex: 10,
                     maxHeight: 200,
                     overflow: "auto",
+                    ...userDropdownStyle,
                   }}
                 >
                   {suggestions.map((word) => (

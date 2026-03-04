@@ -90,7 +90,8 @@ describe("SeedPhraseInput", () => {
       <SeedPhraseInput {...defaultProps} columns={3} />,
     );
     const root = screen.getByTestId("seed-phrase-input");
-    expect(root.style.gridTemplateColumns).toBe("repeat(3, 1fr)");
+    expect(root.style.gridTemplateRows).toBe("repeat(4, auto)");
+    expect(root.style.gridAutoFlow).toBe("column");
   });
 
   test("renders spans instead of inputs in readOnly mode", () => {

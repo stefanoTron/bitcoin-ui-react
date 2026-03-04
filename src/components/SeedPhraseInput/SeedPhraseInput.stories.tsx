@@ -171,9 +171,10 @@ export const Interactive: Story = {
   },
 };
 
-/** Dark background theme */
+/** Dark background theme — demonstrates inputStyle and dropdownStyle */
 export const DarkTheme: Story = {
   render: () => {
+    const [words, setWords] = useState(Array(12).fill(""));
     return (
       <div
         style={{
@@ -186,7 +187,21 @@ export const DarkTheme: Story = {
         <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 600 }}>
           Recovery Phrase
         </h3>
-        <SeedPhraseInput words={SAMPLE_12} onWordsChange={() => {}} readOnly />
+        <SeedPhraseInput
+          words={words}
+          onWordsChange={setWords}
+          inputStyle={{
+            background: "#16213e",
+            border: "1px solid #333",
+            borderRadius: 6,
+            color: "#e0e0e0",
+          }}
+          dropdownStyle={{
+            background: "#16213e",
+            border: "1px solid #333",
+            color: "#e0e0e0",
+          }}
+        />
       </div>
     );
   },
@@ -254,6 +269,81 @@ export const SideBySide: Story = {
             readOnly
           />
         </div>
+      </div>
+    );
+  },
+};
+
+/** Rounded pill-style inputs */
+export const CustomInputStyle: Story = {
+  render: () => {
+    const [words, setWords] = useState(Array(12).fill(""));
+    return (
+      <SeedPhraseInput
+        words={words}
+        onWordsChange={setWords}
+        inputStyle={{
+          borderRadius: 20,
+          padding: "6px 14px",
+          border: "2px solid #e2e8f0",
+          background: "#f8fafc",
+        }}
+        dropdownStyle={{
+          borderRadius: 12,
+          border: "2px solid #e2e8f0",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+        }}
+      />
+    );
+  },
+};
+
+/** Minimal underline-only inputs */
+export const UnderlineStyle: Story = {
+  render: () => {
+    const [words, setWords] = useState(Array(12).fill(""));
+    return (
+      <SeedPhraseInput
+        words={words}
+        onWordsChange={setWords}
+        inputStyle={{
+          border: "none",
+          borderBottom: "2px solid #ddd",
+          borderRadius: 0,
+          padding: "4px 0",
+        }}
+        dropdownStyle={{
+          borderRadius: 0,
+          borderTop: "2px solid #f7931a",
+          boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        }}
+      />
+    );
+  },
+};
+
+/** Bitcoin orange accent theme */
+export const BitcoinTheme: Story = {
+  render: () => {
+    const [words, setWords] = useState(Array(12).fill(""));
+    return (
+      <div style={{ background: "#fff8f0", padding: 24, borderRadius: 8 }}>
+        <SeedPhraseInput
+          words={words}
+          onWordsChange={setWords}
+          inputStyle={{
+            border: "1px solid #f7931a",
+            borderRadius: 6,
+            background: "#fff",
+            padding: "6px 10px",
+          }}
+          dropdownStyle={{
+            border: "1px solid #f7931a",
+            borderRadius: 6,
+            background: "#fff",
+          }}
+          style={{ gap: 10 }}
+        />
       </div>
     );
   },
