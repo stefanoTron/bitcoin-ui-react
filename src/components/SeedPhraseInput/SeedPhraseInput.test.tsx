@@ -15,14 +15,14 @@ describe("SeedPhraseInput", () => {
 
   test("renders 12 input fields by default", () => {
     render(<SeedPhraseInput {...defaultProps} />);
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     expect(inputs).toHaveLength(12);
   });
 
-  test("renders numbered labels 1 through 12", () => {
+  test("renders numbered labels Word 1 through Word 12", () => {
     render(<SeedPhraseInput {...defaultProps} />);
     for (let i = 1; i <= 12; i++) {
-      expect(screen.getByText(`${i}.`)).toBeInTheDocument();
+      expect(screen.getByText(`Word ${i}`)).toBeInTheDocument();
     }
   });
 
@@ -39,7 +39,7 @@ describe("SeedPhraseInput", () => {
     const { rerender } = render(
       <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     for (const char of "abandon") {
       rerender(
         <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
@@ -54,7 +54,7 @@ describe("SeedPhraseInput", () => {
   test("displays pre-filled words", () => {
     const words = ["abandon", "ability", "able", ...Array(9).fill("")];
     render(<SeedPhraseInput words={words} onWordsChange={jest.fn()} />);
-    const inputs = screen.getAllByRole("textbox") as HTMLInputElement[];
+    const inputs = screen.getAllByRole("combobox") as HTMLInputElement[];
     expect(inputs[0].value).toBe("abandon");
     expect(inputs[1].value).toBe("ability");
     expect(inputs[2].value).toBe("able");
@@ -68,11 +68,11 @@ describe("SeedPhraseInput", () => {
         wordCount={24}
       />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     expect(inputs).toHaveLength(24);
   });
 
-  test("renders numbered labels up to 24", () => {
+  test("renders numbered labels up to Word 24", () => {
     render(
       <SeedPhraseInput
         words={Array(24).fill("")}
@@ -81,7 +81,7 @@ describe("SeedPhraseInput", () => {
       />,
     );
     for (let i = 1; i <= 24; i++) {
-      expect(screen.getByText(`${i}.`)).toBeInTheDocument();
+      expect(screen.getByText(`Word ${i}`)).toBeInTheDocument();
     }
   });
 
@@ -106,7 +106,7 @@ describe("SeedPhraseInput", () => {
         readOnly
       />,
     );
-    const inputs = screen.queryAllByRole("textbox");
+    const inputs = screen.queryAllByRole("combobox");
     expect(inputs).toHaveLength(0);
     expect(screen.getByText("abandon")).toBeInTheDocument();
   });
@@ -136,7 +136,7 @@ describe("SeedPhraseInput", () => {
     const { rerender } = render(
       <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     for (const char of "ab") {
       rerender(
         <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
@@ -163,7 +163,7 @@ describe("SeedPhraseInput", () => {
     const { rerender } = render(
       <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     // Type "ab" to trigger suggestions
     for (const char of "ab") {
       rerender(
@@ -191,7 +191,7 @@ describe("SeedPhraseInput", () => {
     const { rerender } = render(
       <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     // Type "ab" to trigger suggestions
     for (const char of "ab") {
       rerender(
@@ -224,7 +224,7 @@ describe("SeedPhraseInput", () => {
     const { rerender } = render(
       <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     // Type "a" which matches many words
     await userEvent.type(inputs[0], "a");
     rerender(
@@ -242,7 +242,7 @@ describe("SeedPhraseInput", () => {
     const { rerender } = render(
       <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     // Type "ab" in field 0
     for (const char of "ab") {
       rerender(
@@ -271,7 +271,7 @@ describe("SeedPhraseInput", () => {
     const { rerender } = render(
       <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
     );
-    const inputs = screen.getAllByRole("textbox");
+    const inputs = screen.getAllByRole("combobox");
     // Type "ab" in field 0
     for (const char of "ab") {
       rerender(
@@ -400,5 +400,62 @@ describe("SeedPhraseInput", () => {
       />,
     );
     expect(onComplete).toHaveBeenCalledTimes(1);
+  });
+
+  // New a11y tests
+
+  test("has group role with default aria-label", () => {
+    render(<SeedPhraseInput words={Array(12).fill("")} onWordsChange={() => {}} />);
+    const group = screen.getByRole("group");
+    expect(group).toHaveAttribute("aria-label", "Seed phrase");
+  });
+
+  test("supports custom groupLabel", () => {
+    render(<SeedPhraseInput words={Array(12).fill("")} onWordsChange={() => {}} groupLabel="Recovery words" />);
+    expect(screen.getByRole("group")).toHaveAttribute("aria-label", "Recovery words");
+  });
+
+  test("input has combobox role with aria-expanded", () => {
+    render(<SeedPhraseInput words={["ab", ...Array(11).fill("")]} onWordsChange={() => {}} />);
+    const input = screen.getByLabelText("Word 1");
+    expect(input).toHaveAttribute("role", "combobox");
+    expect(input).toHaveAttribute("aria-expanded", "false");
+  });
+
+  test("navigates suggestions with ArrowDown and selects with Enter", async () => {
+    const onWordsChange = jest.fn();
+    render(<SeedPhraseInput words={["ab", ...Array(11).fill("")]} onWordsChange={onWordsChange} />);
+    const input = screen.getByLabelText("Word 1");
+    await userEvent.click(input);
+    await userEvent.keyboard("{ArrowDown}{ArrowDown}{Enter}");
+    // Should select the second suggestion (abandon is first, then ability...)
+    expect(onWordsChange).toHaveBeenCalled();
+    const lastCall = onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    expect(lastCall[0]).toBe("ability");
+  });
+
+  test("closes suggestions with Escape", async () => {
+    render(<SeedPhraseInput words={["ab", ...Array(11).fill("")]} onWordsChange={() => {}} />);
+    const input = screen.getByLabelText("Word 1");
+    await userEvent.click(input);
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    await userEvent.keyboard("{Escape}");
+    expect(input).toHaveAttribute("aria-expanded", "false");
+  });
+
+  test("accepts custom wordlist", () => {
+    const customList = ["alpha", "beta", "gamma"];
+    const onComplete = jest.fn();
+    render(
+      <SeedPhraseInput
+        words={["alpha", "beta", "gamma", ...Array(9).fill("")]}
+        onWordsChange={() => {}}
+        wordlist={customList}
+        wordCount={12}
+        onComplete={onComplete}
+      />,
+    );
+    // Should NOT fire onComplete since only 3 of 12 are filled
+    expect(onComplete).not.toHaveBeenCalled();
   });
 });

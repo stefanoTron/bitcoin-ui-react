@@ -7,18 +7,18 @@ const MAX_SUGGESTIONS = 8;
 const BLUR_DELAY_MS = 150;
 
 /** Binary search for first word >= prefix in sorted wordlist, then collect matches. */
-function findSuggestions(prefix: string): string[] {
+function findSuggestions(prefix: string, wordlist: readonly string[]): string[] {
   if (prefix.length === 0) return [];
   let lo = 0;
-  let hi = BIP39_ENGLISH_WORDLIST.length;
+  let hi = wordlist.length;
   while (lo < hi) {
     const mid = (lo + hi) >>> 1;
-    if (BIP39_ENGLISH_WORDLIST[mid] < prefix) lo = mid + 1;
+    if (wordlist[mid] < prefix) lo = mid + 1;
     else hi = mid;
   }
   const result: string[] = [];
-  for (let i = lo; i < BIP39_ENGLISH_WORDLIST.length && result.length < MAX_SUGGESTIONS; i++) {
-    if (BIP39_ENGLISH_WORDLIST[i].startsWith(prefix)) result.push(BIP39_ENGLISH_WORDLIST[i]);
+  for (let i = lo; i < wordlist.length && result.length < MAX_SUGGESTIONS; i++) {
+    if (wordlist[i].startsWith(prefix)) result.push(wordlist[i]);
     else break;
   }
   return result;
@@ -33,15 +33,21 @@ export function SeedPhraseInput({
   columns = 2,
   inputStyle: userInputStyle,
   dropdownStyle: userDropdownStyle,
+  wordlist: userWordlist,
+  groupLabel = "Seed phrase",
   className,
   style,
 }: SeedPhraseInputProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevCompleteRef = useRef(false);
   const wordsRef = useRef(words);
   wordsRef.current = words;
+
+  const effectiveWordlist = useMemo(() => userWordlist ?? BIP39_ENGLISH_WORDLIST, [userWordlist]);
+  const effectiveWordSet = useMemo(() => new Set(effectiveWordlist), [effectiveWordlist]);
 
   // Cleanup blur timeout on unmount
   useEffect(() => {
@@ -92,37 +98,67 @@ export function SeedPhraseInput({
   const suggestions = useMemo(() => {
     if (activeIndex === null) return [];
     const prefix = (normalizedWords[activeIndex] ?? "").toLowerCase();
-    return findSuggestions(prefix);
-  }, [activeIndex, normalizedWords]);
+    return findSuggestions(prefix, effectiveWordlist);
+  }, [activeIndex, normalizedWords, effectiveWordlist]);
 
   const suggestionsRef = useRef(suggestions);
   suggestionsRef.current = suggestions;
 
+  // Reset highlighted index when active index or suggestions change
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [activeIndex, suggestions]);
+
   const handleKeyDown = useCallback(
     (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && suggestionsRef.current.length > 0) {
-        e.preventDefault();
-        handleSelect(index, suggestionsRef.current[0]);
+      const sug = suggestionsRef.current;
+      if (sug.length === 0) return;
+
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          setHighlightedIndex((prev) => (prev + 1) % sug.length);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          setHighlightedIndex((prev) => (prev <= 0 ? sug.length - 1 : prev - 1));
+          break;
+        case "Enter":
+          e.preventDefault();
+          if (highlightedIndex >= 0 && highlightedIndex < sug.length) {
+            handleSelect(index, sug[highlightedIndex]);
+          } else if (sug.length > 0) {
+            handleSelect(index, sug[0]);
+          }
+          setHighlightedIndex(-1);
+          break;
+        case "Escape":
+          e.preventDefault();
+          setActiveIndex(null);
+          setHighlightedIndex(-1);
+          break;
       }
     },
-    [handleSelect],
+    [handleSelect, highlightedIndex],
   );
 
   useEffect(() => {
     if (!onComplete) return;
     const relevantWords = normalizedWords.slice(0, wordCount);
     const allValid = relevantWords.length >= wordCount && relevantWords.every(
-      (w) => w !== "" && BIP39_WORD_SET.has(w),
+      (w) => w !== "" && effectiveWordSet.has(w),
     );
     if (allValid && !prevCompleteRef.current) {
       onComplete(relevantWords);
     }
     prevCompleteRef.current = allValid;
-  }, [normalizedWords, wordCount, onComplete]);
+  }, [normalizedWords, wordCount, onComplete, effectiveWordSet]);
 
   return (
     <div
       data-testid="seed-phrase-input"
+      role="group"
+      aria-label={groupLabel}
       className={className}
       style={{
         display: "grid",
@@ -146,7 +182,7 @@ export function SeedPhraseInput({
             htmlFor={readOnly ? undefined : `seed-word-${i}`}
             style={{ minWidth: 28, textAlign: "right" }}
           >
-            {i + 1}.
+            Word {i + 1}
           </label>
           {readOnly ? (
             <span
@@ -169,6 +205,15 @@ export function SeedPhraseInput({
                 spellCheck={false}
                 autoCapitalize="none"
                 autoCorrect="off"
+                role="combobox"
+                aria-expanded={activeIndex === i && suggestions.length > 0}
+                aria-controls={`seed-suggestions-${i}`}
+                aria-activedescendant={
+                  activeIndex === i && highlightedIndex >= 0
+                    ? `seed-option-${i}-${highlightedIndex}`
+                    : undefined
+                }
+                aria-autocomplete="list"
                 value={normalizedWords[i]}
                 onChange={(e) => handleChange(i, e.target.value)}
                 onFocus={() => {
@@ -199,6 +244,7 @@ export function SeedPhraseInput({
               />
               {activeIndex === i && suggestions.length > 0 && (
                 <ul
+                  id={`seed-suggestions-${i}`}
                   role="listbox"
                   style={{
                     position: "absolute",
@@ -218,11 +264,12 @@ export function SeedPhraseInput({
                     ...userDropdownStyle,
                   }}
                 >
-                  {suggestions.map((word) => (
+                  {suggestions.map((word, idx) => (
                     <li
                       key={word}
+                      id={`seed-option-${i}-${idx}`}
                       role="option"
-                      aria-selected={false}
+                      aria-selected={highlightedIndex === idx}
                       onMouseDown={(e) => e.preventDefault()}
                       onClick={() => handleSelect(i, word)}
                       style={{
