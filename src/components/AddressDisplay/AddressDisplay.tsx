@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AddressDisplayProps } from "./AddressDisplay.types";
 
+/** Truncated Bitcoin address display with copy-to-clipboard functionality. */
 export function AddressDisplay({
   address,
   prefixChars = 8,

@@ -61,6 +61,7 @@ function formatDigits(
   return result;
 }
 
+/** Formatted BTC amount display with color-coded significant digits and spring animation. */
 export function BTCAmount({
   amount,
   activeColor = "currentColor",
@@ -100,7 +101,7 @@ export function BTCAmount({
     [displayAmount, activeColor, inactiveColor, btcSeparator, satsSeparator],
   );
 
-  const symbolEl = resolveSymbol(symbol);
+  const symbolEl = useMemo(() => resolveSymbol(symbol), [symbol]);
 
   return (
     <span

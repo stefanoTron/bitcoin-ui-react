@@ -23,6 +23,13 @@ function findSuggestions(prefix: string, wordlist: readonly string[]): string[] 
   return result;
 }
 
+/**
+ * BIP39 seed phrase input with autocomplete suggestions.
+ *
+ * **Security notice:** Seed phrases are held in plain React state and are visible
+ * in React DevTools. Only render this component on secure (HTTPS) pages and ensure
+ * no untrusted scripts have access to the page context.
+ */
 export function SeedPhraseInput({
   words,
   onWordsChange,
@@ -35,6 +42,7 @@ export function SeedPhraseInput({
   wordlist: userWordlist,
   fontFamily = "inherit",
   groupLabel = "Seed phrase",
+  labelFormatter = (i: number) => `Word ${i}`,
   className,
   style,
   ref,
@@ -184,7 +192,7 @@ export function SeedPhraseInput({
             htmlFor={readOnly ? undefined : `seed-word-${i}`}
             style={{ minWidth: 28, textAlign: "right" }}
           >
-            Word {i + 1}
+            {labelFormatter(i + 1)}
           </label>
           {readOnly ? (
             <span

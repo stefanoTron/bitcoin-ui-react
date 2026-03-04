@@ -16,7 +16,7 @@ export interface ConfirmationBadgeProps {
   /** Label for threshold+ confirmations. Default: 'Confirmed' */
   confirmedLabel?: string;
   /** Accessible label for the confirming state. Default: '{count} of {threshold} confirmations' */
-  confirmingLabel?: string;
+  confirmingAriaLabel?: string;
   /** Show confirmation count in the badge. Default: true */
   showCount?: boolean;
   /** Font family. Default: 'inherit' */

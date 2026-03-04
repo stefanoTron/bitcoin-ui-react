@@ -1,5 +1,6 @@
-import { useCallback, useLayoutEffect, useMemo, useRef } from "react";
+import { useCallback, useId, useLayoutEffect, useMemo, useRef } from "react";
 import { BTCInputProps } from "./BTCInput.types";
+import { mergeRefs } from "../../utils/mergeRefs";
 
 const MAX_SATS = 2_100_000_000_000_000; // 21 million BTC in satoshis
 
@@ -24,6 +25,7 @@ function formatSats(sats: number, btcSep: string, satsSep: string): string {
 
 /**
  * Parse a formatted display string back to satoshis.
+ * Strips ALL non-digit characters (including btcSeparator and satsSeparator).
  */
 function parseSats(display: string): number {
   const digitsOnly = display.replace(/\D/g, "");
@@ -54,6 +56,7 @@ function charPosAfterNthDigit(str: string, n: number): number {
   return str.length;
 }
 
+/** Formatted BTC input with automatic digit grouping and cursor preservation. */
 export function BTCInput({
   amount,
   onAmountChange,
@@ -69,12 +72,9 @@ export function BTCInput({
   className,
   ref,
 }: BTCInputProps) {
+  const descId = useId();
   const internalRef = useRef<HTMLInputElement>(null);
-  const mergedRef = useCallback((node: HTMLInputElement | null) => {
-    internalRef.current = node;
-    if (typeof ref === "function") ref(node);
-    else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
-  }, [ref]);
+  const mergedRef = useMemo(() => mergeRefs(internalRef, ref), [ref]);
   const cursorRef = useRef<number | null>(null);
 
   const displayValue = useMemo(
@@ -112,34 +112,51 @@ export function BTCInput({
   });
 
   const clampedAmount = Math.max(0, Math.min(MAX_SATS, Math.trunc(isNaN(amount) ? 0 : amount)));
+  const btcDescription = `${(clampedAmount / 100_000_000).toFixed(8)} BTC`;
 
   return (
-    <input
-      ref={mergedRef}
-      className={className}
-      type="text"
-      inputMode="numeric"
-      aria-label={ariaLabel}
-      value={displayValue}
-      onChange={handleChange}
-      disabled={disabled}
-      placeholder={placeholder}
-      style={{
-        width: "100%",
-        boxSizing: "border-box",
-        fontFamily,
-        fontSize: "inherit",
-        color: clampedAmount > 0 ? activeColor : inactiveColor,
-        caretColor: activeColor,
-        border: "none",
-        outline: "none",
-        textAlign: "right",
-        background: "transparent",
-        padding: 0,
-        opacity: disabled ? 0.5 : 1,
-        cursor: disabled ? "not-allowed" : "text",
-        ...userStyle,
-      }}
-    />
+    <span style={{ display: "contents" }}>
+      <input
+        ref={mergedRef}
+        className={className}
+        type="text"
+        inputMode="numeric"
+        aria-label={ariaLabel}
+        aria-describedby={descId}
+        value={displayValue}
+        onChange={handleChange}
+        disabled={disabled}
+        placeholder={placeholder}
+        style={{
+          width: "100%",
+          boxSizing: "border-box",
+          fontFamily,
+          fontSize: "inherit",
+          color: clampedAmount > 0 ? activeColor : inactiveColor,
+          caretColor: activeColor,
+          border: "none",
+          outline: "none",
+          textAlign: "end",
+          background: "transparent",
+          padding: 0,
+          opacity: disabled ? 0.5 : 1,
+          cursor: disabled ? "not-allowed" : "text",
+          ...userStyle,
+        }}
+      />
+      <span
+        id={descId}
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+          clip: "rect(0,0,0,0)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {btcDescription}
+      </span>
+    </span>
   );
 }

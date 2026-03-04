@@ -81,8 +81,8 @@ describe("ConfirmationBadge", () => {
     expect(screen.getByRole("status")).toHaveAttribute("aria-label", "Confirmed");
   });
 
-  test("supports custom confirmingLabel", () => {
-    render(<ConfirmationBadge confirmations={3} confirmingLabel="3 de 6 confirmaciones" />);
+  test("supports custom confirmingAriaLabel", () => {
+    render(<ConfirmationBadge confirmations={3} confirmingAriaLabel="3 de 6 confirmaciones" />);
     expect(screen.getByRole("status")).toHaveAttribute("aria-label", "3 de 6 confirmaciones");
   });
 

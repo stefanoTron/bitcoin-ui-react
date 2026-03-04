@@ -7,8 +7,8 @@ export interface BalanceDisplayProps {
   fiatValue?: number;
   /** ISO 4217 currency code for fiat display. Default: 'USD' */
   fiatCode?: string;
-  /** Locale for fiat number formatting. Default: 'en-US' */
-  fiatLocale?: string;
+  /** Locale for number formatting (sats grouping and fiat currency). Default: 'en-US' */
+  locale?: string;
   /** Currently displayed unit. Uncontrolled by default (internal state). */
   unit?: "btc" | "sats" | "fiat";
   /** Called when the unit changes (via tap). */

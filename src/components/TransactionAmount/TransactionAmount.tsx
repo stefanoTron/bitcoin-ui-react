@@ -1,8 +1,10 @@
+import { useMemo } from "react";
 import { TransactionAmountProps } from "./TransactionAmount.types";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
 import { clampSats } from "../../utils/clampSats";
 import { resolveSymbol } from "../../utils/resolveSymbol";
 
+/** Signed, colored transaction amount with directional indicator (sent/received). */
 export function TransactionAmount({
   amount,
   positiveColor = "#22c55e",
@@ -28,7 +30,7 @@ export function TransactionAmount({
   const direction = amount >= 0 ? "Received" : "Sent";
   const defaultAriaLabel = `${direction} ${btcValue} BTC`;
 
-  const iconEl = resolveSymbol(symbol);
+  const iconEl = useMemo(() => resolveSymbol(symbol), [symbol]);
 
   return (
     <span

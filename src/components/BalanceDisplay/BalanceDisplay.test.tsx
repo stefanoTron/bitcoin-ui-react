@@ -3,24 +3,7 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { BalanceDisplay } from "./BalanceDisplay";
 
-// Mock motion/react — AnimatePresence as passthrough, motion.div as plain div
-jest.mock("motion/react", () => ({
-  useMotionValue: (initial: number) => {
-    const value = { _current: initial, set: (v: number) => { value._current = v; } };
-    return value;
-  },
-  useSpring: (motionValue: any) => ({
-    on: (_event: string, callback: (v: number) => void) => {
-      callback(motionValue._current);
-      return () => {};
-    },
-  }),
-  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  motion: {
-    div: ({ children, ...props }: any) => <div {...props}>{children}</div>,
-    span: ({ children, ...props }: any) => <span {...props}>{children}</span>,
-  },
-}));
+jest.mock("motion/react");
 
 jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({
   BitcoinIcon: (props: any) => <span data-testid="bitcoin-icon" data-size={props.size} />,
@@ -96,7 +79,7 @@ describe("BalanceDisplay", () => {
         amount={100_000_000}
         fiatValue={42000}
         fiatCode="EUR"
-        fiatLocale="de-DE"
+        locale="de-DE"
       />,
     );
     await userEvent.click(screen.getByTestId("balance-toggle"));

@@ -23,6 +23,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./seed-phrase": {
+      "types": "./dist/seed-phrase.d.ts",
+      "import": "./dist/seed-phrase.mjs",
+      "require": "./dist/seed-phrase.js"
     }
   },
   "scripts": {

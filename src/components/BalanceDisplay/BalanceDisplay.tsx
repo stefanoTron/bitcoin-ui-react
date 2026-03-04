@@ -14,11 +14,12 @@ function formatFiat(value: number, code: string, locale: string): string {
   return new Intl.NumberFormat(locale, { style: "currency", currency: code }).format(value);
 }
 
+/** Multi-unit balance display with animated crossfade between BTC, sats, and fiat. */
 export function BalanceDisplay({
   amount,
   fiatValue,
   fiatCode = "USD",
-  fiatLocale = "en-US",
+  locale = "en-US",
   unit: controlledUnit,
   onUnitChange,
   activeColor = "currentColor",
@@ -76,13 +77,13 @@ export function BalanceDisplay({
               <BTCAmount amount={amount} activeColor={activeColor} animate={false} />
             )}
             {currentUnit === "sats" && (
-              <span aria-label={`${formatSatsNumber(amount, fiatLocale)} ${satsLabel}`}>
-                {formatSatsNumber(amount, fiatLocale)}
+              <span aria-label={`${formatSatsNumber(amount, locale)} ${satsLabel}`}>
+                {formatSatsNumber(amount, locale)}
               </span>
             )}
             {currentUnit === "fiat" && fiatValue !== undefined && (
-              <span aria-label={formatFiat(fiatValue, fiatCode, fiatLocale)}>
-                {formatFiat(fiatValue, fiatCode, fiatLocale)}
+              <span aria-label={formatFiat(fiatValue, fiatCode, locale)}>
+                {formatFiat(fiatValue, fiatCode, locale)}
               </span>
             )}
           </motion.div>

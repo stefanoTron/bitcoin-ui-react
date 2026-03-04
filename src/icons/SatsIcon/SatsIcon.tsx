@@ -1,5 +1,6 @@
 import { SatsIconProps } from "./SatsIcon.types";
 
+/** Satoshi symbol icon (three parallel lines with two vertical strikes). */
 export function SatsIcon({
   alt = "Satoshis",
   backgroundColor = "transparent",

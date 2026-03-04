@@ -23,6 +23,8 @@ export interface SeedPhraseInputProps {
   fontFamily?: string;
   /** Accessible label for the input group. Default: 'Seed phrase' */
   groupLabel?: string;
+  /** Custom label formatter for word inputs. Receives 1-based index. Default: (i) => `Word ${i}` */
+  labelFormatter?: (index: number) => string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */

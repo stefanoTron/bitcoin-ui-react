@@ -2,19 +2,7 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { BTCAmount } from "./BTCAmount";
 
-// Mock motion hooks to avoid animation complexity in tests
-jest.mock("motion/react", () => ({
-  useMotionValue: (initial: number) => {
-    const value = { _current: initial, set: (v: number) => { value._current = v; } };
-    return value;
-  },
-  useSpring: (motionValue: any) => ({
-    on: (_event: string, callback: (v: number) => void) => {
-      callback(motionValue._current);
-      return () => {};
-    },
-  }),
-}));
+jest.mock("motion/react");
 
 // Mock icons to simple spans for testability
 jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({

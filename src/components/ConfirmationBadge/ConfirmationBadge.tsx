@@ -1,5 +1,6 @@
 import { ConfirmationBadgeProps } from "./ConfirmationBadge.types";
 
+/** Three-state confirmation indicator showing unconfirmed, confirming, or confirmed status. */
 export function ConfirmationBadge({
   confirmations,
   threshold = 6,
@@ -8,7 +9,7 @@ export function ConfirmationBadge({
   confirmedColor = "#22c55e",
   unconfirmedLabel = "Unconfirmed",
   confirmedLabel = "Confirmed",
-  confirmingLabel,
+  confirmingAriaLabel,
   showCount = true,
   fontFamily = "inherit",
   className,
@@ -38,7 +39,7 @@ export function ConfirmationBadge({
     ? unconfirmedLabel
     : clamped >= threshold
       ? confirmedLabel
-      : confirmingLabel ?? `${clamped} of ${threshold} confirmations`;
+      : confirmingAriaLabel ?? `${clamped} of ${threshold} confirmations`;
 
   return (
     <span

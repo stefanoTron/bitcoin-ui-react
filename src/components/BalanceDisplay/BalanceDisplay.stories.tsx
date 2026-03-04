@@ -60,7 +60,7 @@ export const WithFiat: Story = {
 
 /** Euro fiat with German locale */
 export const FiatEuro: Story = {
-  args: { amount: 100_000_000, fiatValue: 42000, fiatCode: "EUR", fiatLocale: "de-DE" },
+  args: { amount: 100_000_000, fiatValue: 42000, fiatCode: "EUR", locale: "de-DE" },
 };
 
 /** Static display — no toggle */

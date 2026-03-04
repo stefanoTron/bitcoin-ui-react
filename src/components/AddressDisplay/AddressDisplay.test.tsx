@@ -5,12 +5,26 @@ import { AddressDisplay } from "./AddressDisplay";
 
 const TEST_ADDR = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
 
-// Mock clipboard API
-Object.assign(navigator, {
-  clipboard: { writeText: jest.fn().mockResolvedValue(undefined) },
-});
-
 describe("AddressDisplay", () => {
+  let originalClipboard: Clipboard;
+
+  beforeAll(() => {
+    originalClipboard = navigator.clipboard;
+    Object.defineProperty(navigator, "clipboard", {
+      value: { writeText: jest.fn().mockResolvedValue(undefined) },
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  afterAll(() => {
+    Object.defineProperty(navigator, "clipboard", {
+      value: originalClipboard,
+      writable: true,
+      configurable: true,
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -107,5 +121,14 @@ describe("AddressDisplay", () => {
     const colors = Array.from(spans).map((s) => (s as HTMLElement).style.color);
     expect(colors).toContain("red");
     expect(colors).toContain("blue");
+  });
+
+  test("does not throw when clipboard.writeText rejects", async () => {
+    (navigator.clipboard.writeText as jest.Mock).mockRejectedValueOnce(new Error("Not allowed"));
+    render(<AddressDisplay address={TEST_ADDR} />);
+    const button = screen.getByRole("button");
+    await userEvent.click(button);
+    // Component should not crash; copied state should not change
+    expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
   });
 });

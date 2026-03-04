@@ -1,5 +1,6 @@
 import { BitcoinIconProps } from "./BitcoinIcon.types";
 
+/** Bitcoin logo icon (orange circle with white ₿ symbol). */
 export function BitcoinIcon({
   alt = "Bitcoin",
   backgroundColor = "#f7931a",

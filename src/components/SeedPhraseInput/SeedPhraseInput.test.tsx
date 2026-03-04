@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { SeedPhraseInput } from "./SeedPhraseInput";
@@ -457,5 +457,47 @@ describe("SeedPhraseInput", () => {
     );
     // Should NOT fire onComplete since only 3 of 12 are filled
     expect(onComplete).not.toHaveBeenCalled();
+  });
+
+  test("supports custom labelFormatter for localization", () => {
+    const formatter = (i: number) => `Palabra ${i}`;
+    render(<SeedPhraseInput words={Array(12).fill("")} onWordsChange={() => {}} labelFormatter={formatter} />);
+    expect(screen.getByText("Palabra 1")).toBeInTheDocument();
+    expect(screen.getByText("Palabra 12")).toBeInTheDocument();
+    expect(screen.queryByText("Word 1")).not.toBeInTheDocument();
+  });
+
+  test("navigates suggestions with ArrowUp (wraps to last)", async () => {
+    const onWordsChange = jest.fn();
+    render(<SeedPhraseInput words={["ab", ...Array(11).fill("")]} onWordsChange={onWordsChange} />);
+    const input = screen.getByLabelText("Word 1");
+    await userEvent.click(input);
+    // ArrowUp from -1 should wrap to last suggestion
+    await userEvent.keyboard("{ArrowUp}");
+    // Now press Enter to select the last suggestion
+    await userEvent.keyboard("{Enter}");
+    const lastCall = onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    // "ab" matches: abandon, ability, able, about, above, absent, absorb, abstract (8 items)
+    // ArrowUp from -1 wraps to index 7 = "abstract"
+    expect(lastCall[0]).toBe("abstract");
+  });
+
+  test("closes suggestions on blur after delay", async () => {
+    jest.useFakeTimers();
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+    render(<SeedPhraseInput words={["ab", ...Array(11).fill("")]} onWordsChange={() => {}} />);
+    const input = screen.getByLabelText("Word 1");
+    await user.click(input);
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    // Trigger blur
+    input.blur();
+    // Suggestions should still be visible during BLUR_DELAY_MS
+    expect(input).toHaveAttribute("aria-expanded", "true");
+    // Advance past the blur delay (150ms)
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+    expect(input).toHaveAttribute("aria-expanded", "false");
+    jest.useRealTimers();
   });
 });

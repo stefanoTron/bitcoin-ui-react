@@ -2,19 +2,7 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { TransactionAmount } from "./TransactionAmount";
 
-// Mock motion hooks (inherited via BTCAmount)
-jest.mock("motion/react", () => ({
-  useMotionValue: (initial: number) => {
-    const value = { _current: initial, set: (v: number) => { value._current = v; } };
-    return value;
-  },
-  useSpring: (motionValue: any) => ({
-    on: (_event: string, callback: (v: number) => void) => {
-      callback(motionValue._current);
-      return () => {};
-    },
-  }),
-}));
+jest.mock("motion/react");
 
 jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({
   BitcoinIcon: (props: any) => <span data-testid="bitcoin-icon" />,
