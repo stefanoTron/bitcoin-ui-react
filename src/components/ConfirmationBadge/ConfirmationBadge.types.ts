@@ -13,7 +13,7 @@ export interface ConfirmationBadgeProps {
   unconfirmedLabel?: string;
   /** Label for threshold+ confirmations. Default: 'Confirmed' */
   confirmedLabel?: string;
-  /** Label for the confirming state count format. Default: '{count} of {threshold} confirmations' */
+  /** Accessible label for the confirming state. Default: '{count} of {threshold} confirmations' */
   confirmingLabel?: string;
   /** Show confirmation count in the badge. Default: true */
   showCount?: boolean;

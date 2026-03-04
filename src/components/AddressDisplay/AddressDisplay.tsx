@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AddressDisplayProps } from "./AddressDisplay.types";
 
 export function AddressDisplay({
@@ -19,6 +19,13 @@ export function AddressDisplay({
   style,
 }: AddressDisplayProps) {
   const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   const needsTruncation = truncate && address.length > prefixChars + suffixChars;
   const prefix = needsTruncation ? address.slice(0, prefixChars) : address;
@@ -29,7 +36,10 @@ export function AddressDisplay({
       await navigator.clipboard.writeText(address);
       setCopied(true);
       onCopy?.();
-      setTimeout(() => setCopied(false), 2000);
+      copyTimeoutRef.current = setTimeout(() => {
+        setCopied(false);
+        copyTimeoutRef.current = null;
+      }, 2000);
     } catch {
       // Clipboard API not available — silently fail
     }

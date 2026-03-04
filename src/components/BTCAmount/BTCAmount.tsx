@@ -93,8 +93,6 @@ export function BTCAmount({
     return unsubscribe;
   }, [springValue, shouldAnimate, amount]);
 
-  const clamped = Math.max(0, Math.trunc(isNaN(displayAmount) ? 0 : displayAmount));
-
   const formatted = useMemo(
     () => formatDigits(displayAmount, activeColor, inactiveColor, btcSeparator, satsSeparator),
     [displayAmount, activeColor, inactiveColor, btcSeparator, satsSeparator],
@@ -111,7 +109,7 @@ export function BTCAmount({
   return (
     <span
       data-testid="btc-amount"
-      aria-label={customAriaLabel ?? `${(clamped / 100_000_000).toFixed(8)} BTC`}
+      aria-label={customAriaLabel ?? `${(Math.max(0, Math.trunc(isNaN(displayAmount) ? 0 : displayAmount)) / 100_000_000).toFixed(8)} BTC`}
       className={className}
       style={{ display: "inline-flex", alignItems: "center", gap: symbolEl ? "0.2em" : undefined, ...userStyle }}
     >

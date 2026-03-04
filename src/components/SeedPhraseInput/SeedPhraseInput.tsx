@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { SeedPhraseInputProps } from "./SeedPhraseInput.types";
 import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
 
-const BIP39_WORD_SET = new Set(BIP39_ENGLISH_WORDLIST);
 const MAX_SUGGESTIONS = 8;
 const BLUR_DELAY_MS = 150;
 
