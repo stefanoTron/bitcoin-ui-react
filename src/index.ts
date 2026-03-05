@@ -18,3 +18,5 @@ export type {
 } from "./components";
 export { BitcoinIcon, SatsIcon } from "./icons";
 export type { BitcoinIconProps, SatsIconProps } from "./icons";
+export { clampSats, MAX_SATS } from "./utils/clampSats";
+export { useReducedMotion } from "motion/react";

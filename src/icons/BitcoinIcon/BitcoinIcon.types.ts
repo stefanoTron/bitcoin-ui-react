@@ -5,7 +5,7 @@ export interface BitcoinIconProps {
   size?: number | string;
   /** Symbol color. Default: '#ffffff' */
   color?: string;
-  /** Background circle color. Default: '#f7931a' */
+  /** Background circle color. Themeable via `--btc-ui-color-brand`. Default: '#f7931a' */
   backgroundColor?: string;
   /** Accessibility label. Default: 'Bitcoin' */
   alt?: string;

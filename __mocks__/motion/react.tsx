@@ -1,5 +1,10 @@
 const useMotionValue = (initial: number) => {
-  const value = { _current: initial, set: (v: number) => { value._current = v; } };
+  const value = {
+    _current: initial,
+    set: (v: number) => {
+      value._current = v;
+    },
+  };
   return value;
 };
 
@@ -17,4 +22,6 @@ const motion = {
   span: ({ children, initial, animate, exit, transition, ...rest }: any) => <span {...rest}>{children}</span>,
 };
 
-export { useMotionValue, useSpring, AnimatePresence, motion };
+const useReducedMotion = () => false;
+
+export { useMotionValue, useSpring, useReducedMotion, AnimatePresence, motion };

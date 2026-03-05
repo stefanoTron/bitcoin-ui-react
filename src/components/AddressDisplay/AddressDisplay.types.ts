@@ -17,9 +17,9 @@ export interface AddressDisplayProps {
   onCopy?: () => void;
   /** Color for the address text. Default: 'currentColor' */
   addressColor?: string;
-  /** Color for the separator. Default: '#999999' */
+  /** Color for the separator. Themeable via `--btc-ui-color-inactive`. Default: '#999999' */
   separatorColor?: string;
-  /** Color for the copy icon. Default: '#999999' */
+  /** Color for the copy icon. Themeable via `--btc-ui-color-inactive`. Default: '#999999' */
   copyIconColor?: string;
   /** Accessible label for the copy button. Default: 'Copy address' */
   copyAriaLabel?: string;

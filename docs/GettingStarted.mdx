@@ -1,0 +1,92 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Getting Started" />
+
+# Getting Started
+
+## Displaying Amounts
+
+Use `BTCAmount` to render a formatted Bitcoin amount from satoshis:
+
+```tsx
+import { BTCAmount } from "bitcoin-ui-react";
+
+<BTCAmount amount={100_000_000} /> // 1.00 000 000
+<BTCAmount amount={21_000} symbol="btc" /> // ₿ icon + 0.00 021 000
+```
+
+## Input
+
+`BTCInput` provides a controlled input that handles BTC formatting and cursor positioning:
+
+```tsx
+import { BTCInput } from "bitcoin-ui-react";
+
+function SendForm() {
+  const [sats, setSats] = useState(0);
+  return <BTCInput amount={sats} onAmountChange={setSats} />;
+}
+```
+
+## Addresses
+
+`AddressDisplay` truncates long addresses and supports copy-to-clipboard:
+
+```tsx
+import { AddressDisplay } from "bitcoin-ui-react";
+
+<AddressDisplay address="bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq" />;
+```
+
+## Transactions
+
+`TransactionAmount` wraps `BTCAmount` with sign and color:
+
+```tsx
+import { TransactionAmount } from "bitcoin-ui-react";
+
+<TransactionAmount amount={50_000} />
+<TransactionAmount amount={-25_000} />
+```
+
+## Balance Toggle
+
+`BalanceDisplay` lets users tap to switch between BTC and sats:
+
+```tsx
+import { BalanceDisplay } from "bitcoin-ui-react";
+
+<BalanceDisplay amount={1_500_000} />;
+```
+
+## Styling
+
+All components accept `className` and `style` props. The library uses inline styles only — no CSS files to import:
+
+```tsx
+<BTCAmount amount={100_000} style={{ fontSize: 24 }} className="my-amount" />
+```
+
+## Internationalization
+
+Components that display formatted numbers accept a `locale` prop:
+
+```tsx
+<BalanceDisplay amount={100_000_000} locale="de-DE" />
+```
+
+## Theming
+
+All color defaults use CSS custom properties with sensible fallbacks. Set them on any ancestor to theme globally:
+
+```css
+:root {
+  --btc-ui-color-inactive: #666;
+  --btc-ui-color-positive: #16a34a;
+  --btc-ui-color-negative: #dc2626;
+  --btc-ui-color-warning: #d97706;
+  --btc-ui-color-brand: #f7931a;
+}
+```
+
+Explicit props always take precedence over CSS variables.

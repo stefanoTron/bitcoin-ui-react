@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { BalanceDisplay } from "./BalanceDisplay";
 
 jest.mock("motion/react");
@@ -74,14 +75,7 @@ describe("BalanceDisplay", () => {
   });
 
   test("formats fiat with EUR and locale", async () => {
-    render(
-      <BalanceDisplay
-        amount={100_000_000}
-        fiatValue={42000}
-        fiatCode="EUR"
-        locale="de-DE"
-      />,
-    );
+    render(<BalanceDisplay amount={100_000_000} fiatValue={42000} fiatCode="EUR" locale="de-DE" />);
     await userEvent.click(screen.getByTestId("balance-toggle"));
     await userEvent.click(screen.getByTestId("balance-toggle"));
     expect(screen.getByText("EUR")).toBeInTheDocument();
@@ -98,16 +92,12 @@ describe("BalanceDisplay", () => {
 
   test("controlled mode: does not change internal state on toggle", async () => {
     const onUnitChange = jest.fn();
-    const { rerender } = render(
-      <BalanceDisplay amount={100_000_000} unit="btc" onUnitChange={onUnitChange} />,
-    );
+    const { rerender } = render(<BalanceDisplay amount={100_000_000} unit="btc" onUnitChange={onUnitChange} />);
     expect(screen.getByText("BTC")).toBeInTheDocument();
     await userEvent.click(screen.getByTestId("balance-toggle"));
     expect(onUnitChange).toHaveBeenCalledWith("sats");
     expect(screen.getByText("BTC")).toBeInTheDocument();
-    rerender(
-      <BalanceDisplay amount={100_000_000} unit="sats" onUnitChange={onUnitChange} />,
-    );
+    rerender(<BalanceDisplay amount={100_000_000} unit="sats" onUnitChange={onUnitChange} />);
     expect(screen.getByText("sats")).toBeInTheDocument();
   });
 
@@ -151,6 +141,12 @@ describe("BalanceDisplay", () => {
     expect(screen.getByTestId("balance-toggle")).toHaveAttribute("aria-label", "Cambiar unidad");
   });
 
+  test("forwards ref to root div element", () => {
+    const ref = { current: null };
+    render(<BalanceDisplay amount={0} ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLDivElement);
+  });
+
   test("value region has aria-live", () => {
     render(<BalanceDisplay amount={100_000_000} />);
     const liveRegion = screen.getByTestId("balance-display").querySelector("[aria-live]");
@@ -162,5 +158,30 @@ describe("BalanceDisplay", () => {
     expect(screen.getByText("Bitcoin")).toBeInTheDocument();
     await userEvent.click(screen.getByTestId("balance-toggle"));
     expect(screen.getByText("satoshis")).toBeInTheDocument();
+  });
+
+  test("uses zero transition duration when prefers-reduced-motion is active", () => {
+    const mod = jest.requireMock("motion/react");
+    const original = mod.useReducedMotion;
+    mod.useReducedMotion = () => true;
+
+    // Override motion.div to capture transition prop
+    const originalDiv = mod.motion.div;
+    let capturedTransition: any;
+    mod.motion.div = ({ children, transition, ...rest }: any) => {
+      capturedTransition = transition;
+      return <div {...rest}>{children}</div>;
+    };
+
+    render(<BalanceDisplay amount={100_000_000} />);
+    expect(capturedTransition).toEqual({ duration: 0 });
+
+    mod.useReducedMotion = original;
+    mod.motion.div = originalDiv;
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<BalanceDisplay amount={100_000_000} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

@@ -1,7 +1,8 @@
-import { useCallback, useId, useLayoutEffect, useMemo, useRef } from "react";
+import { useCallback, useId, useMemo, useRef } from "react";
 import { BTCInputProps } from "./BTCInput.types";
 import { mergeRefs } from "../../utils/mergeRefs";
 import { clampSats } from "../../utils/clampSats";
+import { useIsomorphicLayoutEffect } from "../../utils/useIsomorphicLayoutEffect";
 
 /**
  * Format satoshis into a display string: X.XX XXX XXX
@@ -59,13 +60,14 @@ export function BTCInput({
   amount,
   onAmountChange,
   activeColor = "currentColor",
-  inactiveColor = "#999999",
+  inactiveColor = "var(--btc-ui-color-inactive, #999999)",
   satsSeparator = "\u2009",
   btcSeparator = ".",
   disabled = false,
   fontFamily = "inherit",
   placeholder = "0.00\u2009000\u2009000",
   ariaLabel = "Amount in BTC",
+  descriptionFormatter = (btc: string) => `${btc} BTC`,
   style: userStyle,
   className,
   ref,
@@ -97,7 +99,7 @@ export function BTCInput({
   );
 
   // Restore cursor position after React updates the controlled input value.
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const input = internalRef.current;
     if (!input || cursorRef.current === null) return;
 
@@ -110,7 +112,7 @@ export function BTCInput({
   });
 
   const clampedAmount = clampSats(amount);
-  const btcDescription = `${(clampedAmount / 100_000_000).toFixed(8)} BTC`;
+  const btcDescription = descriptionFormatter((clampedAmount / 100_000_000).toFixed(8));
 
   return (
     <span style={{ display: "contents" }}>
@@ -149,7 +151,7 @@ export function BTCInput({
           width: 1,
           height: 1,
           overflow: "hidden",
-          clip: "rect(0,0,0,0)",
+          clipPath: "inset(50%)",
           whiteSpace: "nowrap",
         }}
       >

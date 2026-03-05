@@ -15,7 +15,7 @@ export interface BalanceDisplayProps {
   onUnitChange?: (unit: "btc" | "sats" | "fiat") => void;
   /** Color for the amount text. Default: 'currentColor' */
   activeColor?: string;
-  /** Color for the unit label. Default: '#999999' */
+  /** Color for the unit label. Themeable via `--btc-ui-color-inactive`. Default: '#999999' */
   labelColor?: string;
   /** Whether the unit label is tappable. Default: true */
   showToggle?: boolean;

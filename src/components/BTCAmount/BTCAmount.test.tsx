@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { BTCAmount } from "./BTCAmount";
 
 jest.mock("motion/react");
@@ -54,9 +55,7 @@ describe("BTCAmount", () => {
     render(<BTCAmount amount={1000} activeColor="red" inactiveColor="gray" />);
     const container = screen.getByTestId("btc-amount");
     const spans = container.querySelectorAll("span[data-digit]");
-    const activeSpans = Array.from(spans).filter(
-      (s) => (s as HTMLElement).style.color === "red"
-    );
+    const activeSpans = Array.from(spans).filter((s) => (s as HTMLElement).style.color === "red");
     expect(activeSpans.length).toBeGreaterThan(0);
   });
 
@@ -141,5 +140,40 @@ describe("BTCAmount", () => {
   test("supports custom ariaLabel", () => {
     render(<BTCAmount amount={100_000_000} ariaLabel="1 Bitcoin" />);
     expect(screen.getByLabelText("1 Bitcoin")).toBeInTheDocument();
+  });
+
+  test("forwards ref to root span element", () => {
+    const ref = { current: null };
+    render(<BTCAmount amount={0} ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLSpanElement);
+  });
+
+  test("digit spans are aria-hidden to prevent double-announcement", () => {
+    render(<BTCAmount amount={100_000_000} />);
+    const container = screen.getByTestId("btc-amount");
+    const hiddenWrapper = container.querySelector("[aria-hidden='true']");
+    expect(hiddenWrapper).toBeInTheDocument();
+  });
+
+  test("skips animation when prefers-reduced-motion is active", () => {
+    const useReducedMotion = jest.requireMock("motion/react").useReducedMotion;
+    const original = useReducedMotion;
+    // Temporarily override the mock to return true
+    const mod = jest.requireMock("motion/react");
+    mod.useReducedMotion = () => true;
+
+    const { rerender } = render(<BTCAmount amount={0} />);
+    rerender(<BTCAmount amount={100_000_000} />);
+    const container = screen.getByTestId("btc-amount");
+    // When reduced motion is active, display should immediately show the new amount
+    expect(container.textContent).toMatch(/1[.]00.000.000/);
+
+    // Restore
+    mod.useReducedMotion = original;
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<BTCAmount amount={100_000_000} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

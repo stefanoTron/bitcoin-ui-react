@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { BalanceDisplayProps } from "./BalanceDisplay.types";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
 import { clampSats } from "../../utils/clampSats";
@@ -23,7 +23,7 @@ export function BalanceDisplay({
   unit: controlledUnit,
   onUnitChange,
   activeColor = "currentColor",
-  labelColor = "#999999",
+  labelColor = "var(--btc-ui-color-inactive, #999999)",
   showToggle = true,
   btcLabel = "BTC",
   satsLabel = "sats",
@@ -33,6 +33,7 @@ export function BalanceDisplay({
   style,
   ref,
 }: BalanceDisplayProps) {
+  const prefersReducedMotion = useReducedMotion();
   const hasFiat = fiatValue !== undefined;
   const units: Unit[] = hasFiat ? ["btc", "sats", "fiat"] : ["btc", "sats"];
 
@@ -70,21 +71,13 @@ export function BalanceDisplay({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.15 }}
             style={{ color: activeColor }}
           >
-            {currentUnit === "btc" && (
-              <BTCAmount amount={amount} activeColor={activeColor} animate={false} />
-            )}
-            {currentUnit === "sats" && (
-              <span aria-label={`${formatSatsNumber(amount, locale)} ${satsLabel}`}>
-                {formatSatsNumber(amount, locale)}
-              </span>
-            )}
+            {currentUnit === "btc" && <BTCAmount amount={amount} activeColor={activeColor} animate={false} />}
+            {currentUnit === "sats" && <span>{formatSatsNumber(amount, locale)}</span>}
             {currentUnit === "fiat" && fiatValue !== undefined && (
-              <span aria-label={formatFiat(fiatValue, fiatCode, locale)}>
-                {formatFiat(fiatValue, fiatCode, locale)}
-              </span>
+              <span>{formatFiat(fiatValue, fiatCode, locale)}</span>
             )}
           </motion.div>
         </AnimatePresence>
@@ -109,9 +102,7 @@ export function BalanceDisplay({
           {label}
         </button>
       ) : (
-        <span style={{ color: labelColor, fontSize: "0.5em", marginTop: "0.2em" }}>
-          {label}
-        </span>
+        <span style={{ color: labelColor, fontSize: "0.5em", marginTop: "0.2em" }}>{label}</span>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { SeedPhraseInputProps } from "./SeedPhraseInput.types";
 import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
 
@@ -47,6 +47,7 @@ export function SeedPhraseInput({
   style,
   ref,
 }: SeedPhraseInputProps) {
+  const idPrefix = useId();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -154,9 +155,8 @@ export function SeedPhraseInput({
   useEffect(() => {
     if (!onComplete) return;
     const relevantWords = normalizedWords.slice(0, wordCount);
-    const allValid = relevantWords.length >= wordCount && relevantWords.every(
-      (w) => w !== "" && effectiveWordSet.has(w),
-    );
+    const allValid =
+      relevantWords.length >= wordCount && relevantWords.every((w) => w !== "" && effectiveWordSet.has(w));
     if (allValid && !prevCompleteRef.current) {
       onComplete(relevantWords);
     }
@@ -189,13 +189,15 @@ export function SeedPhraseInput({
           }}
         >
           <label
-            htmlFor={readOnly ? undefined : `seed-word-${i}`}
-            style={{ minWidth: 28, textAlign: "right" }}
+            id={`${idPrefix}-label-${i}`}
+            htmlFor={readOnly ? undefined : `${idPrefix}-word-${i}`}
+            style={{ minWidth: 28, textAlign: "end" }}
           >
             {labelFormatter(i + 1)}
           </label>
           {readOnly ? (
             <span
+              aria-labelledby={`${idPrefix}-label-${i}`}
               style={{
                 flex: 1,
                 padding: "4px 8px",
@@ -209,7 +211,7 @@ export function SeedPhraseInput({
                 ref={(el) => {
                   inputRefs.current[i] = el;
                 }}
-                id={`seed-word-${i}`}
+                id={`${idPrefix}-word-${i}`}
                 type="text"
                 autoComplete="off"
                 spellCheck={false}
@@ -217,11 +219,9 @@ export function SeedPhraseInput({
                 autoCorrect="off"
                 role="combobox"
                 aria-expanded={activeIndex === i && suggestions.length > 0}
-                aria-controls={`seed-suggestions-${i}`}
+                aria-controls={`${idPrefix}-suggestions-${i}`}
                 aria-activedescendant={
-                  activeIndex === i && highlightedIndex >= 0
-                    ? `seed-option-${i}-${highlightedIndex}`
-                    : undefined
+                  activeIndex === i && highlightedIndex >= 0 ? `${idPrefix}-option-${i}-${highlightedIndex}` : undefined
                 }
                 aria-autocomplete="list"
                 value={normalizedWords[i]}
@@ -243,7 +243,7 @@ export function SeedPhraseInput({
                 style={{
                   flex: 1,
                   padding: "4px 8px",
-                  border: "1px solid #ccc",
+                  border: "1px solid var(--btc-ui-color-border, #ccc)",
                   borderRadius: 4,
                   fontFamily,
                   fontSize: "inherit",
@@ -254,7 +254,7 @@ export function SeedPhraseInput({
               />
               {activeIndex === i && suggestions.length > 0 && (
                 <ul
-                  id={`seed-suggestions-${i}`}
+                  id={`${idPrefix}-suggestions-${i}`}
                   role="listbox"
                   style={{
                     position: "absolute",
@@ -264,10 +264,10 @@ export function SeedPhraseInput({
                     margin: 0,
                     padding: 0,
                     listStyle: "none",
-                    border: "1px solid #ccc",
+                    border: "1px solid var(--btc-ui-color-border, #ccc)",
                     borderRadius: 4,
-                    background: "#fff",
-                    color: "#000",
+                    background: "var(--btc-ui-color-surface, #fff)",
+                    color: "var(--btc-ui-color-on-surface, #000)",
                     zIndex: 10,
                     maxHeight: 200,
                     overflow: "auto",
@@ -277,7 +277,7 @@ export function SeedPhraseInput({
                   {suggestions.map((word, idx) => (
                     <li
                       key={word}
-                      id={`seed-option-${i}-${idx}`}
+                      id={`${idPrefix}-option-${i}-${idx}`}
                       role="option"
                       aria-selected={highlightedIndex === idx}
                       onMouseDown={(e) => e.preventDefault()}

@@ -7,9 +7,9 @@ import { resolveSymbol } from "../../utils/resolveSymbol";
 /** Signed, colored transaction amount with directional indicator (sent/received). */
 export function TransactionAmount({
   amount,
-  positiveColor = "#22c55e",
-  negativeColor = "#ef4444",
-  inactiveColor = "#999999",
+  positiveColor = "var(--btc-ui-color-positive, #22c55e)",
+  negativeColor = "var(--btc-ui-color-negative, #ef4444)",
+  inactiveColor = "var(--btc-ui-color-inactive, #999999)",
   showSign = true,
   symbol,
   symbolPosition = "left",
@@ -17,6 +17,7 @@ export function TransactionAmount({
   satsSeparator = "\u2009",
   btcSeparator = ".",
   ariaLabel: customAriaLabel,
+  ariaLabelFormatter = (dir: string, btc: string) => `${dir} ${btc} BTC`,
   className,
   style,
   ref,
@@ -27,8 +28,8 @@ export function TransactionAmount({
   const sign = showSign && isPositive ? "+" : showSign && isNegative ? "\u2212" : "";
   const absAmount = Math.abs(amount);
   const btcValue = (clampSats(absAmount) / 100_000_000).toFixed(8);
-  const direction = amount >= 0 ? "Received" : "Sent";
-  const defaultAriaLabel = `${direction} ${btcValue} BTC`;
+  const direction = amount >= 0 ? "received" : "sent";
+  const defaultAriaLabel = ariaLabelFormatter(direction, btcValue);
 
   const iconEl = useMemo(() => resolveSymbol(symbol), [symbol]);
 
@@ -36,6 +37,7 @@ export function TransactionAmount({
     <span
       ref={ref}
       data-testid="transaction-amount"
+      role="img"
       aria-label={customAriaLabel ?? defaultAriaLabel}
       className={className}
       style={{
@@ -56,6 +58,7 @@ export function TransactionAmount({
         satsSeparator={satsSeparator}
         btcSeparator={btcSeparator}
         animate={false}
+        ariaLabel=""
       />
       {iconEl && symbolPosition === "right" && iconEl}
     </span>

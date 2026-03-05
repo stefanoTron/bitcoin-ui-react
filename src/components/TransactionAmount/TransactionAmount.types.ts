@@ -3,11 +3,11 @@ import type { Ref } from "react";
 export interface TransactionAmountProps {
   /** Signed amount in satoshis. Positive = received, negative = sent. */
   amount: number;
-  /** Color for positive (received) amounts. Default: '#22c55e' */
+  /** Color for positive (received) amounts. Themeable via `--btc-ui-color-positive`. Default: '#22c55e' */
   positiveColor?: string;
-  /** Color for negative (sent) amounts. Default: '#ef4444' */
+  /** Color for negative (sent) amounts. Themeable via `--btc-ui-color-negative`. Default: '#ef4444' */
   negativeColor?: string;
-  /** Color for insignificant (zero-padded) digits. Default: '#999999' */
+  /** Color for insignificant (zero-padded) digits. Themeable via `--btc-ui-color-inactive`. Default: '#999999' */
   inactiveColor?: string;
   /** Show +/- sign prefix. Default: true */
   showSign?: boolean;
@@ -23,6 +23,10 @@ export interface TransactionAmountProps {
   btcSeparator?: string;
   /** Custom aria-label override. If omitted, auto-generated with sign and amount. */
   ariaLabel?: string;
+  /** Formatter for the auto-generated aria-label.
+   *  Receives direction ("received" | "sent") and BTC value string (e.g. "1.23456789").
+   *  Default: `` (dir, btc) => `${dir} ${btc} BTC` `` */
+  ariaLabelFormatter?: (direction: "received" | "sent", btcValue: string) => string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */

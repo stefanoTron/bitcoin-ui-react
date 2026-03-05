@@ -7,7 +7,7 @@ export interface BTCInputProps {
   onAmountChange: (satoshis: number) => void;
   /** Color for significant digits. Default: 'currentColor' */
   activeColor?: string;
-  /** Color for insignificant digits. Default: '#999999' */
+  /** Color for insignificant digits. Themeable via `--btc-ui-color-inactive`. Default: '#999999' */
   inactiveColor?: string;
   /** Separator between 3-digit satoshi groups. Default: '\u2009' (thin space) */
   satsSeparator?: string;
@@ -23,6 +23,10 @@ export interface BTCInputProps {
   style?: React.CSSProperties;
   /** Accessible label for the input. Default: 'Amount in BTC' */
   ariaLabel?: string;
+  /** Formatter for the visually-hidden description read by screen readers.
+   *  Receives the BTC value as a string (e.g. "1.23456789").
+   *  Default: `` (btc) => `${btc} BTC` `` */
+  descriptionFormatter?: (btcValue: string) => string;
   /** CSS class name. */
   className?: string;
   /** Ref forwarded to the input element. */

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useMotionValue, useSpring } from "motion/react";
+import { useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { BTCAmountProps } from "./BTCAmount.types";
 import { clampSats } from "../../utils/clampSats";
 import { resolveSymbol } from "../../utils/resolveSymbol";
@@ -69,7 +69,7 @@ function formatDigits(
 export function BTCAmount({
   amount,
   activeColor = "currentColor",
-  inactiveColor = "#999999",
+  inactiveColor = "var(--btc-ui-color-inactive, #999999)",
   satsSeparator = "\u2009",
   btcSeparator = ".",
   animate: shouldAnimate = true,
@@ -77,20 +77,24 @@ export function BTCAmount({
   symbolPosition = "left",
   fontFamily = "inherit",
   ariaLabel: customAriaLabel,
+  ariaLabelFormatter = (btc: string) => `${btc} BTC`,
   className,
   style: userStyle,
   ref,
 }: BTCAmountProps) {
-  const motionValue = useMotionValue(shouldAnimate ? 0 : amount);
+  const prefersReducedMotion = useReducedMotion();
+  const effectiveAnimate = shouldAnimate && !prefersReducedMotion;
+
+  const motionValue = useMotionValue(amount);
   const springValue = useSpring(motionValue, { damping: 40, stiffness: 300 });
-  const [displayAmount, setDisplayAmount] = useState(shouldAnimate ? 0 : amount);
+  const [displayAmount, setDisplayAmount] = useState(amount);
 
   useEffect(() => {
     motionValue.set(amount);
   }, [amount, motionValue]);
 
   useEffect(() => {
-    if (!shouldAnimate) {
+    if (!effectiveAnimate) {
       setDisplayAmount(amount);
       return;
     }
@@ -98,7 +102,7 @@ export function BTCAmount({
       setDisplayAmount(Math.round(latest));
     });
     return unsubscribe;
-  }, [springValue, shouldAnimate, amount]);
+  }, [springValue, effectiveAnimate, amount]);
 
   const formatted = useMemo(
     () => formatDigits(displayAmount, activeColor, inactiveColor, btcSeparator, satsSeparator),
@@ -111,20 +115,29 @@ export function BTCAmount({
     <span
       ref={ref}
       data-testid="btc-amount"
-      aria-label={customAriaLabel ?? `${(clampSats(displayAmount) / 100_000_000).toFixed(8)} BTC`}
+      role={customAriaLabel !== "" ? "img" : undefined}
+      aria-label={
+        customAriaLabel !== ""
+          ? (customAriaLabel ?? ariaLabelFormatter((clampSats(displayAmount) / 100_000_000).toFixed(8)))
+          : undefined
+      }
       className={className}
-      style={{ display: "inline-flex", alignItems: "center", gap: symbolEl ? "0.2em" : undefined, fontFamily, ...userStyle }}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: symbolEl ? "0.2em" : undefined,
+        fontFamily,
+        ...userStyle,
+      }}
     >
       {symbolEl && symbolPosition === "left" && symbolEl}
-      {formatted.map((item) => (
-        <span
-          key={item.key}
-          data-digit={item.isDigit ? item.char : undefined}
-          style={{ color: item.color }}
-        >
-          {item.char}
-        </span>
-      ))}
+      <span aria-hidden="true" style={{ display: "contents" }}>
+        {formatted.map((item) => (
+          <span key={item.key} data-digit={item.isDigit ? item.char : undefined} style={{ color: item.color }}>
+            {item.char}
+          </span>
+        ))}
+      </span>
       {symbolEl && symbolPosition === "right" && symbolEl}
     </span>
   );

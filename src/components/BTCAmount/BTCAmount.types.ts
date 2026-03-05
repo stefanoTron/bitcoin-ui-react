@@ -5,7 +5,7 @@ export interface BTCAmountProps {
   amount: number;
   /** Color for significant (non-zero leading) digits. Default: 'currentColor' */
   activeColor?: string;
-  /** Color for insignificant (zero-padded) digits. Default: '#999999' */
+  /** Color for insignificant (zero-padded) digits. Themeable via `--btc-ui-color-inactive`. Default: '#999999' */
   inactiveColor?: string;
   /** Separator between 3-digit satoshi groups. Default: '\u2009' (thin space) */
   satsSeparator?: string;
@@ -19,8 +19,14 @@ export interface BTCAmountProps {
   symbolPosition?: "left" | "right";
   /** Font family. Default: 'inherit' */
   fontFamily?: string;
-  /** Custom aria-label override. If omitted, auto-generated from amount. */
+  /** Custom aria-label override. If omitted, auto-generated from amount.
+   *  Pass `""` (empty string) to suppress the aria-label entirely
+   *  (useful when BTCAmount is nested inside a labeled parent). */
   ariaLabel?: string;
+  /** Formatter for the auto-generated aria-label.
+   *  Receives the BTC value string (e.g. "1.23456789").
+   *  Default: `` (btc) => `${btc} BTC` `` */
+  ariaLabelFormatter?: (btcValue: string) => string;
   /** CSS class name. */
   className?: string;
   /** Additional inline styles. */
