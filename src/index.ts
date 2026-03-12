@@ -15,6 +15,8 @@ export type {
   ConfirmationBadgeProps,
   SeedPhraseInputProps,
   BalanceDisplayProps,
+  BalanceUnit,
+  FiatEntry,
 } from "./components";
 export { BitcoinIcon, SatsIcon } from "./icons";
 export type { BitcoinIconProps, SatsIconProps } from "./icons";

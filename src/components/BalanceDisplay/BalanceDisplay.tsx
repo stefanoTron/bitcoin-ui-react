@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { BalanceDisplayProps } from "./BalanceDisplay.types";
+import { BalanceDisplayProps, BalanceUnit, FiatEntry } from "./BalanceDisplay.types";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
 import { clampSats } from "../../utils/clampSats";
-
-type Unit = "btc" | "sats" | "fiat";
 
 function formatSatsNumber(sats: number, locale: string): string {
   return new Intl.NumberFormat(locale).format(clampSats(sats));
@@ -14,9 +12,36 @@ function formatFiat(value: number, code: string, locale: string): string {
   return new Intl.NumberFormat(locale, { style: "currency", currency: code }).format(value);
 }
 
+function resolvedFiats(props: Pick<BalanceDisplayProps, "fiats" | "fiatValue" | "fiatCode">): FiatEntry[] {
+  if (props.fiats !== undefined) return props.fiats;
+  if (props.fiatValue !== undefined) return [{ code: props.fiatCode ?? "USD", value: props.fiatValue }];
+  return [];
+}
+
+function buildUnits(fiats: FiatEntry[]): BalanceUnit[] {
+  const units: BalanceUnit[] = ["btc", "sats"];
+  for (let i = 0; i < fiats.length; i++) {
+    units.push(`fiat:${i}`);
+  }
+  return units;
+}
+
+/** Normalize "fiat" to "fiat:0" for backward compat. */
+function normalizeUnit(unit: BalanceUnit): BalanceUnit {
+  return unit === "fiat" ? "fiat:0" : unit;
+}
+
+/** Get the fiat index from a unit string, or -1 if not a fiat unit. */
+function fiatIndex(unit: BalanceUnit): number {
+  if (unit === "fiat") return 0;
+  if (unit.startsWith("fiat:")) return parseInt(unit.slice(5), 10);
+  return -1;
+}
+
 /** Multi-unit balance display with animated crossfade between BTC, sats, and fiat. */
 export function BalanceDisplay({
   amount,
+  fiats: fiatsProp,
   fiatValue,
   fiatCode = "USD",
   locale = "en-US",
@@ -34,11 +59,11 @@ export function BalanceDisplay({
   ref,
 }: BalanceDisplayProps) {
   const prefersReducedMotion = useReducedMotion();
-  const hasFiat = fiatValue !== undefined;
-  const units: Unit[] = hasFiat ? ["btc", "sats", "fiat"] : ["btc", "sats"];
+  const fiats = resolvedFiats({ fiats: fiatsProp, fiatValue, fiatCode });
+  const units = buildUnits(fiats);
 
-  const [internalUnit, setInternalUnit] = useState<Unit>("btc");
-  const currentUnit = controlledUnit ?? internalUnit;
+  const [internalUnit, setInternalUnit] = useState<BalanceUnit>("btc");
+  const currentUnit = normalizeUnit(controlledUnit ?? internalUnit);
 
   const handleToggle = () => {
     const idx = units.indexOf(currentUnit);
@@ -49,7 +74,15 @@ export function BalanceDisplay({
     onUnitChange?.(next);
   };
 
-  const label = currentUnit === "btc" ? btcLabel : currentUnit === "sats" ? satsLabel : fiatCode;
+  const fi = fiatIndex(currentUnit);
+  const currentFiat = fi >= 0 && fi < fiats.length ? fiats[fi] : undefined;
+
+  const label =
+    currentUnit === "btc"
+      ? btcLabel
+      : currentUnit === "sats"
+        ? satsLabel
+        : currentFiat?.code ?? fiatCode;
 
   return (
     <div
@@ -76,8 +109,8 @@ export function BalanceDisplay({
           >
             {currentUnit === "btc" && <BTCAmount amount={amount} activeColor={activeColor} animate={false} />}
             {currentUnit === "sats" && <span>{formatSatsNumber(amount, locale)}</span>}
-            {currentUnit === "fiat" && fiatValue !== undefined && (
-              <span>{formatFiat(fiatValue, fiatCode, locale)}</span>
+            {currentFiat !== undefined && (
+              <span>{formatFiat(currentFiat.value, currentFiat.code, locale)}</span>
             )}
           </motion.div>
         </AnimatePresence>

@@ -184,4 +184,101 @@ describe("BalanceDisplay", () => {
     const { container } = render(<BalanceDisplay amount={100_000_000} />);
     expect(await axe(container)).toHaveNoViolations();
   });
+
+  // Multi-fiat tests
+  describe("multi-fiat (fiats prop)", () => {
+    const fiats = [
+      { code: "USD", value: 45000 },
+      { code: "EUR", value: 42000 },
+    ];
+
+    test("cycles btc → sats → USD → EUR → btc with 2-entry fiats array", async () => {
+      render(<BalanceDisplay amount={100_000_000} fiats={fiats} />);
+      expect(screen.getByText("BTC")).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("sats")).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("USD")).toBeInTheDocument();
+      expect(screen.getByTestId("balance-display").textContent).toContain("$45,000");
+
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("EUR")).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("BTC")).toBeInTheDocument();
+    });
+
+    test("controlled mode with unit='fiat:1' selects the second fiat entry", () => {
+      render(<BalanceDisplay amount={100_000_000} fiats={fiats} unit="fiat:1" />);
+      expect(screen.getByText("EUR")).toBeInTheDocument();
+    });
+
+    test("onUnitChange fires with fiat:N strings", async () => {
+      const onUnitChange = jest.fn();
+      render(<BalanceDisplay amount={100_000_000} fiats={fiats} unit="sats" onUnitChange={onUnitChange} />);
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(onUnitChange).toHaveBeenCalledWith("fiat:0");
+    });
+
+    test("empty fiats array skips fiat in the cycle (btc → sats → btc)", async () => {
+      render(<BalanceDisplay amount={100_000_000} fiats={[]} />);
+      expect(screen.getByText("BTC")).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("sats")).toBeInTheDocument();
+
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("BTC")).toBeInTheDocument();
+    });
+
+    test("fiats takes precedence over fiatValue/fiatCode", async () => {
+      render(
+        <BalanceDisplay
+          amount={100_000_000}
+          fiatValue={99999}
+          fiatCode="GBP"
+          fiats={[{ code: "JPY", value: 6_750_000 }]}
+        />
+      );
+      // Click to sats, then fiat
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("JPY")).toBeInTheDocument();
+    });
+
+    test("backward compat: fiatValue/fiatCode still works when fiats is not provided", async () => {
+      render(<BalanceDisplay amount={100_000_000} fiatValue={45000} fiatCode="GBP" />);
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      await userEvent.click(screen.getByTestId("balance-toggle"));
+      expect(screen.getByText("GBP")).toBeInTheDocument();
+    });
+
+    test("controlled unit='fiat' maps to fiat:0 for backward compat", () => {
+      render(<BalanceDisplay amount={100_000_000} fiats={fiats} unit="fiat" />);
+      expect(screen.getByText("USD")).toBeInTheDocument();
+      expect(screen.getByTestId("balance-display").textContent).toContain("$45,000");
+    });
+  });
+
+  // Keyboard accessibility
+  describe("keyboard accessibility", () => {
+    test("toggle is focusable and responds to Enter", async () => {
+      render(<BalanceDisplay amount={100_000_000} />);
+      const toggle = screen.getByTestId("balance-toggle");
+      toggle.focus();
+      expect(toggle).toHaveFocus();
+      await userEvent.keyboard("{Enter}");
+      expect(screen.getByText("sats")).toBeInTheDocument();
+    });
+
+    test("toggle responds to Space", async () => {
+      render(<BalanceDisplay amount={100_000_000} />);
+      const toggle = screen.getByTestId("balance-toggle");
+      toggle.focus();
+      await userEvent.keyboard(" ");
+      expect(screen.getByText("sats")).toBeInTheDocument();
+    });
+  });
 });

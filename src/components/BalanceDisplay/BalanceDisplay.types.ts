@@ -1,18 +1,30 @@
 import type { Ref } from "react";
 
+export interface FiatEntry {
+  /** ISO 4217 currency code (e.g. "USD", "EUR"). */
+  code: string;
+  /** Pre-converted fiat value. */
+  value: number;
+}
+
+/** Unit identifier. "btc", "sats", "fiat" (alias for "fiat:0"), or "fiat:N" for multi-fiat. */
+export type BalanceUnit = "btc" | "sats" | "fiat" | `fiat:${number}`;
+
 export interface BalanceDisplayProps {
   /** Balance in satoshis. */
   amount: number;
-  /** Fiat value of the balance. If omitted, fiat unit is excluded from toggle. */
+  /** Multiple fiat currencies. Cycle: btc → sats → fiat[0] → fiat[1] → … → btc. Takes precedence over fiatValue/fiatCode. */
+  fiats?: FiatEntry[];
+  /** Fiat value of the balance. If omitted and fiats is not provided, fiat unit is excluded from toggle. */
   fiatValue?: number;
   /** ISO 4217 currency code for fiat display. Default: 'USD' */
   fiatCode?: string;
   /** Locale for number formatting (sats grouping and fiat currency). Default: 'en-US' */
   locale?: string;
-  /** Currently displayed unit. Uncontrolled by default (internal state). */
-  unit?: "btc" | "sats" | "fiat";
-  /** Called when the unit changes (via tap). */
-  onUnitChange?: (unit: "btc" | "sats" | "fiat") => void;
+  /** Currently displayed unit. Uncontrolled by default (internal state). Use "fiat:N" to select a specific fiat entry. */
+  unit?: BalanceUnit;
+  /** Called when the unit changes (via tap). Fires with "fiat:N" for multi-fiat. */
+  onUnitChange?: (unit: BalanceUnit) => void;
   /** Color for the amount text. Default: 'currentColor' */
   activeColor?: string;
   /** Color for the unit label. Themeable via `--btc-ui-color-inactive`. Default: '#999999' */

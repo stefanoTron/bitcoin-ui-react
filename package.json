@@ -1,6 +1,6 @@
 {
   "name": "bitcoin-ui-react",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "React components for Bitcoin amount display and input",
   "author": "Stefano Tron",
   "license": "MIT",

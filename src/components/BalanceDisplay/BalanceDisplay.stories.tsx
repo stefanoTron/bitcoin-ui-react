@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, within } from "storybook/test";
 import { BalanceDisplay } from "./BalanceDisplay";
+import type { BalanceUnit } from "./BalanceDisplay.types";
 
 const meta: Meta<typeof BalanceDisplay> = {
   title: "Components/BalanceDisplay",
@@ -91,6 +92,69 @@ export const Controlled: Story = {
               }}
             >
               {u.toUpperCase()}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  },
+};
+
+/** Multi-fiat — cycles BTC → sats → USD → EUR → BTC */
+export const MultiFiat: Story = {
+  args: {
+    amount: 100_000_000,
+    fiats: [
+      { code: "USD", value: 45000.5 },
+      { code: "EUR", value: 42000 },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = canvas.getByTestId("balance-toggle");
+
+    await expect(toggle).toHaveTextContent("BTC");
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveTextContent("sats");
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveTextContent("USD");
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveTextContent("EUR");
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveTextContent("BTC");
+  },
+};
+
+/** Controlled multi-fiat with external unit state */
+export const MultiFiatControlled: Story = {
+  render: () => {
+    const fiats = [
+      { code: "USD", value: 45000.5 },
+      { code: "EUR", value: 42000 },
+      { code: "GBP", value: 36000 },
+    ];
+    const [unit, setUnit] = useState<BalanceUnit>("btc");
+    const allUnits: BalanceUnit[] = ["btc", "sats", "fiat:0", "fiat:1", "fiat:2"];
+    const unitLabels: Record<string, string> = { btc: "BTC", sats: "sats", "fiat:0": "USD", "fiat:1": "EUR", "fiat:2": "GBP" };
+    return (
+      <div>
+        <BalanceDisplay amount={100_000_000} fiats={fiats} unit={unit} onUnitChange={setUnit} />
+        <div style={{ marginTop: 16, display: "flex", gap: 8, justifyContent: "center" }}>
+          {allUnits.map((u) => (
+            <button
+              key={u}
+              onClick={() => setUnit(u)}
+              style={{
+                padding: "4px 12px",
+                fontSize: 14,
+                border: u === unit ? "2px solid #f7931a" : "1px solid #ccc",
+                borderRadius: 4,
+                background: u === unit ? "#fff8f0" : "#fff",
+                cursor: "pointer",
+                fontWeight: u === unit ? 600 : 400,
+              }}
+            >
+              {unitLabels[u]}
             </button>
           ))}
         </div>
