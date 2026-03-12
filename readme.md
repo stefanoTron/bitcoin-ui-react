@@ -8,6 +8,10 @@
 
 React components for displaying and inputting Bitcoin amounts with satoshi precision.
 
+[Live Storybook](https://stefanotron.github.io/bitcoin-ui-react/)
+
+![Showcase](docs/showcase.png)
+
 ## Install
 
 ```bash
