@@ -1,17 +1,18 @@
-import { render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { AddressDisplay } from "./AddressDisplay";
 
 const TEST_ADDR = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
 
 describe("AddressDisplay", () => {
-  let originalClipboard: Clipboard;
+  const originalClipboard = navigator.clipboard;
+  const writeTextMock = jest.fn().mockResolvedValue(undefined);
 
   beforeAll(() => {
-    originalClipboard = navigator.clipboard;
     Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: jest.fn().mockResolvedValue(undefined) },
+      value: { writeText: writeTextMock },
       writable: true,
       configurable: true,
     });
@@ -26,7 +27,7 @@ describe("AddressDisplay", () => {
   });
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    writeTextMock.mockReset().mockResolvedValue(undefined);
   });
 
   test("truncates address with default prefix/suffix", () => {
@@ -109,13 +110,7 @@ describe("AddressDisplay", () => {
   });
 
   test("applies custom colors", () => {
-    render(
-      <AddressDisplay
-        address={TEST_ADDR}
-        addressColor="red"
-        separatorColor="blue"
-      />,
-    );
+    render(<AddressDisplay address={TEST_ADDR} addressColor="red" separatorColor="blue" />);
     const el = screen.getByTestId("address-display");
     const spans = el.querySelectorAll("span");
     const colors = Array.from(spans).map((s) => (s as HTMLElement).style.color);
@@ -131,12 +126,42 @@ describe("AddressDisplay", () => {
     expect(button).toHaveAttribute("aria-label", "Done!");
   });
 
+  test("forwards ref to root span element", () => {
+    const ref = { current: null };
+    render(<AddressDisplay address={TEST_ADDR} ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLSpanElement);
+  });
+
+  test("copied state resets after timeout", async () => {
+    jest.useFakeTimers();
+    render(<AddressDisplay address={TEST_ADDR} />);
+    const button = screen.getByRole("button");
+    // Use fireEvent (not userEvent) to avoid advanceTimers advancing the 2s reset
+    await act(async () => {
+      fireEvent.click(button);
+      // Flush the microtask from the resolved clipboard promise
+      await Promise.resolve();
+    });
+    expect(screen.getByText("Copied!")).toBeInTheDocument();
+    // Advance past the 2000ms reset timeout
+    act(() => {
+      jest.advanceTimersByTime(2100);
+    });
+    expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
+    jest.useRealTimers();
+  });
+
   test("does not throw when clipboard.writeText rejects", async () => {
-    (navigator.clipboard.writeText as jest.Mock).mockRejectedValueOnce(new Error("Not allowed"));
+    writeTextMock.mockRejectedValueOnce(new Error("Not allowed"));
     render(<AddressDisplay address={TEST_ADDR} />);
     const button = screen.getByRole("button");
     await userEvent.click(button);
     // Component should not crash; copied state should not change
     expect(screen.queryByText("Copied!")).not.toBeInTheDocument();
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<AddressDisplay address={TEST_ADDR} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { ConfirmationBadge } from "./ConfirmationBadge";
 
 describe("ConfirmationBadge", () => {
@@ -47,12 +48,7 @@ describe("ConfirmationBadge", () => {
   });
 
   test("shows custom labels", () => {
-    render(
-      <ConfirmationBadge
-        confirmations={0}
-        unconfirmedLabel="Pending"
-      />,
-    );
+    render(<ConfirmationBadge confirmations={0} unconfirmedLabel="Pending" />);
     expect(screen.getByText("Pending")).toBeInTheDocument();
   });
 
@@ -91,5 +87,23 @@ describe("ConfirmationBadge", () => {
     const el = screen.getByTestId("confirmation-badge");
     expect(el).toHaveClass("badge");
     expect(el).toHaveStyle({ padding: "8px" });
+  });
+
+  test("forwards ref to root span element", () => {
+    const ref = { current: null };
+    render(<ConfirmationBadge confirmations={0} ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLSpanElement);
+  });
+
+  test("supports custom confirmingLabelFormatter", () => {
+    render(
+      <ConfirmationBadge confirmations={3} confirmingLabelFormatter={(count, thresh) => `${count} von ${thresh}`} />,
+    );
+    expect(screen.getByText("3 von 6")).toBeInTheDocument();
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<ConfirmationBadge confirmations={3} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

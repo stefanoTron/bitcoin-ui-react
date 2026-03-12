@@ -74,12 +74,7 @@ export const Controlled: Story = {
     const [unit, setUnit] = useState<"btc" | "sats" | "fiat">("btc");
     return (
       <div>
-        <BalanceDisplay
-          amount={250_000_000}
-          fiatValue={112500}
-          unit={unit}
-          onUnitChange={setUnit}
-        />
+        <BalanceDisplay amount={250_000_000} fiatValue={112500} unit={unit} onUnitChange={setUnit} />
         <div style={{ marginTop: 16, display: "flex", gap: 8, justifyContent: "center" }}>
           {(["btc", "sats", "fiat"] as const).map((u) => (
             <button
@@ -113,12 +108,7 @@ export const NoFiat: Story = {
 export const DarkTheme: Story = {
   render: () => (
     <div style={{ background: "#1a1a2e", padding: 32, borderRadius: 8 }}>
-      <BalanceDisplay
-        amount={500_000_000}
-        fiatValue={225000}
-        activeColor="#e0e0e0"
-        labelColor="#666"
-      />
+      <BalanceDisplay amount={500_000_000} fiatValue={225000} activeColor="#e0e0e0" labelColor="#666" />
     </div>
   ),
 };
@@ -146,9 +136,7 @@ export const InACard: Story = {
         margin: "0 auto",
       }}
     >
-      <div style={{ fontSize: 14, fontFamily: "system-ui, sans-serif", marginBottom: 8, opacity: 0.8 }}>
-        My Wallet
-      </div>
+      <div style={{ fontSize: 14, fontFamily: "system-ui, sans-serif", marginBottom: 8, opacity: 0.8 }}>My Wallet</div>
       <BalanceDisplay
         amount={234_567_890}
         fiatValue={10567.32}

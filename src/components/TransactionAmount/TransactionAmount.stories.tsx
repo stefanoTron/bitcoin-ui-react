@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { TransactionAmount } from "./TransactionAmount";
-import { AddressDisplay } from "../AddressDisplay/AddressDisplay";
 
 const meta: Meta<typeof TransactionAmount> = {
   title: "Components/TransactionAmount",
@@ -75,12 +74,7 @@ export const SymbolOnRight: Story = {
 
 /** Custom element as symbol */
 export const CustomSymbol: Story = {
-  render: () => (
-    <TransactionAmount
-      amount={150_000}
-      symbol={<span style={{ fontSize: "0.75em" }}>BTC</span>}
-    />
-  ),
+  render: () => <TransactionAmount amount={150_000} symbol={<span style={{ fontSize: "0.75em" }}>BTC</span>} />,
 };
 
 /** Amount without sign prefix */
@@ -126,9 +120,7 @@ export const TransactionList: Story = {
             }}
           >
             <div>
-              <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 500 }}>
-                {tx.label}
-              </div>
+              <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, fontWeight: 500 }}>{tx.label}</div>
               <div style={{ fontSize: 12, color: "#999", marginTop: 2 }}>{tx.date}</div>
             </div>
             <TransactionAmount amount={tx.amount} />

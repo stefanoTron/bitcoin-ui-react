@@ -1,24 +1,19 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { BTCInput } from "./BTCInput";
 
 // Thin space used as default satsSeparator
 const THIN = "\u2009";
 
-function getCursorAfterChange(
-  initialAmount: number,
-  rawValue: string,
-  selectionStart: number,
-): number | null {
+function getCursorAfterChange(initialAmount: number, rawValue: string, selectionStart: number): number | null {
   let currentAmount = initialAmount;
   const onAmountChange = jest.fn((sats: number) => {
     currentAmount = sats;
   });
 
-  const { rerender } = render(
-    <BTCInput amount={currentAmount} onAmountChange={onAmountChange} />,
-  );
+  const { rerender } = render(<BTCInput amount={currentAmount} onAmountChange={onAmountChange} />);
   const input = screen.getByRole("textbox") as HTMLInputElement;
   const spy = jest.spyOn(input, "setSelectionRange");
 
@@ -89,12 +84,7 @@ describe("BTCInput", () => {
 
   test("clamps amount to max supply (2.1 quadrillion sats)", () => {
     const onAmountChange = jest.fn();
-    render(
-      <BTCInput
-        amount={2_100_000_000_000_001}
-        onAmountChange={onAmountChange}
-      />,
-    );
+    render(<BTCInput amount={2_100_000_000_000_001} onAmountChange={onAmountChange} />);
     const input = screen.getByRole("textbox") as HTMLInputElement;
     const digitsOnly = input.value.replace(/\D/g, "");
     expect(parseInt(digitsOnly, 10)).toBeLessThanOrEqual(2_100_000_000_000_000);
@@ -121,6 +111,24 @@ describe("BTCInput", () => {
   test("supports custom ariaLabel", () => {
     render(<BTCInput amount={0} onAmountChange={() => {}} ariaLabel="Monto en BTC" />);
     expect(screen.getByLabelText("Monto en BTC")).toBeInTheDocument();
+  });
+
+  test("forwards ref to input element", () => {
+    const ref = { current: null };
+    render(<BTCInput amount={0} onAmountChange={() => {}} ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLInputElement);
+  });
+
+  test("supports custom descriptionFormatter for i18n", () => {
+    render(
+      <BTCInput amount={100_000_000} onAmountChange={() => {}} descriptionFormatter={(btc) => `${btc} ビットコイン`} />,
+    );
+    expect(screen.getByText("1.00000000 ビットコイン")).toBeInTheDocument();
+  });
+
+  test("default descriptionFormatter appends BTC", () => {
+    render(<BTCInput amount={50_000_000} onAmountChange={() => {}} />);
+    expect(screen.getByText("0.50000000 BTC")).toBeInTheDocument();
   });
 });
 
@@ -189,7 +197,7 @@ describe("BTCInput — format/parse round-trip", () => {
   });
 
   test("amount exceeding max is clamped to max supply", () => {
-    const value = renderAndGetValue(9_999_999_999_999_999);
+    const value = renderAndGetValue(Number.MAX_SAFE_INTEGER);
     expect(value.replace(/\s/g, "")).toBe("21000000.00000000");
   });
 
@@ -250,19 +258,13 @@ describe("BTCInput — cursor preservation", () => {
    * re-renders with the resulting amount so the useLayoutEffect runs.
    * Returns the position that setSelectionRange was called with.
    */
-  function simulateChangeAndGetCursor(
-    initialAmount: number,
-    rawValue: string,
-    cursorPos: number,
-  ): number | null {
+  function simulateChangeAndGetCursor(initialAmount: number, rawValue: string, cursorPos: number): number | null {
     let currentAmount = initialAmount;
     const onAmountChange = jest.fn((sats: number) => {
       currentAmount = sats;
     });
 
-    const { rerender } = render(
-      <BTCInput amount={currentAmount} onAmountChange={onAmountChange} />,
-    );
+    const { rerender } = render(<BTCInput amount={currentAmount} onAmountChange={onAmountChange} />);
     const input = screen.getByRole("textbox") as HTMLInputElement;
 
     // Spy on setSelectionRange to capture cursor restoration
@@ -543,9 +545,7 @@ describe("BTCInput — edge cases", () => {
     const input = screen.getByRole("textbox") as HTMLInputElement;
     expect(input.style.color).toBe("gray");
 
-    rerender(
-      <BTCInput amount={100} onAmountChange={() => {}} activeColor="blue" inactiveColor="gray" />,
-    );
+    rerender(<BTCInput amount={100} onAmountChange={() => {}} activeColor="blue" inactiveColor="gray" />);
     expect(input.style.color).toBe("blue");
   });
 
@@ -556,13 +556,7 @@ describe("BTCInput — edge cases", () => {
   });
 
   test("custom style prop is merged", () => {
-    render(
-      <BTCInput
-        amount={0}
-        onAmountChange={() => {}}
-        style={{ fontSize: "24px" }}
-      />,
-    );
+    render(<BTCInput amount={0} onAmountChange={() => {}} style={{ fontSize: "24px" }} />);
     const input = screen.getByRole("textbox") as HTMLInputElement;
     expect(input.style.fontSize).toBe("24px");
   });
@@ -582,9 +576,7 @@ describe("BTCInput — edge cases", () => {
   });
 
   test("switching from nonzero to zero clears the display", () => {
-    const { rerender } = render(
-      <BTCInput amount={500} onAmountChange={() => {}} />,
-    );
+    const { rerender } = render(<BTCInput amount={500} onAmountChange={() => {}} />);
     const input = screen.getByRole("textbox") as HTMLInputElement;
     expect(input.value).not.toBe("");
 
@@ -613,5 +605,10 @@ describe("BTCInput — edge cases", () => {
     const input = screen.getByRole("textbox") as HTMLInputElement;
     fireEvent.change(input, { target: { value: "5" } });
     expect(onAmountChange).toHaveBeenCalledWith(5);
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<BTCInput amount={100_000} onAmountChange={() => {}} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

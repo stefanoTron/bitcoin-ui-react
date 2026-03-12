@@ -1,0 +1,49 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction" />
+
+# bitcoin-ui-react
+
+React component library for Bitcoin wallet UIs — amounts, addresses, seed phrases, and transaction displays with built-in formatting, animation, and accessibility.
+
+## Features
+
+- **BTCAmount** — Formatted BTC display with grouped decimals and spring animation
+- **BTCInput** — Controlled BTC input with smart cursor management
+- **AddressDisplay** — Truncated Bitcoin address with copy-to-clipboard
+- **TransactionAmount** — Signed, colored transaction amount
+- **ConfirmationBadge** — Three-state confirmation indicator
+- **BalanceDisplay** — BTC/sats toggle with tap-to-switch
+- **SeedPhraseInput** — 12/24-word seed phrase entry with autocomplete
+- **BitcoinIcon / SatsIcon** — SVG icons
+
+## Install
+
+```sh
+npm install bitcoin-ui-react
+```
+
+Peer dependencies: `react >=18`, `react-dom >=18`.
+
+## Quick Start
+
+```tsx
+import { BTCAmount, AddressDisplay } from "bitcoin-ui-react";
+
+function Wallet() {
+  return (
+    <div>
+      <BTCAmount amount={2_100_000} />
+      <AddressDisplay address="bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq" />
+    </div>
+  );
+}
+```
+
+## Tree-shaking
+
+The library is fully tree-shakeable. `SeedPhraseInput` (which includes BIP39 wordlist data) is available via a separate entry point to keep the main bundle small:
+
+```tsx
+import { SeedPhraseInput } from "bitcoin-ui-react/seed-phrase";
+```

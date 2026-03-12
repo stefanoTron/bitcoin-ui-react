@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { SatsIcon } from "./SatsIcon";
 
 describe("SatsIcon", () => {
@@ -52,5 +53,16 @@ describe("SatsIcon", () => {
     const svg = screen.getByRole("img");
     expect(svg).toHaveClass("my-icon");
     expect(svg).toHaveStyle({ opacity: "0.5" });
+  });
+
+  test("forwards ref to SVG element", () => {
+    const ref = { current: null };
+    render(<SatsIcon ref={ref} />);
+    expect(ref.current).toBeInstanceOf(SVGSVGElement);
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<SatsIcon />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

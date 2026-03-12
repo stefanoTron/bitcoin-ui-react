@@ -15,6 +15,7 @@
 Remove everything that's being replaced. Start with a clean slate.
 
 **Files to delete:**
+
 - `src/components/Button/` (entire directory)
 - `src/components/Input/` (entire directory)
 - `src/components/BTCInput/BTCInput.module.css`
@@ -169,6 +170,7 @@ export default defineConfig({
 ```
 
 Key changes from old config:
+
 - `jsx: "react-jsx"` (modern JSX transform — no `import React` needed)
 - `moduleResolution: "bundler"` (modern resolution)
 - `target: "ES2020"` (modern baseline)
@@ -201,6 +203,7 @@ export {};
 ```
 
 Run:
+
 ```bash
 npx tsup
 ```
@@ -218,6 +221,7 @@ test("smoke test", () => {
 ```
 
 Run:
+
 ```bash
 npx jest
 ```
@@ -288,6 +292,7 @@ git commit -m "chore: configure Storybook 10 with Vite"
 ### Task 5: Rewrite BitcoinIcon (TDD)
 
 **Files:**
+
 - Rewrite: `src/icons/BitcoinIcon/BitcoinIcon.types.ts`
 - Rewrite: `src/icons/BitcoinIcon/BitcoinIcon.tsx`
 - Rewrite: `src/icons/BitcoinIcon/BitcoinIcon.test.tsx`
@@ -373,13 +378,7 @@ export function BitcoinIcon({
   size = 16,
 }: BitcoinIconProps) {
   return (
-    <svg
-      height={size}
-      role="img"
-      viewBox="0 0 512 512"
-      width={size}
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg height={size} role="img" viewBox="0 0 512 512" width={size} xmlns="http://www.w3.org/2000/svg">
       <title>{alt}</title>
       <path
         fill={backgroundColor}
@@ -421,6 +420,7 @@ git commit -m "feat: rewrite BitcoinIcon with tests"
 ### Task 6: Rewrite SatsIcon (TDD)
 
 **Files:**
+
 - Rewrite: `src/icons/SatsIcon/SatsIcon.types.ts`
 - Rewrite: `src/icons/SatsIcon/SatsIcon.tsx`
 - Rewrite: `src/icons/SatsIcon/SatsIcon.test.tsx`
@@ -564,6 +564,7 @@ git commit -m "feat: rewrite SatsIcon with tests"
 This is the most complex component. It formats a satoshi amount as `X.XX XXX XXX` with per-digit color coding and animated transitions.
 
 **Files:**
+
 - Rewrite: `src/components/BTCAmount/BTCAmount.types.ts`
 - Rewrite: `src/components/BTCAmount/BTCAmount.tsx`
 - Rewrite: `src/components/BTCAmount/BTCAmount.test.tsx`
@@ -653,9 +654,7 @@ describe("BTCAmount", () => {
     const container = screen.getByTestId("btc-amount");
     const spans = container.querySelectorAll("span[data-digit]");
     // The digit "1" at position 3 (from right) should be active
-    const activeSpans = Array.from(spans).filter(
-      (s) => (s as HTMLElement).style.color === "red"
-    );
+    const activeSpans = Array.from(spans).filter((s) => (s as HTMLElement).style.color === "red");
     expect(activeSpans.length).toBeGreaterThan(0);
   });
 
@@ -779,10 +778,7 @@ export function BTCAmount({
   );
 
   return (
-    <span
-      data-testid="btc-amount"
-      style={{ fontFamily, display: "inline-flex", alignItems: "baseline" }}
-    >
+    <span data-testid="btc-amount" style={{ fontFamily, display: "inline-flex", alignItems: "baseline" }}>
       {formatted.map((item) =>
         item.isDigit && shouldAnimate ? (
           <AnimatePresence mode="popLayout" key={item.key}>
@@ -799,11 +795,7 @@ export function BTCAmount({
             </motion.span>
           </AnimatePresence>
         ) : (
-          <span
-            key={item.key}
-            data-digit={item.isDigit ? item.char : undefined}
-            style={{ color: item.color }}
-          >
+          <span key={item.key} data-digit={item.isDigit ? item.char : undefined} style={{ color: item.color }}>
             {item.char}
           </span>
         ),
@@ -842,6 +834,7 @@ git commit -m "feat: rewrite BTCAmount with animated digit display and tests"
 Controlled input component. User types digits, the component formats and displays as BTC.
 
 **Files:**
+
 - Rewrite: `src/components/BTCInput/BTCInput.types.ts`
 - Rewrite: `src/components/BTCInput/BTCInput.tsx`
 - Rewrite: `src/components/BTCInput/BTCInput.test.tsx`
@@ -942,12 +935,7 @@ describe("BTCInput", () => {
 
   test("clamps amount to max supply (2.1 quadrillion sats)", () => {
     const onAmountChange = jest.fn();
-    render(
-      <BTCInput
-        amount={2_100_000_000_000_001}
-        onAmountChange={onAmountChange}
-      />,
-    );
+    render(<BTCInput amount={2_100_000_000_000_001} onAmountChange={onAmountChange} />);
     // Component should render without error, clamped to max
     expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
@@ -1083,6 +1071,7 @@ git commit -m "feat: rewrite BTCInput as controlled input with formatting and te
 ### Task 9: Wire up barrel exports
 
 **Files:**
+
 - Rewrite: `src/components/index.ts`
 - Rewrite: `src/icons/index.ts`
 - Rewrite: `src/index.ts`
@@ -1144,6 +1133,7 @@ git commit -m "feat: wire up barrel exports for all components"
 ### Task 10: Write comprehensive Storybook stories
 
 **Files:**
+
 - Rewrite: `src/icons/BitcoinIcon/BitcoinIcon.stories.tsx`
 - Rewrite: `src/icons/SatsIcon/SatsIcon.stories.tsx`
 - Rewrite: `src/components/BTCAmount/BTCAmount.stories.tsx`
@@ -1402,9 +1392,7 @@ export const Interactive: Story = {
     return (
       <div style={{ fontFamily: "monospace", fontSize: 24 }}>
         <BTCInput amount={amount} onAmountChange={setAmount} />
-        <p style={{ fontSize: 14, color: "#666", marginTop: 8 }}>
-          Raw satoshis: {amount.toLocaleString()}
-        </p>
+        <p style={{ fontSize: 14, color: "#666", marginTop: 8 }}>Raw satoshis: {amount.toLocaleString()}</p>
       </div>
     );
   },
@@ -1417,20 +1405,14 @@ export const WithDisplay: Story = {
     return (
       <div style={{ fontFamily: "monospace", fontSize: 24 }}>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: 14, color: "#666", display: "block", marginBottom: 4 }}>
-            Input:
-          </label>
+          <label style={{ fontSize: 14, color: "#666", display: "block", marginBottom: 4 }}>Input:</label>
           <BTCInput amount={amount} onAmountChange={setAmount} />
         </div>
         <div>
-          <label style={{ fontSize: 14, color: "#666", display: "block", marginBottom: 4 }}>
-            Display:
-          </label>
+          <label style={{ fontSize: 14, color: "#666", display: "block", marginBottom: 4 }}>Display:</label>
           <BTCAmount amount={amount} />
         </div>
-        <p style={{ fontSize: 14, color: "#666", marginTop: 8 }}>
-          {amount.toLocaleString()} satoshis
-        </p>
+        <p style={{ fontSize: 14, color: "#666", marginTop: 8 }}>{amount.toLocaleString()} satoshis</p>
       </div>
     );
   },
@@ -1449,12 +1431,7 @@ export const CustomColors: Story = {
     const [amount, setAmount] = useState(1_234_567);
     return (
       <div style={{ fontFamily: "monospace", fontSize: 24, background: "#1a1a2e", padding: 24 }}>
-        <BTCInput
-          amount={amount}
-          onAmountChange={setAmount}
-          activeColor="#f7931a"
-          inactiveColor="#444"
-        />
+        <BTCInput amount={amount} onAmountChange={setAmount} activeColor="#f7931a" inactiveColor="#444" />
       </div>
     );
   },
@@ -1522,19 +1499,19 @@ Display a formatted Bitcoin amount from satoshis with color-coded digits and ani
 ```tsx
 import { BTCAmount } from "bitcoin-ui-react";
 
-<BTCAmount amount={12537829} />
+<BTCAmount amount={12537829} />;
 // Renders: 0.12 537 829
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `amount` | `number` | required | Amount in satoshis |
-| `activeColor` | `string` | `'currentColor'` | Color for significant digits |
-| `inactiveColor` | `string` | `'#999999'` | Color for zero-padded digits |
-| `satsSeparator` | `string` | `' '` (thin space) | Separator between 3-digit groups |
-| `btcSeparator` | `string` | `'.'` | Decimal separator |
-| `fontFamily` | `string` | `'inherit'` | Font family override |
-| `animate` | `boolean` | `true` | Animate digit changes |
+| Prop            | Type      | Default            | Description                      |
+| --------------- | --------- | ------------------ | -------------------------------- |
+| `amount`        | `number`  | required           | Amount in satoshis               |
+| `activeColor`   | `string`  | `'currentColor'`   | Color for significant digits     |
+| `inactiveColor` | `string`  | `'#999999'`        | Color for zero-padded digits     |
+| `satsSeparator` | `string`  | `' '` (thin space) | Separator between 3-digit groups |
+| `btcSeparator`  | `string`  | `'.'`              | Decimal separator                |
+| `fontFamily`    | `string`  | `'inherit'`        | Font family override             |
+| `animate`       | `boolean` | `true`             | Animate digit changes            |
 
 ### BTCInput
 
@@ -1544,19 +1521,19 @@ Controlled input for entering Bitcoin amounts. Formats as user types.
 import { BTCInput } from "bitcoin-ui-react";
 
 const [sats, setSats] = useState(0);
-<BTCInput amount={sats} onAmountChange={setSats} />
+<BTCInput amount={sats} onAmountChange={setSats} />;
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `amount` | `number` | required | Amount in satoshis |
-| `onAmountChange` | `(sats: number) => void` | required | Callback when amount changes |
-| `activeColor` | `string` | `'currentColor'` | Color for significant digits |
-| `inactiveColor` | `string` | `'#999999'` | Color for zero-padded digits |
-| `satsSeparator` | `string` | `' '` (thin space) | Separator between 3-digit groups |
-| `btcSeparator` | `string` | `'.'` | Decimal separator |
-| `disabled` | `boolean` | `false` | Disable the input |
-| `placeholder` | `string` | `'0.00 000 000'` | Placeholder text |
+| Prop             | Type                     | Default            | Description                      |
+| ---------------- | ------------------------ | ------------------ | -------------------------------- |
+| `amount`         | `number`                 | required           | Amount in satoshis               |
+| `onAmountChange` | `(sats: number) => void` | required           | Callback when amount changes     |
+| `activeColor`    | `string`                 | `'currentColor'`   | Color for significant digits     |
+| `inactiveColor`  | `string`                 | `'#999999'`        | Color for zero-padded digits     |
+| `satsSeparator`  | `string`                 | `' '` (thin space) | Separator between 3-digit groups |
+| `btcSeparator`   | `string`                 | `'.'`              | Decimal separator                |
+| `disabled`       | `boolean`                | `false`            | Disable the input                |
+| `placeholder`    | `string`                 | `'0.00 000 000'`   | Placeholder text                 |
 
 ### BitcoinIcon
 
@@ -1565,15 +1542,15 @@ SVG Bitcoin logo icon.
 ```tsx
 import { BitcoinIcon } from "bitcoin-ui-react";
 
-<BitcoinIcon size={32} />
+<BitcoinIcon size={32} />;
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `size` | `number` | `16` | Icon size in pixels |
-| `color` | `string` | `'#ffffff'` | Symbol color |
-| `backgroundColor` | `string` | `'#f7931a'` | Background color |
-| `alt` | `string` | `'Bitcoin'` | Accessibility label |
+| Prop              | Type     | Default     | Description         |
+| ----------------- | -------- | ----------- | ------------------- |
+| `size`            | `number` | `16`        | Icon size in pixels |
+| `color`           | `string` | `'#ffffff'` | Symbol color        |
+| `backgroundColor` | `string` | `'#f7931a'` | Background color    |
+| `alt`             | `string` | `'Bitcoin'` | Accessibility label |
 
 ### SatsIcon
 
@@ -1582,16 +1559,16 @@ SVG Satoshis icon.
 ```tsx
 import { SatsIcon } from "bitcoin-ui-react";
 
-<SatsIcon size={32} tilted />
+<SatsIcon size={32} tilted />;
 ```
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `size` | `number` | `16` | Icon size in pixels |
-| `color` | `string` | `'#000000'` | Symbol color |
-| `backgroundColor` | `string` | `'transparent'` | Background color |
-| `alt` | `string` | `'Satoshis'` | Accessibility label |
-| `tilted` | `boolean` | `false` | Apply tilt rotation |
+| Prop              | Type      | Default         | Description         |
+| ----------------- | --------- | --------------- | ------------------- |
+| `size`            | `number`  | `16`            | Icon size in pixels |
+| `color`           | `string`  | `'#000000'`     | Symbol color        |
+| `backgroundColor` | `string`  | `'transparent'` | Background color    |
+| `alt`             | `string`  | `'Satoshis'`    | Accessibility label |
+| `tilted`          | `boolean` | `false`         | Apply tilt rotation |
 
 ## License
 
@@ -1624,6 +1601,7 @@ npx tsup
 ```
 
 Expected: Build succeeds. Verify output files exist:
+
 - `dist/index.js` (CJS)
 - `dist/index.mjs` (ESM)
 - `dist/index.d.ts` (types)

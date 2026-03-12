@@ -31,9 +31,7 @@ export const Default: Story = {
     return (
       <div style={{ fontFamily: "monospace", fontSize: 24, width: 240 }}>
         <BTCInput amount={amount} onAmountChange={setAmount} />
-        <p style={{ fontSize: 12, color: "#888", marginTop: 4 }}>
-          {amount.toLocaleString()} sats
-        </p>
+        <p style={{ fontSize: 12, color: "#888", marginTop: 4 }}>{amount.toLocaleString()} sats</p>
       </div>
     );
   },
@@ -52,14 +50,9 @@ export const InAForm: Story = {
     const [amount, setAmount] = useState(0);
     const [memo, setMemo] = useState("");
     return (
-      <form
-        onSubmit={(e) => e.preventDefault()}
-        style={{ fontFamily: "system-ui, sans-serif", maxWidth: 360 }}
-      >
+      <form onSubmit={(e) => e.preventDefault()} style={{ fontFamily: "system-ui, sans-serif", maxWidth: 360 }}>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 14, fontWeight: 500, marginBottom: 4 }}>
-            Memo
-          </label>
+          <label style={{ display: "block", fontSize: 14, fontWeight: 500, marginBottom: 4 }}>Memo</label>
           <input
             type="text"
             value={memo}
@@ -77,9 +70,7 @@ export const InAForm: Story = {
           />
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 14, fontWeight: 500, marginBottom: 4 }}>
-            Amount
-          </label>
+          <label style={{ display: "block", fontSize: 14, fontWeight: 500, marginBottom: 4 }}>Amount</label>
           <div
             style={{
               display: "flex",
@@ -205,11 +196,7 @@ export const Inline: Story = {
             fontFamily: "SF Mono, Menlo, monospace",
           }}
         >
-          <BTCInput
-            amount={amount}
-            onAmountChange={setAmount}
-            style={{ width: "10ch" }}
-          />
+          <BTCInput amount={amount} onAmountChange={setAmount} style={{ width: "10ch" }} />
         </span>{" "}
         sats to Alice.
       </p>
@@ -232,9 +219,7 @@ export const DarkTheme: Story = {
           fontSize: 24,
         }}
       >
-        <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 4 }}>
-          Amount (BTC)
-        </label>
+        <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 4 }}>Amount (BTC)</label>
         <div
           style={{
             display: "flex",
@@ -246,12 +231,7 @@ export const DarkTheme: Story = {
           }}
         >
           <BitcoinIcon size={22} />
-          <BTCInput
-            amount={amount}
-            onAmountChange={setAmount}
-            activeColor="#f7931a"
-            inactiveColor="#555"
-          />
+          <BTCInput amount={amount} onAmountChange={setAmount} activeColor="#f7931a" inactiveColor="#555" />
         </div>
       </div>
     );
@@ -297,18 +277,14 @@ export const MultipleInputs: Story = {
     return (
       <div style={{ fontFamily: "system-ui, sans-serif", maxWidth: 360 }}>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 4 }}>
-            Send
-          </label>
+          <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 4 }}>Send</label>
           <div style={inputContainer}>
             <BitcoinIcon size={18} />
             <BTCInput amount={send} onAmountChange={setSend} />
           </div>
         </div>
         <div style={{ marginBottom: 16 }}>
-          <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 4 }}>
-            Network fee
-          </label>
+          <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 4 }}>Network fee</label>
           <div style={inputContainer}>
             <SatsIcon size={16} tilted />
             <BTCInput amount={fee} onAmountChange={setFee} />

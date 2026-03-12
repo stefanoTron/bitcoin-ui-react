@@ -12,15 +12,15 @@ Peer dependencies: `react >=18`, `react-dom >=18`.
 
 ## Components
 
-- [BTCAmount](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/components/BTCAmount/BTCAmount.tsx): Formatted BTC display with grouped decimals and spring animation
-- [BTCInput](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/components/BTCInput/BTCInput.tsx): Controlled BTC input with smart cursor management
-- [AddressDisplay](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/components/AddressDisplay/AddressDisplay.tsx): Truncated Bitcoin address with copy-to-clipboard
-- [TransactionAmount](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/components/TransactionAmount/TransactionAmount.tsx): Signed, colored transaction amount (wraps BTCAmount)
-- [ConfirmationBadge](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/components/ConfirmationBadge/ConfirmationBadge.tsx): Three-state confirmation indicator (unconfirmed/confirming/confirmed)
-- [BalanceDisplay](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/components/BalanceDisplay/BalanceDisplay.tsx): BTC/sats toggle display with tap-to-switch
-- [SeedPhraseInput](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/components/SeedPhraseInput/SeedPhraseInput.tsx): 12/24-word seed phrase entry with autocomplete and paste support
-- [BitcoinIcon](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/icons/BitcoinIcon/BitcoinIcon.tsx): Bitcoin (₿) SVG icon
-- [SatsIcon](https://github.com/nicepkg/bitcoin-ui-react/blob/main/src/icons/SatsIcon/SatsIcon.tsx): Satoshi SVG icon
+- [BTCAmount](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/components/BTCAmount/BTCAmount.tsx): Formatted BTC display with grouped decimals and spring animation
+- [BTCInput](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/components/BTCInput/BTCInput.tsx): Controlled BTC input with smart cursor management
+- [AddressDisplay](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/components/AddressDisplay/AddressDisplay.tsx): Truncated Bitcoin address with copy-to-clipboard
+- [TransactionAmount](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/components/TransactionAmount/TransactionAmount.tsx): Signed, colored transaction amount (wraps BTCAmount)
+- [ConfirmationBadge](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/components/ConfirmationBadge/ConfirmationBadge.tsx): Three-state confirmation indicator (unconfirmed/confirming/confirmed)
+- [BalanceDisplay](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/components/BalanceDisplay/BalanceDisplay.tsx): BTC/sats toggle display with tap-to-switch
+- [SeedPhraseInput](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/components/SeedPhraseInput/SeedPhraseInput.tsx): 12/24-word seed phrase entry with autocomplete and paste support
+- [BitcoinIcon](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/icons/BitcoinIcon/BitcoinIcon.tsx): Bitcoin (₿) SVG icon
+- [SatsIcon](https://github.com/stefanoTron/bitcoin-ui-react/blob/main/src/icons/SatsIcon/SatsIcon.tsx): Satoshi SVG icon
 
 ## Utilities
 

@@ -55,18 +55,48 @@ const fonts = {
 };
 
 const SAMPLE_SEED = [
-  "abandon", "ability", "able", "about", "above", "absent",
-  "absorb", "abstract", "absurd", "abuse", "access", "accident",
+  "abandon",
+  "ability",
+  "able",
+  "about",
+  "above",
+  "absent",
+  "absorb",
+  "abstract",
+  "absurd",
+  "abuse",
+  "access",
+  "accident",
 ];
 
 const TRANSACTIONS = [
-  { amount: 50_000_000, address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", confirmations: 142, label: "Mining reward" },
-  { amount: -2_345_000, address: "bc1q9h5yjqka2yu5rg45czlc3vn2jkf5r0gm6s2f8a", confirmations: 6, label: "Lightning channel" },
+  {
+    amount: 50_000_000,
+    address: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    confirmations: 142,
+    label: "Mining reward",
+  },
+  {
+    amount: -2_345_000,
+    address: "bc1q9h5yjqka2yu5rg45czlc3vn2jkf5r0gm6s2f8a",
+    confirmations: 6,
+    label: "Lightning channel",
+  },
   { amount: 15_780_000, address: "3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy", confirmations: 2, label: "Exchange deposit" },
   { amount: -890_000, address: "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq", confirmations: 0, label: "Mempool" },
 ];
 
-function Card({ title, children, style, t }: { title: string; children: React.ReactNode; style?: React.CSSProperties; t: Theme }) {
+function Card({
+  title,
+  children,
+  style,
+  t,
+}: {
+  title: string;
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  t: Theme;
+}) {
   return (
     <div
       style={{
@@ -77,7 +107,16 @@ function Card({ title, children, style, t }: { title: string; children: React.Re
         ...style,
       }}
     >
-      <div style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: t.muted, marginBottom: 16 }}>
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 600,
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          color: t.muted,
+          marginBottom: 16,
+        }}
+      >
         {title}
       </div>
       {children}
@@ -249,7 +288,12 @@ function Dashboard({ t }: { t: Theme }) {
           <div>
             <SectionLabel t={t}>Sats icon</SectionLabel>
             <div style={{ fontFamily: fonts.mono, fontSize: 18 }}>
-              <BTCAmount amount={42_000_000} activeColor={t.text} inactiveColor={t.muted} symbol={<SatsIcon size="1em" color={t.text} />} />
+              <BTCAmount
+                amount={42_000_000}
+                activeColor={t.text}
+                inactiveColor={t.muted}
+                symbol={<SatsIcon size="1em" color={t.text} />}
+              />
             </div>
           </div>
           <div>

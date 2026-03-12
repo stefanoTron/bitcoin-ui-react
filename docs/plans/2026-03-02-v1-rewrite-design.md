@@ -61,7 +61,7 @@ src/
         └── index.ts
 ```
 
-**Removed files:** Button/, Input/, typings.d.ts, *.module.css, rollup.config.mjs
+**Removed files:** Button/, Input/, typings.d.ts, \*.module.css, rollup.config.mjs
 
 ## Component APIs
 
@@ -72,19 +72,19 @@ Display-only component rendering a formatted BTC amount from satoshis with color
 ```tsx
 interface BTCAmountProps {
   /** Amount in satoshis */
-  amount: number
+  amount: number;
   /** Color for significant (non-zero leading) digits. Default: currentColor */
-  activeColor?: string
+  activeColor?: string;
   /** Color for insignificant digits. Default: '#999' */
-  inactiveColor?: string
+  inactiveColor?: string;
   /** Separator between sats groups (3-digit). Default: ' ' (thin space) */
-  satsSeparator?: string
+  satsSeparator?: string;
   /** Separator between BTC whole and decimal. Default: '.' */
-  btcSeparator?: string
+  btcSeparator?: string;
   /** Font family override. Default: inherit */
-  fontFamily?: string
+  fontFamily?: string;
   /** Animate value changes. Default: true */
-  animate?: boolean
+  animate?: boolean;
 }
 ```
 
@@ -97,21 +97,21 @@ Controlled input component for Bitcoin amount entry with formatting.
 ```tsx
 interface BTCInputProps {
   /** Current amount in satoshis */
-  amount: number
+  amount: number;
   /** Callback when amount changes */
-  onAmountChange: (satoshis: number) => void
+  onAmountChange: (satoshis: number) => void;
   /** Color for significant digits. Default: currentColor */
-  activeColor?: string
+  activeColor?: string;
   /** Color for insignificant digits. Default: '#999' */
-  inactiveColor?: string
+  inactiveColor?: string;
   /** Separator between sats groups. Default: ' ' */
-  satsSeparator?: string
+  satsSeparator?: string;
   /** Separator between BTC whole and decimal. Default: '.' */
-  btcSeparator?: string
+  btcSeparator?: string;
   /** Disabled state */
-  disabled?: boolean
+  disabled?: boolean;
   /** Placeholder text. Default: '0.00 000 000' */
-  placeholder?: string
+  placeholder?: string;
 }
 ```
 
@@ -122,13 +122,13 @@ Controlled via `amount` + `onAmountChange`. Formats display as user types, strip
 ```tsx
 interface BitcoinIconProps {
   /** Icon size in px. Default: 16 */
-  size?: number
+  size?: number;
   /** Symbol color. Default: '#fff' */
-  color?: string
+  color?: string;
   /** Background color. Default: '#f7931a' */
-  backgroundColor?: string
+  backgroundColor?: string;
   /** Accessibility label */
-  alt?: string
+  alt?: string;
 }
 ```
 
@@ -137,15 +137,15 @@ interface BitcoinIconProps {
 ```tsx
 interface SatsIconProps {
   /** Icon size in px. Default: 16 */
-  size?: number
+  size?: number;
   /** Symbol color. Default: '#000' */
-  color?: string
+  color?: string;
   /** Background color. Default: 'transparent' */
-  backgroundColor?: string
+  backgroundColor?: string;
   /** Accessibility label */
-  alt?: string
+  alt?: string;
   /** Rotate the icon. Default: false */
-  tilted?: boolean
+  tilted?: boolean;
 }
 ```
 

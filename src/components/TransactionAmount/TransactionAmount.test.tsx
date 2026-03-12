@@ -1,14 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { TransactionAmount } from "./TransactionAmount";
 
 jest.mock("motion/react");
 
 jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({
-  BitcoinIcon: (props: any) => <span data-testid="bitcoin-icon" />,
+  BitcoinIcon: (_props: any) => <span data-testid="bitcoin-icon" />,
 }));
 jest.mock("../../icons/SatsIcon/SatsIcon", () => ({
-  SatsIcon: (props: any) => <span data-testid="sats-icon" />,
+  SatsIcon: (_props: any) => <span data-testid="sats-icon" />,
 }));
 
 describe("TransactionAmount", () => {
@@ -64,16 +65,37 @@ describe("TransactionAmount", () => {
 
   test("has aria-label with direction for positive amount", () => {
     render(<TransactionAmount amount={50_000_000} />);
-    expect(screen.getByLabelText("Received 0.50000000 BTC")).toBeInTheDocument();
+    expect(screen.getByLabelText("received 0.50000000 BTC")).toBeInTheDocument();
   });
 
   test("has aria-label with direction for negative amount", () => {
     render(<TransactionAmount amount={-50_000_000} />);
-    expect(screen.getByLabelText("Sent 0.50000000 BTC")).toBeInTheDocument();
+    expect(screen.getByLabelText("sent 0.50000000 BTC")).toBeInTheDocument();
   });
 
   test("supports custom ariaLabel", () => {
     render(<TransactionAmount amount={50_000_000} ariaLabel="Recibido 0.5 BTC" />);
     expect(screen.getByLabelText("Recibido 0.5 BTC")).toBeInTheDocument();
+  });
+
+  test("supports custom ariaLabelFormatter for i18n", () => {
+    render(
+      <TransactionAmount
+        amount={50_000_000}
+        ariaLabelFormatter={(dir, btc) => `${dir === "received" ? "Empfangen" : "Gesendet"} ${btc} BTC`}
+      />,
+    );
+    expect(screen.getByLabelText("Empfangen 0.50000000 BTC")).toBeInTheDocument();
+  });
+
+  test("forwards ref to root span element", () => {
+    const ref = { current: null };
+    render(<TransactionAmount amount={100} ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLSpanElement);
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<TransactionAmount amount={50_000} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

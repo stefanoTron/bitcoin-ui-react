@@ -13,6 +13,7 @@
 ### Task 1: Create BIP39 English wordlist data file
 
 **Files:**
+
 - Create: `src/data/bip39-english.ts`
 
 **Step 1: Create the data file**
@@ -47,6 +48,7 @@ git commit -m "feat: add BIP39 English wordlist data file"
 ### Task 2: Create types file and barrel export
 
 **Files:**
+
 - Create: `src/components/SeedPhraseInput/SeedPhraseInput.types.ts`
 - Create: `src/components/SeedPhraseInput/index.ts`
 
@@ -92,6 +94,7 @@ git commit -m "feat: add SeedPhraseInput types and barrel export"
 ### Task 3: TDD — Basic grid rendering (12 numbered inputs)
 
 **Files:**
+
 - Create: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 - Create: `src/components/SeedPhraseInput/SeedPhraseInput.tsx`
 
@@ -213,6 +216,7 @@ git commit -m "feat: SeedPhraseInput basic grid rendering with 12 numbered input
 ### Task 4: TDD — Word change callback and pre-filled words
 
 **Files:**
+
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 
 **Step 1: Write the failing tests**
@@ -266,6 +270,7 @@ git commit -m "test: SeedPhraseInput word change and pre-filled words"
 ### Task 5: TDD — 24-word mode and columns prop
 
 **Files:**
+
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 
 **Step 1: Write the failing tests**
@@ -326,6 +331,7 @@ git commit -m "test: SeedPhraseInput 24-word mode and columns prop"
 ### Task 6: TDD — Read-only mode
 
 **Files:**
+
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.tsx`
 
@@ -399,6 +405,7 @@ git commit -m "feat: SeedPhraseInput read-only mode renders spans"
 This is the most complex task. The autocomplete shows a dropdown of BIP39 words matching the current input prefix.
 
 **Files:**
+
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.tsx`
 
@@ -462,6 +469,7 @@ Expected: FAIL — no autocomplete UI exists yet
 Add state tracking for the active field index. When a field has focus and non-empty text, filter `BIP39_ENGLISH_WORDLIST` by prefix and render a positioned `<ul role="listbox">` below the active input. Cap at 8 suggestions. Clicking a suggestion calls `onWordsChange` with the selected word at the active index and closes the dropdown.
 
 Key implementation details:
+
 - `activeIndex: number | null` state — which field is focused
 - `useRef` on each input cell's container for positioning the dropdown
 - Filter: `BIP39_ENGLISH_WORDLIST.filter(w => w.startsWith(input.toLowerCase()))`
@@ -649,6 +657,7 @@ git commit -m "feat: SeedPhraseInput autocomplete dropdown with BIP39 wordlist"
 ### Task 8: TDD — Focus management (auto-advance on selection)
 
 **Files:**
+
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 
 **Step 1: Write the failing tests**
@@ -695,6 +704,7 @@ git commit -m "test: SeedPhraseInput focus management and Enter key selection"
 ### Task 9: TDD — onComplete callback
 
 **Files:**
+
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.tsx`
 
@@ -764,9 +774,7 @@ useEffect(() => {
   if (!onComplete) return;
   const relevantWords = words.slice(0, wordCount);
   if (relevantWords.length < wordCount) return;
-  const allValid = relevantWords.every(
-    (w) => w !== "" && BIP39_ENGLISH_WORDLIST.includes(w),
-  );
+  const allValid = relevantWords.every((w) => w !== "" && BIP39_ENGLISH_WORDLIST.includes(w));
   if (allValid) {
     onComplete(relevantWords);
   }
@@ -792,6 +800,7 @@ git commit -m "feat: SeedPhraseInput onComplete fires when all words are valid B
 ### Task 10: TDD — className and style props
 
 **Files:**
+
 - Modify: `src/components/SeedPhraseInput/SeedPhraseInput.test.tsx`
 
 **Step 1: Write the tests**
@@ -827,6 +836,7 @@ git commit -m "test: SeedPhraseInput className and style props"
 ### Task 11: Wire barrel exports
 
 **Files:**
+
 - Modify: `src/components/index.ts`
 - Modify: `src/index.ts`
 
@@ -870,6 +880,7 @@ git commit -m "feat: export SeedPhraseInput and BIP39 wordlist from package"
 ### Task 12: Storybook stories
 
 **Files:**
+
 - Create: `src/components/SeedPhraseInput/SeedPhraseInput.stories.tsx`
 
 **Step 1: Write all stories**

@@ -9,7 +9,7 @@ const meta: Meta<typeof SeedPhraseInput> = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, maxWidth: 480 }}>
+      <div style={{ fontFamily: "system-ui, sans-serif", fontSize: 14, maxWidth: 600 }}>
         <Story />
       </div>
     ),
@@ -25,15 +25,45 @@ export default meta;
 type Story = StoryObj<typeof SeedPhraseInput>;
 
 const SAMPLE_12 = [
-  "abandon", "ability", "able", "about", "above", "absent",
-  "absorb", "abstract", "absurd", "abuse", "access", "accident",
+  "abandon",
+  "ability",
+  "able",
+  "about",
+  "above",
+  "absent",
+  "absorb",
+  "abstract",
+  "absurd",
+  "abuse",
+  "access",
+  "accident",
 ];
 
 const SAMPLE_24 = [
-  "abandon", "ability", "able", "about", "above", "absent",
-  "absorb", "abstract", "absurd", "abuse", "access", "accident",
-  "account", "accuse", "achieve", "acid", "acoustic", "acquire",
-  "across", "act", "action", "actor", "actress", "actual",
+  "abandon",
+  "ability",
+  "able",
+  "about",
+  "above",
+  "absent",
+  "absorb",
+  "abstract",
+  "absurd",
+  "abuse",
+  "access",
+  "accident",
+  "account",
+  "accuse",
+  "achieve",
+  "acid",
+  "acoustic",
+  "acquire",
+  "across",
+  "act",
+  "action",
+  "actor",
+  "actress",
+  "actual",
 ];
 
 /** Empty 12-word grid -- default state */
@@ -85,14 +115,8 @@ export const Complete: Story = {
     const [message, setMessage] = useState("");
     return (
       <div>
-        <SeedPhraseInput
-          words={words}
-          onWordsChange={setWords}
-          onComplete={() => setMessage("All words valid!")}
-        />
-        {message && (
-          <p style={{ color: "#16a34a", fontWeight: 600, marginTop: 12 }}>{message}</p>
-        )}
+        <SeedPhraseInput words={words} onWordsChange={setWords} onComplete={() => setMessage("All words valid!")} />
+        {message && <p style={{ color: "#16a34a", fontWeight: 600, marginTop: 12 }}>{message}</p>}
       </div>
     );
   },
@@ -108,14 +132,7 @@ export const ReadOnly: Story = {
 /** Read-only 24-word display */
 export const ReadOnly24: Story = {
   render: () => {
-    return (
-      <SeedPhraseInput
-        words={SAMPLE_24}
-        onWordsChange={() => {}}
-        wordCount={24}
-        readOnly
-      />
-    );
+    return <SeedPhraseInput words={SAMPLE_24} onWordsChange={() => {}} wordCount={24} readOnly />;
   },
 };
 
@@ -133,12 +150,7 @@ export const FourColumns: Story = {
     const [words, setWords] = useState([...SAMPLE_24]);
     return (
       <div style={{ maxWidth: 640 }}>
-        <SeedPhraseInput
-          words={words}
-          onWordsChange={setWords}
-          wordCount={24}
-          columns={4}
-        />
+        <SeedPhraseInput words={words} onWordsChange={setWords} wordCount={24} columns={4} />
       </div>
     );
   },
@@ -177,9 +189,7 @@ export const Interactive: Story = {
         />
         <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ color: "#666" }}>{filled}/12 words entered</span>
-          {complete && (
-            <span style={{ color: "#16a34a", fontWeight: 600 }}>Complete!</span>
-          )}
+          {complete && <span style={{ color: "#16a34a", fontWeight: 600 }}>Complete!</span>}
         </div>
       </div>
     );
@@ -199,9 +209,7 @@ export const DarkTheme: Story = {
           color: "#e0e0e0",
         }}
       >
-        <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 600 }}>
-          Recovery Phrase
-        </h3>
+        <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 600 }}>Recovery Phrase</h3>
         <SeedPhraseInput
           words={words}
           onWordsChange={setWords}
@@ -229,9 +237,7 @@ export const InAForm: Story = {
     const [complete, setComplete] = useState(false);
     return (
       <form onSubmit={(e) => e.preventDefault()}>
-        <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600 }}>
-          Recover Wallet
-        </h3>
+        <h3 style={{ margin: "0 0 4px", fontSize: 18, fontWeight: 600 }}>Recover Wallet</h3>
         <p style={{ color: "#666", margin: "0 0 16px", fontSize: 13 }}>
           Enter your 12-word recovery phrase to restore your wallet.
         </p>
@@ -277,12 +283,7 @@ export const SideBySide: Story = {
         </div>
         <div style={{ flex: 1 }}>
           <h4 style={{ margin: "0 0 8px", fontSize: 14, fontWeight: 600 }}>24 words</h4>
-          <SeedPhraseInput
-            words={SAMPLE_24}
-            onWordsChange={() => {}}
-            wordCount={24}
-            readOnly
-          />
+          <SeedPhraseInput words={SAMPLE_24} onWordsChange={() => {}} wordCount={24} readOnly />
         </div>
       </div>
     );

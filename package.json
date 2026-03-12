@@ -9,10 +9,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nicepkg/bitcoin-ui-react.git"
+    "url": "https://github.com/stefanoTron/bitcoin-ui-react.git"
   },
-  "homepage": "https://github.com/nicepkg/bitcoin-ui-react",
-  "bugs": "https://github.com/nicepkg/bitcoin-ui-react/issues",
+  "homepage": "https://github.com/stefanoTron/bitcoin-ui-react",
+  "bugs": "https://github.com/stefanoTron/bitcoin-ui-react/issues",
   "publishConfig": {
     "provenance": true,
     "access": "public"

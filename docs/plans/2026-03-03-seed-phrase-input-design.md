@@ -30,18 +30,23 @@ interface SeedPhraseInputProps {
 ## Design Decisions
 
 ### Controlled component
+
 Consumer owns the `words` array and receives updates via `onWordsChange`. Matches the library's pattern (see BTCInput).
 
 ### Built-in BIP39 English wordlist
+
 Bundled as a const array in `bip39-english.ts` (~11KB raw, ~4KB gzipped). Exported from the package for consumer reuse. Autocomplete uses prefix matching.
 
 ### Grid of individual inputs
+
 Each word gets its own numbered input field. CSS Grid layout via inline styles with configurable column count (2, 3, or 4).
 
 ### onComplete callback
+
 Fires when every field contains a word present in the BIP39 wordlist. This is a UI-level check (word exists in list), not cryptographic validation (no checksum verification).
 
 ### No multi-word paste
+
 Each field accepts a single word only. No auto-distribution of pasted phrases.
 
 ## Autocomplete Behavior

@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { BitcoinIcon } from "./BitcoinIcon";
 
 describe("BitcoinIcon", () => {
@@ -45,5 +46,16 @@ describe("BitcoinIcon", () => {
     const svg = screen.getByRole("img");
     expect(svg).toHaveClass("my-icon");
     expect(svg).toHaveStyle({ opacity: "0.5" });
+  });
+
+  test("forwards ref to SVG element", () => {
+    const ref = { current: null };
+    render(<BitcoinIcon ref={ref} />);
+    expect(ref.current).toBeInstanceOf(SVGSVGElement);
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<BitcoinIcon />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

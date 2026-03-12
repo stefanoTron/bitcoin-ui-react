@@ -118,20 +118,11 @@ export const SatsSymbolOnRight: Story = {
 };
 
 export const CustomSymbol: Story = {
-  render: () => (
-    <BTCAmount
-      amount={100_000_000}
-      symbol={<span style={{ fontSize: "0.75em" }}>BTC</span>}
-    />
-  ),
+  render: () => <BTCAmount amount={100_000_000} symbol={<span style={{ fontSize: "0.75em" }}>BTC</span>} />,
 };
 
 export const CustomSymbolOnRight: Story = {
   render: () => (
-    <BTCAmount
-      amount={50_000}
-      symbol={<span style={{ fontSize: "0.75em" }}>sats</span>}
-      symbolPosition="right"
-    />
+    <BTCAmount amount={50_000} symbol={<span style={{ fontSize: "0.75em" }}>sats</span>} symbolPosition="right" />
   ),
 };

@@ -93,21 +93,9 @@ export const CustomThreshold: Story = {
 export const CustomLabels: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <ConfirmationBadge
-        confirmations={0}
-        unconfirmedLabel="Pending"
-        confirmedLabel="Settled"
-      />
-      <ConfirmationBadge
-        confirmations={3}
-        unconfirmedLabel="Pending"
-        confirmedLabel="Settled"
-      />
-      <ConfirmationBadge
-        confirmations={6}
-        unconfirmedLabel="Pending"
-        confirmedLabel="Settled"
-      />
+      <ConfirmationBadge confirmations={0} unconfirmedLabel="Pending" confirmedLabel="Settled" />
+      <ConfirmationBadge confirmations={3} unconfirmedLabel="Pending" confirmedLabel="Settled" />
+      <ConfirmationBadge confirmations={6} unconfirmedLabel="Pending" confirmedLabel="Settled" />
     </div>
   ),
 };

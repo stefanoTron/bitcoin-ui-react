@@ -13,6 +13,7 @@
 ### Task 1: Create types file and barrel export
 
 **Files:**
+
 - Create: `src/components/BalanceDisplay/BalanceDisplay.types.ts`
 - Create: `src/components/BalanceDisplay/index.ts`
 
@@ -64,6 +65,7 @@ git commit -m "feat: add BalanceDisplay types and barrel export"
 ### Task 2: TDD — Basic BTC rendering
 
 **Files:**
+
 - Create: `src/components/BalanceDisplay/BalanceDisplay.test.tsx`
 - Create: `src/components/BalanceDisplay/BalanceDisplay.tsx`
 
@@ -249,6 +251,7 @@ git commit -m "feat: BalanceDisplay basic BTC rendering"
 ### Task 3: TDD — Unit toggle cycling
 
 **Files:**
+
 - Modify: `src/components/BalanceDisplay/BalanceDisplay.test.tsx`
 
 **Step 1: Write the tests**
@@ -309,6 +312,7 @@ git commit -m "test: BalanceDisplay unit toggle cycling"
 ### Task 4: TDD — Fiat display formatting
 
 **Files:**
+
 - Modify: `src/components/BalanceDisplay/BalanceDisplay.test.tsx`
 
 **Step 1: Write the tests**
@@ -358,6 +362,7 @@ git commit -m "test: BalanceDisplay fiat formatting with locale"
 ### Task 5: TDD — Controlled mode
 
 **Files:**
+
 - Modify: `src/components/BalanceDisplay/BalanceDisplay.test.tsx`
 
 **Step 1: Write the tests**
@@ -404,6 +409,7 @@ git commit -m "test: BalanceDisplay controlled mode"
 ### Task 6: TDD — showToggle, className, style, colors
 
 **Files:**
+
 - Modify: `src/components/BalanceDisplay/BalanceDisplay.test.tsx`
 
 **Step 1: Write the tests**
@@ -456,6 +462,7 @@ git commit -m "test: BalanceDisplay showToggle, className, style, colors"
 ### Task 7: Wire barrel exports
 
 **Files:**
+
 - Modify: `src/components/index.ts`
 - Modify: `src/index.ts`
 
@@ -489,6 +496,7 @@ git commit -m "feat: export BalanceDisplay from package"
 ### Task 8: Storybook stories
 
 **Files:**
+
 - Create: `src/components/BalanceDisplay/BalanceDisplay.stories.tsx`
 
 **Step 1: Write all stories**

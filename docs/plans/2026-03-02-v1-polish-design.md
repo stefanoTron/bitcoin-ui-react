@@ -41,21 +41,21 @@ Truncated Bitcoin address with copy-to-clipboard.
 
 **Props:**
 
-| Prop | Type | Default |
-|------|------|---------|
-| `address` | `string` | required |
-| `prefixChars` | `number` | `8` |
-| `suffixChars` | `number` | `5` |
-| `separator` | `string` | `'...'` |
-| `copyable` | `boolean` | `true` |
-| `onCopy` | `() => void` | — |
-| `addressColor` | `string` | `'currentColor'` |
-| `separatorColor` | `string` | `'#999999'` |
-| `copyIconColor` | `string` | `'#999999'` |
-| `copiedLabel` | `string` | `'Copied!'` |
-| `fontFamily` | `string` | `'inherit'` |
-| `className` | `string` | — |
-| `style` | `CSSProperties` | — |
+| Prop             | Type            | Default          |
+| ---------------- | --------------- | ---------------- |
+| `address`        | `string`        | required         |
+| `prefixChars`    | `number`        | `8`              |
+| `suffixChars`    | `number`        | `5`              |
+| `separator`      | `string`        | `'...'`          |
+| `copyable`       | `boolean`       | `true`           |
+| `onCopy`         | `() => void`    | —                |
+| `addressColor`   | `string`        | `'currentColor'` |
+| `separatorColor` | `string`        | `'#999999'`      |
+| `copyIconColor`  | `string`        | `'#999999'`      |
+| `copiedLabel`    | `string`        | `'Copied!'`      |
+| `fontFamily`     | `string`        | `'inherit'`      |
+| `className`      | `string`        | —                |
+| `style`          | `CSSProperties` | —                |
 
 Uses `navigator.clipboard.writeText` for copy. Shows brief "Copied!" feedback after clicking.
 
@@ -70,19 +70,19 @@ Signed BTC amount for transaction lists. Positive = received (green), negative =
 
 **Props:**
 
-| Prop | Type | Default |
-|------|------|---------|
-| `amount` | `number` | required |
-| `positiveColor` | `string` | `'#22c55e'` |
-| `negativeColor` | `string` | `'#ef4444'` |
-| `inactiveColor` | `string` | `'#999999'` |
-| `showSign` | `boolean` | `true` |
-| `symbol` | `'btc' \| 'sats'` | — |
-| `fontFamily` | `string` | `'inherit'` |
-| `satsSeparator` | `string` | `'\u2009'` |
-| `btcSeparator` | `string` | `'.'` |
-| `className` | `string` | — |
-| `style` | `CSSProperties` | — |
+| Prop            | Type              | Default     |
+| --------------- | ----------------- | ----------- |
+| `amount`        | `number`          | required    |
+| `positiveColor` | `string`          | `'#22c55e'` |
+| `negativeColor` | `string`          | `'#ef4444'` |
+| `inactiveColor` | `string`          | `'#999999'` |
+| `showSign`      | `boolean`         | `true`      |
+| `symbol`        | `'btc' \| 'sats'` | —           |
+| `fontFamily`    | `string`          | `'inherit'` |
+| `satsSeparator` | `string`          | `'\u2009'`  |
+| `btcSeparator`  | `string`          | `'.'`       |
+| `className`     | `string`          | —           |
+| `style`         | `CSSProperties`   | —           |
 
 Wraps BTCAmount internally. Adds sign prefix and color based on positive/negative.
 
@@ -98,18 +98,18 @@ Visual indicator for transaction confirmation count. Three states based on thres
 
 **Props:**
 
-| Prop | Type | Default |
-|------|------|---------|
-| `confirmations` | `number` | required |
-| `threshold` | `number` | `6` |
-| `unconfirmedColor` | `string` | `'#ef4444'` |
-| `confirmingColor` | `string` | `'#f59e0b'` |
-| `confirmedColor` | `string` | `'#22c55e'` |
-| `unconfirmedLabel` | `string` | `'Unconfirmed'` |
-| `confirmedLabel` | `string` | `'Confirmed'` |
-| `showCount` | `boolean` | `true` |
-| `fontFamily` | `string` | `'inherit'` |
-| `className` | `string` | — |
-| `style` | `CSSProperties` | — |
+| Prop               | Type            | Default         |
+| ------------------ | --------------- | --------------- |
+| `confirmations`    | `number`        | required        |
+| `threshold`        | `number`        | `6`             |
+| `unconfirmedColor` | `string`        | `'#ef4444'`     |
+| `confirmingColor`  | `string`        | `'#f59e0b'`     |
+| `confirmedColor`   | `string`        | `'#22c55e'`     |
+| `unconfirmedLabel` | `string`        | `'Unconfirmed'` |
+| `confirmedLabel`   | `string`        | `'Confirmed'`   |
+| `showCount`        | `boolean`       | `true`          |
+| `fontFamily`       | `string`        | `'inherit'`     |
+| `className`        | `string`        | —               |
+| `style`            | `CSSProperties` | —               |
 
 Three states: 0 = unconfirmed (red), 1 to threshold-1 = confirming (yellow, shows "N/threshold"), threshold+ = confirmed (green).

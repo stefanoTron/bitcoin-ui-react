@@ -1,6 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
+import { axe } from "jest-axe";
 import { SeedPhraseInput } from "./SeedPhraseInput";
 
 describe("SeedPhraseInput", () => {
@@ -36,18 +37,13 @@ describe("SeedPhraseInput", () => {
     const onWordsChange = jest.fn((newWords: string[]) => {
       currentWords = newWords;
     });
-    const { rerender } = render(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    const { rerender } = render(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const inputs = screen.getAllByRole("combobox");
     for (const char of "abandon") {
-      rerender(
-        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-      );
+      rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
       await userEvent.type(inputs[0], char);
     }
-    const lastCall =
-      onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    const lastCall = onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
     expect(lastCall[0]).toBe("abandon");
   });
 
@@ -61,34 +57,20 @@ describe("SeedPhraseInput", () => {
   });
 
   test("renders 24 input fields when wordCount is 24", () => {
-    render(
-      <SeedPhraseInput
-        words={Array(24).fill("")}
-        onWordsChange={jest.fn()}
-        wordCount={24}
-      />,
-    );
+    render(<SeedPhraseInput words={Array(24).fill("")} onWordsChange={jest.fn()} wordCount={24} />);
     const inputs = screen.getAllByRole("combobox");
     expect(inputs).toHaveLength(24);
   });
 
   test("renders numbered labels up to Word 24", () => {
-    render(
-      <SeedPhraseInput
-        words={Array(24).fill("")}
-        onWordsChange={jest.fn()}
-        wordCount={24}
-      />,
-    );
+    render(<SeedPhraseInput words={Array(24).fill("")} onWordsChange={jest.fn()} wordCount={24} />);
     for (let i = 1; i <= 24; i++) {
       expect(screen.getByText(`Word ${i}`)).toBeInTheDocument();
     }
   });
 
   test("applies columns prop to grid layout", () => {
-    render(
-      <SeedPhraseInput {...defaultProps} columns={3} />,
-    );
+    render(<SeedPhraseInput {...defaultProps} columns={3} />);
     const root = screen.getByTestId("seed-phrase-input");
     expect(root.style.gridTemplateRows).toBe("repeat(4, auto)");
     expect(root.style.gridAutoFlow).toBe("column");
@@ -96,16 +78,20 @@ describe("SeedPhraseInput", () => {
 
   test("renders spans instead of inputs in readOnly mode", () => {
     const words = [
-      "abandon", "ability", "able", "about", "above", "absent",
-      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+      "abandon",
+      "ability",
+      "able",
+      "about",
+      "above",
+      "absent",
+      "absorb",
+      "abstract",
+      "absurd",
+      "abuse",
+      "access",
+      "accident",
     ];
-    render(
-      <SeedPhraseInput
-        words={words}
-        onWordsChange={jest.fn()}
-        readOnly
-      />,
-    );
+    render(<SeedPhraseInput words={words} onWordsChange={jest.fn()} readOnly />);
     const inputs = screen.queryAllByRole("combobox");
     expect(inputs).toHaveLength(0);
     expect(screen.getByText("abandon")).toBeInTheDocument();
@@ -114,16 +100,20 @@ describe("SeedPhraseInput", () => {
   test("does not call onWordsChange in readOnly mode", () => {
     const onWordsChange = jest.fn();
     const words = [
-      "abandon", "ability", "able", "about", "above", "absent",
-      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+      "abandon",
+      "ability",
+      "able",
+      "about",
+      "above",
+      "absent",
+      "absorb",
+      "abstract",
+      "absurd",
+      "abuse",
+      "access",
+      "accident",
     ];
-    render(
-      <SeedPhraseInput
-        words={words}
-        onWordsChange={onWordsChange}
-        readOnly
-      />,
-    );
+    render(<SeedPhraseInput words={words} onWordsChange={onWordsChange} readOnly />);
     // No inputs to interact with; onWordsChange should never be called
     expect(onWordsChange).not.toHaveBeenCalled();
   });
@@ -133,26 +123,18 @@ describe("SeedPhraseInput", () => {
     const onWordsChange = jest.fn((newWords: string[]) => {
       currentWords = newWords;
     });
-    const { rerender } = render(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    const { rerender } = render(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const inputs = screen.getAllByRole("combobox");
     for (const char of "ab") {
-      rerender(
-        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-      );
+      rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
       await userEvent.type(inputs[0], char);
     }
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const listbox = screen.getByRole("listbox");
     expect(listbox).toBeInTheDocument();
     const options = screen.getAllByRole("option");
     const optionTexts = options.map((o) => o.textContent);
-    expect(optionTexts).toEqual([
-      "abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract",
-    ]);
+    expect(optionTexts).toEqual(["abandon", "ability", "able", "about", "above", "absent", "absorb", "abstract"]);
   });
 
   test("hides autocomplete when input is cleared", async () => {
@@ -160,26 +142,18 @@ describe("SeedPhraseInput", () => {
     const onWordsChange = jest.fn((newWords: string[]) => {
       currentWords = newWords;
     });
-    const { rerender } = render(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    const { rerender } = render(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const inputs = screen.getAllByRole("combobox");
     // Type "ab" to trigger suggestions
     for (const char of "ab") {
-      rerender(
-        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-      );
+      rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
       await userEvent.type(inputs[0], char);
     }
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     expect(screen.getByRole("listbox")).toBeInTheDocument();
     // Clear the input
     await userEvent.clear(inputs[0]);
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
@@ -188,29 +162,20 @@ describe("SeedPhraseInput", () => {
     const onWordsChange = jest.fn((newWords: string[]) => {
       currentWords = newWords;
     });
-    const { rerender } = render(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    const { rerender } = render(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const inputs = screen.getAllByRole("combobox");
     // Type "ab" to trigger suggestions
     for (const char of "ab") {
-      rerender(
-        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-      );
+      rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
       await userEvent.type(inputs[0], char);
     }
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     // Click the first suggestion ("abandon")
     const options = screen.getAllByRole("option");
     await userEvent.click(options[0]);
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     // Verify onWordsChange was called with "abandon"
-    const lastCall =
-      onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    const lastCall = onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
     expect(lastCall[0]).toBe("abandon");
     // Dropdown should be closed
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -221,15 +186,11 @@ describe("SeedPhraseInput", () => {
     const onWordsChange = jest.fn((newWords: string[]) => {
       currentWords = newWords;
     });
-    const { rerender } = render(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    const { rerender } = render(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const inputs = screen.getAllByRole("combobox");
     // Type "a" which matches many words
     await userEvent.type(inputs[0], "a");
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const options = screen.getAllByRole("option");
     expect(options.length).toBeLessThanOrEqual(8);
   });
@@ -239,26 +200,18 @@ describe("SeedPhraseInput", () => {
     const onWordsChange = jest.fn((newWords: string[]) => {
       currentWords = newWords;
     });
-    const { rerender } = render(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    const { rerender } = render(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const inputs = screen.getAllByRole("combobox");
     // Type "ab" in field 0
     for (const char of "ab") {
-      rerender(
-        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-      );
+      rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
       await userEvent.type(inputs[0], char);
     }
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     // Click "abandon"
     const options = screen.getAllByRole("option");
     await userEvent.click(options[0]);
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     // Field 1 should now have focus
     expect(inputs[1]).toHaveFocus();
   });
@@ -268,28 +221,19 @@ describe("SeedPhraseInput", () => {
     const onWordsChange = jest.fn((newWords: string[]) => {
       currentWords = newWords;
     });
-    const { rerender } = render(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    const { rerender } = render(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     const inputs = screen.getAllByRole("combobox");
     // Type "ab" in field 0
     for (const char of "ab") {
-      rerender(
-        <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-      );
+      rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
       await userEvent.type(inputs[0], char);
     }
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     // Press Enter to select first suggestion
     await userEvent.keyboard("{Enter}");
-    rerender(
-      <SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />,
-    );
+    rerender(<SeedPhraseInput words={currentWords} onWordsChange={onWordsChange} />);
     // Verify "abandon" was selected
-    const lastCall =
-      onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
+    const lastCall = onWordsChange.mock.calls[onWordsChange.mock.calls.length - 1][0];
     expect(lastCall[0]).toBe("abandon");
     // Field 1 should have focus
     expect(inputs[1]).toHaveFocus();
@@ -298,63 +242,71 @@ describe("SeedPhraseInput", () => {
   test("calls onComplete when all 12 words are valid BIP39 words", () => {
     const onComplete = jest.fn();
     const validWords = [
-      "abandon", "ability", "able", "about", "above", "absent",
-      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+      "abandon",
+      "ability",
+      "able",
+      "about",
+      "above",
+      "absent",
+      "absorb",
+      "abstract",
+      "absurd",
+      "abuse",
+      "access",
+      "accident",
     ];
-    render(
-      <SeedPhraseInput
-        words={validWords}
-        onWordsChange={jest.fn()}
-        onComplete={onComplete}
-      />,
-    );
+    render(<SeedPhraseInput words={validWords} onWordsChange={jest.fn()} onComplete={onComplete} />);
     expect(onComplete).toHaveBeenCalledWith(validWords);
   });
 
   test("does not call onComplete when some words are invalid", () => {
     const onComplete = jest.fn();
     const invalidWords = [
-      "abandon", "ability", "able", "about", "above", "absent",
-      "absorb", "abstract", "absurd", "abuse", "access", "notaword",
+      "abandon",
+      "ability",
+      "able",
+      "about",
+      "above",
+      "absent",
+      "absorb",
+      "abstract",
+      "absurd",
+      "abuse",
+      "access",
+      "notaword",
     ];
-    render(
-      <SeedPhraseInput
-        words={invalidWords}
-        onWordsChange={jest.fn()}
-        onComplete={onComplete}
-      />,
-    );
+    render(<SeedPhraseInput words={invalidWords} onWordsChange={jest.fn()} onComplete={onComplete} />);
     expect(onComplete).not.toHaveBeenCalled();
   });
 
   test("does not call onComplete when some words are empty", () => {
     const onComplete = jest.fn();
     const partialWords = [
-      "abandon", "ability", "able", "about", "above", "absent",
-      "absorb", "abstract", "absurd", "abuse", "access", "",
+      "abandon",
+      "ability",
+      "able",
+      "about",
+      "above",
+      "absent",
+      "absorb",
+      "abstract",
+      "absurd",
+      "abuse",
+      "access",
+      "",
     ];
-    render(
-      <SeedPhraseInput
-        words={partialWords}
-        onWordsChange={jest.fn()}
-        onComplete={onComplete}
-      />,
-    );
+    render(<SeedPhraseInput words={partialWords} onWordsChange={jest.fn()} onComplete={onComplete} />);
     expect(onComplete).not.toHaveBeenCalled();
   });
 
   test("applies className to root element", () => {
-    render(
-      <SeedPhraseInput {...defaultProps} className="my-seed-phrase" />,
-    );
+    render(<SeedPhraseInput {...defaultProps} className="my-seed-phrase" />);
     const root = screen.getByTestId("seed-phrase-input");
     expect(root).toHaveClass("my-seed-phrase");
   });
 
   test("applies style to root element", () => {
-    render(
-      <SeedPhraseInput {...defaultProps} style={{ maxWidth: 400 }} />,
-    );
+    render(<SeedPhraseInput {...defaultProps} style={{ maxWidth: 400 }} />);
     const root = screen.getByTestId("seed-phrase-input");
     expect(root.style.maxWidth).toBe("400px");
   });
@@ -362,43 +314,56 @@ describe("SeedPhraseInput", () => {
   test("calls onComplete when all 24 words are valid BIP39 words", () => {
     const onComplete = jest.fn();
     const validWords = [
-      "abandon", "ability", "able", "about", "above", "absent",
-      "absorb", "abstract", "absurd", "abuse", "access", "accident",
-      "account", "accuse", "achieve", "acid", "acoustic", "acquire",
-      "across", "act", "action", "actor", "actress", "actual",
+      "abandon",
+      "ability",
+      "able",
+      "about",
+      "above",
+      "absent",
+      "absorb",
+      "abstract",
+      "absurd",
+      "abuse",
+      "access",
+      "accident",
+      "account",
+      "accuse",
+      "achieve",
+      "acid",
+      "acoustic",
+      "acquire",
+      "across",
+      "act",
+      "action",
+      "actor",
+      "actress",
+      "actual",
     ];
-    render(
-      <SeedPhraseInput
-        words={validWords}
-        onWordsChange={jest.fn()}
-        wordCount={24}
-        onComplete={onComplete}
-      />,
-    );
+    render(<SeedPhraseInput words={validWords} onWordsChange={jest.fn()} wordCount={24} onComplete={onComplete} />);
     expect(onComplete).toHaveBeenCalledWith(validWords);
   });
 
   test("does not fire onComplete again on re-render with same valid words", () => {
     const onComplete = jest.fn();
     const validWords = [
-      "abandon", "ability", "able", "about", "above", "absent",
-      "absorb", "abstract", "absurd", "abuse", "access", "accident",
+      "abandon",
+      "ability",
+      "able",
+      "about",
+      "above",
+      "absent",
+      "absorb",
+      "abstract",
+      "absurd",
+      "abuse",
+      "access",
+      "accident",
     ];
     const { rerender } = render(
-      <SeedPhraseInput
-        words={validWords}
-        onWordsChange={jest.fn()}
-        onComplete={onComplete}
-      />,
+      <SeedPhraseInput words={validWords} onWordsChange={jest.fn()} onComplete={onComplete} />,
     );
     expect(onComplete).toHaveBeenCalledTimes(1);
-    rerender(
-      <SeedPhraseInput
-        words={[...validWords]}
-        onWordsChange={jest.fn()}
-        onComplete={onComplete}
-      />,
-    );
+    rerender(<SeedPhraseInput words={[...validWords]} onWordsChange={jest.fn()} onComplete={onComplete} />);
     expect(onComplete).toHaveBeenCalledTimes(1);
   });
 
@@ -482,6 +447,19 @@ describe("SeedPhraseInput", () => {
     expect(lastCall[0]).toBe("abstract");
   });
 
+  test("forwards ref to root div element", () => {
+    const ref = { current: null };
+    render(<SeedPhraseInput words={Array(12).fill("")} onWordsChange={() => {}} ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLDivElement);
+  });
+
+  test("read-only labels are associated with content via aria-labelledby", () => {
+    const words = ["abandon", "ability", "able", ...Array(9).fill("")];
+    render(<SeedPhraseInput words={words} onWordsChange={() => {}} readOnly />);
+    const spans = screen.getByTestId("seed-phrase-input").querySelectorAll("span[aria-labelledby]");
+    expect(spans.length).toBeGreaterThan(0);
+  });
+
   test("closes suggestions on blur after delay", async () => {
     jest.useFakeTimers();
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
@@ -499,5 +477,10 @@ describe("SeedPhraseInput", () => {
     });
     expect(input).toHaveAttribute("aria-expanded", "false");
     jest.useRealTimers();
+  });
+
+  test("has no accessibility violations", async () => {
+    const { container } = render(<SeedPhraseInput words={Array(12).fill("")} onWordsChange={() => {}} />);
+    expect(await axe(container)).toHaveNoViolations();
   });
 });

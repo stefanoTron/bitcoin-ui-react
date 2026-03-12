@@ -13,6 +13,7 @@
 ### Task 1: Add className and style to BTCAmount, drop fontFamily
 
 **Files:**
+
 - Modify: `src/components/BTCAmount/BTCAmount.types.ts`
 - Modify: `src/components/BTCAmount/BTCAmount.tsx`
 - Modify: `src/components/BTCAmount/BTCAmount.test.tsx`
@@ -60,6 +61,7 @@ In `src/components/BTCAmount/BTCAmount.test.tsx`:
 
 - Remove the test `"applies fontFamily style"` (fontFamily prop no longer exists)
 - Add test:
+
 ```typescript
 test("applies className", () => {
   render(<BTCAmount amount={0} className="custom-class" />);
@@ -97,6 +99,7 @@ git commit -m "refactor: add className/style to BTCAmount, drop fontFamily"
 ### Task 2: Add className and style to BitcoinIcon
 
 **Files:**
+
 - Modify: `src/icons/BitcoinIcon/BitcoinIcon.types.ts`
 - Modify: `src/icons/BitcoinIcon/BitcoinIcon.tsx`
 - Modify: `src/icons/BitcoinIcon/BitcoinIcon.test.tsx`
@@ -162,6 +165,7 @@ git commit -m "feat: add className/style to BitcoinIcon"
 ### Task 3: Add className/style to SatsIcon, fix tilted semantics
 
 **Files:**
+
 - Modify: `src/icons/SatsIcon/SatsIcon.types.ts`
 - Modify: `src/icons/SatsIcon/SatsIcon.tsx`
 - Modify: `src/icons/SatsIcon/SatsIcon.test.tsx`
@@ -183,10 +187,13 @@ Add `className` and `style` to `SatsIconProps`. Update `tilted` JSDoc:
 **Step 2: Fix tilted logic and add className/style**
 
 In `SatsIcon.tsx`, flip the tilted condition. Currently:
+
 ```typescript
 {...(!tilted ? { transform: "rotate(-14 0 0)" } : {})}
 ```
+
 Change to:
+
 ```typescript
 {...(tilted ? { transform: "rotate(14 0 0)" } : {})}
 ```
@@ -215,6 +222,7 @@ test("applies tilt rotation when tilted={true}", () => {
 ```
 
 Add className/style test:
+
 ```typescript
 test("applies className and style", () => {
   render(<SatsIcon className="my-icon" style={{ opacity: 0.5 }} />);
@@ -231,9 +239,13 @@ In the `TiltComparison` story, swap labels: default should be "Upright (default)
 **Step 5: Update BTCAmount**
 
 In `src/components/BTCAmount/BTCAmount.tsx`, the symbol rendering line:
+
 ```tsx
-{symbol === "sats" && <SatsIcon size="1em" tilted />}
+{
+  symbol === "sats" && <SatsIcon size="1em" tilted />;
+}
 ```
+
 Now means tilted. The sats symbol in BTCAmount should show tilted (which now correctly means rotated). Verify this is the desired behavior — if the symbol should be upright, remove `tilted`.
 
 **Step 6: Run tests and commit**
@@ -251,6 +263,7 @@ git commit -m "fix: flip SatsIcon tilted semantics, add className/style"
 ### Task 4: Add className to BTCInput
 
 **Files:**
+
 - Modify: `src/components/BTCInput/BTCInput.types.ts`
 - Modify: `src/components/BTCInput/BTCInput.tsx`
 - Modify: `src/components/BTCInput/BTCInput.test.tsx`
@@ -258,6 +271,7 @@ git commit -m "fix: flip SatsIcon tilted semantics, add className/style"
 **Step 1: Update types**
 
 Add to `BTCInputProps`:
+
 ```typescript
   /** CSS class name. */
   className?: string;
@@ -266,6 +280,7 @@ Add to `BTCInputProps`:
 **Step 2: Update component**
 
 Add `className` to props destructuring and pass to `<input>`:
+
 ```tsx
 <input
   ref={inputRef}
@@ -298,6 +313,7 @@ git commit -m "feat: add className to BTCInput"
 ### Task 5: Build AddressDisplay component (TDD)
 
 **Files:**
+
 - Create: `src/components/AddressDisplay/AddressDisplay.types.ts`
 - Create: `src/components/AddressDisplay/AddressDisplay.tsx`
 - Create: `src/components/AddressDisplay/AddressDisplay.test.tsx`
@@ -426,13 +442,7 @@ describe("AddressDisplay", () => {
   });
 
   test("applies custom colors", () => {
-    render(
-      <AddressDisplay
-        address={TEST_ADDR}
-        addressColor="red"
-        separatorColor="blue"
-      />,
-    );
+    render(<AddressDisplay address={TEST_ADDR} addressColor="red" separatorColor="blue" />);
     const el = screen.getByTestId("address-display");
     const spans = el.querySelectorAll("span");
     const colors = Array.from(spans).map((s) => (s as HTMLElement).style.color);
@@ -500,12 +510,8 @@ export function AddressDisplay({
       }}
     >
       <span style={{ color: addressColor }}>{prefix}</span>
-      {needsTruncation && (
-        <span style={{ color: separatorColor }}>{separator}</span>
-      )}
-      {needsTruncation && (
-        <span style={{ color: addressColor }}>{suffix}</span>
-      )}
+      {needsTruncation && <span style={{ color: separatorColor }}>{separator}</span>}
+      {needsTruncation && <span style={{ color: addressColor }}>{suffix}</span>}
       {copyable && (
         <button
           type="button"
@@ -525,7 +531,16 @@ export function AddressDisplay({
           {copied ? (
             <span style={{ fontSize: "0.75em", color: copyIconColor }}>{copiedLabel}</span>
           ) : (
-            <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <rect x={9} y={9} width={13} height={13} rx={2} />
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
             </svg>
@@ -554,6 +569,7 @@ git commit -m "feat: add AddressDisplay component with copy-to-clipboard"
 ### Task 6: Build TransactionAmount component (TDD)
 
 **Files:**
+
 - Create: `src/components/TransactionAmount/TransactionAmount.types.ts`
 - Create: `src/components/TransactionAmount/TransactionAmount.tsx`
 - Create: `src/components/TransactionAmount/TransactionAmount.test.tsx`
@@ -611,7 +627,12 @@ import { TransactionAmount } from "./TransactionAmount";
 // Mock motion hooks (inherited via BTCAmount)
 jest.mock("motion/react", () => ({
   useMotionValue: (initial: number) => {
-    const value = { _current: initial, set: (v: number) => { value._current = v; } };
+    const value = {
+      _current: initial,
+      set: (v: number) => {
+        value._current = v;
+      },
+    };
     return value;
   },
   useSpring: (motionValue: any) => ({
@@ -757,6 +778,7 @@ git commit -m "feat: add TransactionAmount component with signed coloring"
 ### Task 7: Build ConfirmationBadge component (TDD)
 
 **Files:**
+
 - Create: `src/components/ConfirmationBadge/ConfirmationBadge.types.ts`
 - Create: `src/components/ConfirmationBadge/ConfirmationBadge.tsx`
 - Create: `src/components/ConfirmationBadge/ConfirmationBadge.test.tsx`
@@ -856,12 +878,7 @@ describe("ConfirmationBadge", () => {
   });
 
   test("shows custom labels", () => {
-    render(
-      <ConfirmationBadge
-        confirmations={0}
-        unconfirmedLabel="Pending"
-      />,
-    );
+    render(<ConfirmationBadge confirmations={0} unconfirmedLabel="Pending" />);
     expect(screen.getByText("Pending")).toBeInTheDocument();
   });
 
@@ -908,11 +925,7 @@ export function ConfirmationBadge({
   const isUnconfirmed = clamped === 0;
   const isConfirmed = clamped >= threshold;
 
-  const color = isUnconfirmed
-    ? unconfirmedColor
-    : isConfirmed
-      ? confirmedColor
-      : confirmingColor;
+  const color = isUnconfirmed ? unconfirmedColor : isConfirmed ? confirmedColor : confirmingColor;
 
   let label: string;
   if (isUnconfirmed) {
@@ -957,6 +970,7 @@ git commit -m "feat: add ConfirmationBadge component with 3-state coloring"
 ### Task 8: Wire up barrel exports for new components
 
 **Files:**
+
 - Modify: `src/components/index.ts`
 - Modify: `src/index.ts`
 
@@ -983,7 +997,13 @@ export type { ConfirmationBadgeProps } from "./ConfirmationBadge";
 
 ```typescript
 export { BTCAmount, BTCInput, AddressDisplay, TransactionAmount, ConfirmationBadge } from "./components";
-export type { BTCAmountProps, BTCInputProps, AddressDisplayProps, TransactionAmountProps, ConfirmationBadgeProps } from "./components";
+export type {
+  BTCAmountProps,
+  BTCInputProps,
+  AddressDisplayProps,
+  TransactionAmountProps,
+  ConfirmationBadgeProps,
+} from "./components";
 export { BitcoinIcon, SatsIcon } from "./icons";
 export type { BitcoinIconProps, SatsIconProps } from "./icons";
 ```
@@ -1008,6 +1028,7 @@ git commit -m "feat: export AddressDisplay, TransactionAmount, ConfirmationBadge
 ### Task 9: Write Storybook stories for new components
 
 **Files:**
+
 - Create: `src/components/AddressDisplay/AddressDisplay.stories.tsx`
 - Create: `src/components/TransactionAmount/TransactionAmount.stories.tsx`
 - Create: `src/components/ConfirmationBadge/ConfirmationBadge.stories.tsx`
@@ -1048,11 +1069,13 @@ git commit -m "feat: add Storybook stories for AddressDisplay, TransactionAmount
 ### Task 10: Update README
 
 **Files:**
+
 - Modify: `readme.md`
 
 **Step 1: Add docs for new components**
 
 Add sections for AddressDisplay, TransactionAmount, and ConfirmationBadge after the existing component docs. Include:
+
 - Usage example with import
 - Full props table
 - Brief description
