@@ -1,27 +1,7 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef } from "react";
 import { SeedPhraseInputProps } from "./SeedPhraseInput.types";
 import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
-
-const MAX_SUGGESTIONS = 8;
-const BLUR_DELAY_MS = 150;
-
-/** Binary search for first word >= prefix in sorted wordlist, then collect matches. */
-function findSuggestions(prefix: string, wordlist: readonly string[]): string[] {
-  if (prefix.length === 0) return [];
-  let lo = 0;
-  let hi = wordlist.length;
-  while (lo < hi) {
-    const mid = (lo + hi) >>> 1;
-    if (wordlist[mid] < prefix) lo = mid + 1;
-    else hi = mid;
-  }
-  const result: string[] = [];
-  for (let i = lo; i < wordlist.length && result.length < MAX_SUGGESTIONS; i++) {
-    if (wordlist[i].startsWith(prefix)) result.push(wordlist[i]);
-    else break;
-  }
-  return result;
-}
+import { useAutocomplete } from "./useAutocomplete";
 
 /**
  * BIP39 seed phrase input with autocomplete suggestions.
@@ -48,10 +28,7 @@ export function SeedPhraseInput({
   ref,
 }: SeedPhraseInputProps) {
   const idPrefix = useId();
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const blurTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prevCompleteRef = useRef(false);
   const wordsRef = useRef(words);
   wordsRef.current = words;
@@ -59,14 +36,6 @@ export function SeedPhraseInput({
   const effectiveWordlist = useMemo(() => userWordlist ?? BIP39_ENGLISH_WORDLIST, [userWordlist]);
   const effectiveWordSet = useMemo(() => new Set(effectiveWordlist), [effectiveWordlist]);
 
-  // Cleanup blur timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (blurTimeoutRef.current) clearTimeout(blurTimeoutRef.current);
-    };
-  }, []);
-
-  // Normalize words to always match wordCount
   const normalizedWords = useMemo(() => {
     const arr = words.slice(0, wordCount);
     while (arr.length < wordCount) arr.push("");
@@ -99,57 +68,17 @@ export function SeedPhraseInput({
       const updated = [...wordsRef.current];
       updated[index] = word;
       onWordsChange(updated);
-      setActiveIndex(null);
       focusNextEmpty(index, updated);
     },
     [onWordsChange, focusNextEmpty],
   );
 
-  const suggestions = useMemo(() => {
-    if (activeIndex === null) return [];
-    const prefix = (normalizedWords[activeIndex] ?? "").toLowerCase();
-    return findSuggestions(prefix, effectiveWordlist);
-  }, [activeIndex, normalizedWords, effectiveWordlist]);
-
-  const suggestionsRef = useRef(suggestions);
-  suggestionsRef.current = suggestions;
-
-  // Reset highlighted index when active index or suggestions change
-  useEffect(() => {
-    setHighlightedIndex(-1);
-  }, [activeIndex, suggestions]);
-
-  const handleKeyDown = useCallback(
-    (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-      const sug = suggestionsRef.current;
-      if (sug.length === 0) return;
-
-      switch (e.key) {
-        case "ArrowDown":
-          e.preventDefault();
-          setHighlightedIndex((prev) => (prev + 1) % sug.length);
-          break;
-        case "ArrowUp":
-          e.preventDefault();
-          setHighlightedIndex((prev) => (prev <= 0 ? sug.length - 1 : prev - 1));
-          break;
-        case "Enter":
-          e.preventDefault();
-          if (highlightedIndex >= 0 && highlightedIndex < sug.length) {
-            handleSelect(index, sug[highlightedIndex]);
-          } else if (sug.length > 0) {
-            handleSelect(index, sug[0]);
-          }
-          setHighlightedIndex(-1);
-          break;
-        case "Escape":
-          e.preventDefault();
-          setActiveIndex(null);
-          setHighlightedIndex(-1);
-          break;
-      }
+  const { activeIndex, highlightedIndex, suggestions, handleKeyDown, handleFocus, handleBlur, close } = useAutocomplete(
+    {
+      wordlist: effectiveWordlist,
+      normalizedWords,
+      onSelect: handleSelect,
     },
-    [handleSelect, highlightedIndex],
   );
 
   useEffect(() => {
@@ -226,19 +155,8 @@ export function SeedPhraseInput({
                 aria-autocomplete="list"
                 value={normalizedWords[i]}
                 onChange={(e) => handleChange(i, e.target.value)}
-                onFocus={() => {
-                  if (blurTimeoutRef.current) {
-                    clearTimeout(blurTimeoutRef.current);
-                    blurTimeoutRef.current = null;
-                  }
-                  setActiveIndex(i);
-                }}
-                onBlur={() => {
-                  blurTimeoutRef.current = setTimeout(() => {
-                    setActiveIndex(null);
-                    blurTimeoutRef.current = null;
-                  }, BLUR_DELAY_MS);
-                }}
+                onFocus={() => handleFocus(i)}
+                onBlur={handleBlur}
                 onKeyDown={(e) => handleKeyDown(i, e)}
                 style={{
                   flex: 1,
@@ -281,7 +199,10 @@ export function SeedPhraseInput({
                       role="option"
                       aria-selected={highlightedIndex === idx}
                       onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => handleSelect(i, word)}
+                      onClick={() => {
+                        handleSelect(i, word);
+                        close();
+                      }}
                       style={{
                         padding: "4px 8px",
                         cursor: "pointer",

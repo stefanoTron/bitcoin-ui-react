@@ -6,6 +6,7 @@ export {
   ConfirmationBadge,
   SeedPhraseInput,
   BalanceDisplay,
+  ErrorBoundary,
 } from "./components";
 export type {
   BTCAmountProps,
@@ -17,6 +18,7 @@ export type {
   BalanceDisplayProps,
   BalanceUnit,
   FiatEntry,
+  ErrorBoundaryProps,
 } from "./components";
 export { BitcoinIcon, SatsIcon } from "./icons";
 export type { BitcoinIconProps, SatsIconProps } from "./icons";

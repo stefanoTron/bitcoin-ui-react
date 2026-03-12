@@ -7,10 +7,10 @@ jest.mock("motion/react");
 
 // Mock icons to simple spans for testability
 jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({
-  BitcoinIcon: (props: any) => <span data-testid="bitcoin-icon" data-size={props.size} />,
+  BitcoinIcon: (props: { size?: number | string }) => <span data-testid="bitcoin-icon" data-size={props.size} />,
 }));
 jest.mock("../../icons/SatsIcon/SatsIcon", () => ({
-  SatsIcon: (props: any) => <span data-testid="sats-icon" data-size={props.size} />,
+  SatsIcon: (props: { size?: number | string }) => <span data-testid="sats-icon" data-size={props.size} />,
 }));
 
 describe("BTCAmount", () => {

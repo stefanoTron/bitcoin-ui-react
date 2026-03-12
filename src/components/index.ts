@@ -12,3 +12,5 @@ export { SeedPhraseInput } from "./SeedPhraseInput";
 export type { SeedPhraseInputProps } from "./SeedPhraseInput";
 export { BalanceDisplay } from "./BalanceDisplay";
 export type { BalanceDisplayProps, BalanceUnit, FiatEntry } from "./BalanceDisplay";
+export { ErrorBoundary } from "./ErrorBoundary";
+export type { ErrorBoundaryProps } from "./ErrorBoundary";

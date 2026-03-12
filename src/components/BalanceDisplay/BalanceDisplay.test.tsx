@@ -7,10 +7,10 @@ import { BalanceDisplay } from "./BalanceDisplay";
 jest.mock("motion/react");
 
 jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({
-  BitcoinIcon: (props: any) => <span data-testid="bitcoin-icon" data-size={props.size} />,
+  BitcoinIcon: (props: { size?: number | string }) => <span data-testid="bitcoin-icon" data-size={props.size} />,
 }));
 jest.mock("../../icons/SatsIcon/SatsIcon", () => ({
-  SatsIcon: (props: any) => <span data-testid="sats-icon" data-size={props.size} />,
+  SatsIcon: (props: { size?: number | string }) => <span data-testid="sats-icon" data-size={props.size} />,
 }));
 
 describe("BalanceDisplay", () => {
@@ -167,8 +167,12 @@ describe("BalanceDisplay", () => {
 
     // Override motion.div to capture transition prop
     const originalDiv = mod.motion.div;
-    let capturedTransition: any;
-    mod.motion.div = ({ children, transition, ...rest }: any) => {
+    let capturedTransition: { duration: number } | undefined;
+    mod.motion.div = ({
+      children,
+      transition,
+      ...rest
+    }: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode; transition?: { duration: number } }) => {
       capturedTransition = transition;
       return <div {...rest}>{children}</div>;
     };
@@ -240,7 +244,7 @@ describe("BalanceDisplay", () => {
           fiatValue={99999}
           fiatCode="GBP"
           fiats={[{ code: "JPY", value: 6_750_000 }]}
-        />
+        />,
       );
       // Click to sats, then fiat
       await userEvent.click(screen.getByTestId("balance-toggle"));

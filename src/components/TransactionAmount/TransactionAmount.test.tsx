@@ -6,10 +6,10 @@ import { TransactionAmount } from "./TransactionAmount";
 jest.mock("motion/react");
 
 jest.mock("../../icons/BitcoinIcon/BitcoinIcon", () => ({
-  BitcoinIcon: (_props: any) => <span data-testid="bitcoin-icon" />,
+  BitcoinIcon: () => <span data-testid="bitcoin-icon" />,
 }));
 jest.mock("../../icons/SatsIcon/SatsIcon", () => ({
-  SatsIcon: (_props: any) => <span data-testid="sats-icon" />,
+  SatsIcon: () => <span data-testid="sats-icon" />,
 }));
 
 describe("TransactionAmount", () => {

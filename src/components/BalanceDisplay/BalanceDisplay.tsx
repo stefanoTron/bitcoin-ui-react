@@ -77,12 +77,7 @@ export function BalanceDisplay({
   const fi = fiatIndex(currentUnit);
   const currentFiat = fi >= 0 && fi < fiats.length ? fiats[fi] : undefined;
 
-  const label =
-    currentUnit === "btc"
-      ? btcLabel
-      : currentUnit === "sats"
-        ? satsLabel
-        : currentFiat?.code ?? fiatCode;
+  const label = currentUnit === "btc" ? btcLabel : currentUnit === "sats" ? satsLabel : (currentFiat?.code ?? fiatCode);
 
   return (
     <div
@@ -109,9 +104,7 @@ export function BalanceDisplay({
           >
             {currentUnit === "btc" && <BTCAmount amount={amount} activeColor={activeColor} animate={false} />}
             {currentUnit === "sats" && <span>{formatSatsNumber(amount, locale)}</span>}
-            {currentFiat !== undefined && (
-              <span>{formatFiat(currentFiat.value, currentFiat.code, locale)}</span>
-            )}
+            {currentFiat !== undefined && <span>{formatFiat(currentFiat.value, currentFiat.code, locale)}</span>}
           </motion.div>
         </AnimatePresence>
       </div>

@@ -135,7 +135,13 @@ export const MultiFiatControlled: Story = {
     ];
     const [unit, setUnit] = useState<BalanceUnit>("btc");
     const allUnits: BalanceUnit[] = ["btc", "sats", "fiat:0", "fiat:1", "fiat:2"];
-    const unitLabels: Record<string, string> = { btc: "BTC", sats: "sats", "fiat:0": "USD", "fiat:1": "EUR", "fiat:2": "GBP" };
+    const unitLabels: Record<string, string> = {
+      btc: "BTC",
+      sats: "sats",
+      "fiat:0": "USD",
+      "fiat:1": "EUR",
+      "fiat:2": "GBP",
+    };
     return (
       <div>
         <BalanceDisplay amount={100_000_000} fiats={fiats} unit={unit} onUnitChange={setUnit} />

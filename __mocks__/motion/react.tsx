@@ -1,5 +1,10 @@
-const useMotionValue = (initial: number) => {
-  const value = {
+interface MockMotionValue {
+  _current: number;
+  set: (v: number) => void;
+}
+
+const useMotionValue = (initial: number): MockMotionValue => {
+  const value: MockMotionValue = {
     _current: initial,
     set: (v: number) => {
       value._current = v;
@@ -8,18 +13,28 @@ const useMotionValue = (initial: number) => {
   return value;
 };
 
-const useSpring = (motionValue: any) => ({
+const useSpring = (motionValue: MockMotionValue) => ({
   on: (_event: string, callback: (v: number) => void) => {
     callback(motionValue._current);
     return () => {};
   },
 });
 
+interface MockMotionProps extends React.HTMLAttributes<HTMLElement> {
+  children?: React.ReactNode;
+  initial?: Record<string, unknown>;
+  animate?: Record<string, unknown>;
+  exit?: Record<string, unknown>;
+  transition?: Record<string, unknown>;
+}
+
 const AnimatePresence = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 const motion = {
-  div: ({ children, initial, animate, exit, transition, ...rest }: any) => <div {...rest}>{children}</div>,
-  span: ({ children, initial, animate, exit, transition, ...rest }: any) => <span {...rest}>{children}</span>,
+  div: ({ children, initial, animate, exit, transition, ...rest }: MockMotionProps) => <div {...rest}>{children}</div>,
+  span: ({ children, initial, animate, exit, transition, ...rest }: MockMotionProps) => (
+    <span {...rest}>{children}</span>
+  ),
 };
 
 const useReducedMotion = () => false;

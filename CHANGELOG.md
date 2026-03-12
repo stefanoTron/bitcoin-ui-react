@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.0
+
+### Minor Changes
+
+- Add ErrorBoundary component, contributing guide, and code quality improvements
+  - New `ErrorBoundary` component to catch render errors in child component trees
+  - Extract `useAutocomplete` hook from SeedPhraseInput for better separation of concerns
+  - Enable `@typescript-eslint/no-explicit-any` and fix all type-unsafe `any` usages
+  - Add CONTRIBUTING.md with development setup, conventions, and workflow docs
+
 ## 1.0.0 (2026-03-04)
 
 Initial release.
