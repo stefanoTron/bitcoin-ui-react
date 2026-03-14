@@ -3,6 +3,7 @@ import { useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { BTCAmountProps } from "./BTCAmount.types";
 import { clampSats } from "../../utils/clampSats";
 import { resolveSymbol } from "../../utils/resolveSymbol";
+import { useBTCUIContext } from "../../context";
 
 /**
  * Format a satoshi amount into an array of digits, separators, and their colors.
@@ -66,22 +67,27 @@ function formatDigits(
  *
  * For lists with many simultaneous animations, set `animate={false}` to avoid per-frame re-renders.
  */
-export function BTCAmount({
-  amount,
-  activeColor = "currentColor",
-  inactiveColor = "var(--btc-ui-color-inactive, #999999)",
-  satsSeparator = "\u2009",
-  btcSeparator = ".",
-  animate: shouldAnimate = true,
-  symbol,
-  symbolPosition = "left",
-  fontFamily = "inherit",
-  ariaLabel: customAriaLabel,
-  ariaLabelFormatter = (btc: string) => `${btc} BTC`,
-  className,
-  style: userStyle,
-  ref,
-}: BTCAmountProps) {
+export function BTCAmount(props: BTCAmountProps) {
+  const ctx = useBTCUIContext();
+  const d = ctx?.btcAmount;
+
+  const {
+    amount,
+    activeColor = d?.activeColor ?? "currentColor",
+    inactiveColor = d?.inactiveColor ?? "var(--btc-ui-color-inactive, #999999)",
+    satsSeparator = d?.satsSeparator ?? "\u2009",
+    btcSeparator = d?.btcSeparator ?? ".",
+    animate: shouldAnimate = d?.animate ?? true,
+    symbol = d?.symbol,
+    symbolPosition = d?.symbolPosition ?? "left",
+    fontFamily = d?.fontFamily ?? ctx?.fontFamily ?? "var(--btc-ui-font-family, inherit)",
+    ariaLabel: customAriaLabel,
+    ariaLabelFormatter = (btc: string) => `${btc} BTC`,
+    className,
+    style: userStyle,
+    ref,
+  } = props;
+
   const prefersReducedMotion = useReducedMotion();
   const effectiveAnimate = shouldAnimate && !prefersReducedMotion;
 
@@ -115,6 +121,7 @@ export function BTCAmount({
     <span
       ref={ref}
       data-testid="btc-amount"
+      data-btc-ui=""
       role={customAriaLabel !== "" ? "img" : undefined}
       aria-label={
         customAriaLabel !== ""

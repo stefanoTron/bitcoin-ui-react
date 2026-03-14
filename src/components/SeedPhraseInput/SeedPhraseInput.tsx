@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef } from "react";
 import { SeedPhraseInputProps } from "./SeedPhraseInput.types";
 import { BIP39_ENGLISH_WORDLIST } from "../../data/bip39-english";
 import { useAutocomplete } from "./useAutocomplete";
+import { useBTCUIContext } from "../../context";
 
 /**
  * BIP39 seed phrase input with autocomplete suggestions.
@@ -10,23 +11,28 @@ import { useAutocomplete } from "./useAutocomplete";
  * in React DevTools. Only render this component on secure (HTTPS) pages and ensure
  * no untrusted scripts have access to the page context.
  */
-export function SeedPhraseInput({
-  words,
-  onWordsChange,
-  wordCount = 12,
-  readOnly = false,
-  onComplete,
-  columns = 2,
-  inputStyle: userInputStyle,
-  dropdownStyle: userDropdownStyle,
-  wordlist: userWordlist,
-  fontFamily = "inherit",
-  groupLabel = "Seed phrase",
-  labelFormatter = (i: number) => `Word ${i}`,
-  className,
-  style,
-  ref,
-}: SeedPhraseInputProps) {
+export function SeedPhraseInput(props: SeedPhraseInputProps) {
+  const ctx = useBTCUIContext();
+  const d = ctx?.seedPhraseInput;
+
+  const {
+    words,
+    onWordsChange,
+    wordCount = d?.wordCount ?? 12,
+    readOnly = false,
+    onComplete,
+    columns = d?.columns ?? 2,
+    inputStyle: userInputStyle = d?.inputStyle,
+    dropdownStyle: userDropdownStyle = d?.dropdownStyle,
+    wordlist: userWordlist = d?.wordlist,
+    fontFamily = d?.fontFamily ?? ctx?.fontFamily ?? "var(--btc-ui-font-family, inherit)",
+    groupLabel = "Seed phrase",
+    labelFormatter = (i: number) => `Word ${i}`,
+    className,
+    style,
+    ref,
+  } = props;
+
   const idPrefix = useId();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const prevCompleteRef = useRef(false);
@@ -96,6 +102,7 @@ export function SeedPhraseInput({
     <div
       ref={ref}
       data-testid="seed-phrase-input"
+      data-btc-ui=""
       role="group"
       aria-label={groupLabel}
       className={className}

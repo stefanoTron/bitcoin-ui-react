@@ -3,6 +3,7 @@ import { BTCInputProps } from "./BTCInput.types";
 import { mergeRefs } from "../../utils/mergeRefs";
 import { clampSats } from "../../utils/clampSats";
 import { useIsomorphicLayoutEffect } from "../../utils/useIsomorphicLayoutEffect";
+import { useBTCUIContext } from "../../context";
 
 /**
  * Format satoshis into a display string: X.XX XXX XXX
@@ -56,22 +57,27 @@ function charPosAfterNthDigit(str: string, n: number): number {
 }
 
 /** Formatted BTC input with automatic digit grouping and cursor preservation. */
-export function BTCInput({
-  amount,
-  onAmountChange,
-  activeColor = "currentColor",
-  inactiveColor = "var(--btc-ui-color-inactive, #999999)",
-  satsSeparator = "\u2009",
-  btcSeparator = ".",
-  disabled = false,
-  fontFamily = "inherit",
-  placeholder = "0.00\u2009000\u2009000",
-  ariaLabel = "Amount in BTC",
-  descriptionFormatter = (btc: string) => `${btc} BTC`,
-  style: userStyle,
-  className,
-  ref,
-}: BTCInputProps) {
+export function BTCInput(props: BTCInputProps) {
+  const ctx = useBTCUIContext();
+  const d = ctx?.btcInput;
+
+  const {
+    amount,
+    onAmountChange,
+    activeColor = d?.activeColor ?? "currentColor",
+    inactiveColor = d?.inactiveColor ?? "var(--btc-ui-color-inactive, #999999)",
+    satsSeparator = d?.satsSeparator ?? "\u2009",
+    btcSeparator = d?.btcSeparator ?? ".",
+    disabled = false,
+    fontFamily = d?.fontFamily ?? ctx?.fontFamily ?? "var(--btc-ui-font-family, inherit)",
+    placeholder = d?.placeholder ?? "0.00\u2009000\u2009000",
+    ariaLabel = "Amount in BTC",
+    descriptionFormatter = (btc: string) => `${btc} BTC`,
+    style: userStyle,
+    className,
+    ref,
+  } = props;
+
   const descId = useId();
   const internalRef = useRef<HTMLInputElement>(null);
   const mergedRef = useMemo(() => mergeRefs(internalRef, ref), [ref]);
@@ -119,6 +125,7 @@ export function BTCInput({
       <input
         ref={mergedRef}
         className={className}
+        data-btc-ui=""
         type="text"
         inputMode="numeric"
         aria-label={ariaLabel}

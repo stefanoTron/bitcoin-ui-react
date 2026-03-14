@@ -24,3 +24,14 @@ export { BitcoinIcon, SatsIcon } from "./icons";
 export type { BitcoinIconProps, SatsIconProps } from "./icons";
 export { clampSats, MAX_SATS } from "./utils/clampSats";
 export { useReducedMotion } from "motion/react";
+export { BTCUIProvider } from "./context";
+export type {
+  BTCUIProviderProps,
+  BTCAmountDefaults,
+  BTCInputDefaults,
+  AddressDisplayDefaults,
+  TransactionAmountDefaults,
+  ConfirmationBadgeDefaults,
+  BalanceDisplayDefaults,
+  SeedPhraseInputDefaults,
+} from "./context";

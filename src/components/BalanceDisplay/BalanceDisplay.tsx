@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { BalanceDisplayProps, BalanceUnit, FiatEntry } from "./BalanceDisplay.types";
 import { BTCAmount } from "../BTCAmount/BTCAmount";
 import { clampSats } from "../../utils/clampSats";
+import { useBTCUIContext } from "../../context";
 
 function formatSatsNumber(sats: number, locale: string): string {
   return new Intl.NumberFormat(locale).format(clampSats(sats));
@@ -39,25 +40,30 @@ function fiatIndex(unit: BalanceUnit): number {
 }
 
 /** Multi-unit balance display with animated crossfade between BTC, sats, and fiat. */
-export function BalanceDisplay({
-  amount,
-  fiats: fiatsProp,
-  fiatValue,
-  fiatCode = "USD",
-  locale = "en-US",
-  unit: controlledUnit,
-  onUnitChange,
-  activeColor = "currentColor",
-  labelColor = "var(--btc-ui-color-inactive, #999999)",
-  showToggle = true,
-  btcLabel = "BTC",
-  satsLabel = "sats",
-  fontFamily = "inherit",
-  toggleAriaLabel = "Switch display unit",
-  className,
-  style,
-  ref,
-}: BalanceDisplayProps) {
+export function BalanceDisplay(props: BalanceDisplayProps) {
+  const ctx = useBTCUIContext();
+  const d = ctx?.balanceDisplay;
+
+  const {
+    amount,
+    fiats: fiatsProp,
+    fiatValue,
+    fiatCode = "USD",
+    locale = d?.locale ?? "en-US",
+    unit: controlledUnit,
+    onUnitChange,
+    activeColor = d?.activeColor ?? "currentColor",
+    labelColor = d?.labelColor ?? "var(--btc-ui-color-inactive, #999999)",
+    showToggle = d?.showToggle ?? true,
+    btcLabel = d?.btcLabel ?? "BTC",
+    satsLabel = d?.satsLabel ?? "sats",
+    fontFamily = d?.fontFamily ?? ctx?.fontFamily ?? "var(--btc-ui-font-family, inherit)",
+    toggleAriaLabel = d?.toggleAriaLabel ?? "Switch display unit",
+    className,
+    style,
+    ref,
+  } = props;
+
   const prefersReducedMotion = useReducedMotion();
   const fiats = resolvedFiats({ fiats: fiatsProp, fiatValue, fiatCode });
   const units = buildUnits(fiats);
@@ -83,6 +89,7 @@ export function BalanceDisplay({
     <div
       ref={ref}
       data-testid="balance-display"
+      data-btc-ui=""
       className={className}
       style={{
         display: "inline-flex",

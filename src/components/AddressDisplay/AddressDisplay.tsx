@@ -1,25 +1,31 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AddressDisplayProps } from "./AddressDisplay.types";
+import { useBTCUIContext } from "../../context";
 
 /** Truncated Bitcoin address display with copy-to-clipboard functionality. */
-export function AddressDisplay({
-  address,
-  prefixChars = 8,
-  suffixChars = 5,
-  truncate = true,
-  separator = "...",
-  copyable = true,
-  copyAriaLabel = "Copy address",
-  onCopy,
-  addressColor = "currentColor",
-  separatorColor = "var(--btc-ui-color-inactive, #999999)",
-  copyIconColor = "var(--btc-ui-color-inactive, #999999)",
-  copiedLabel = "Copied!",
-  fontFamily = "inherit",
-  className,
-  style,
-  ref,
-}: AddressDisplayProps) {
+export function AddressDisplay(props: AddressDisplayProps) {
+  const ctx = useBTCUIContext();
+  const d = ctx?.addressDisplay;
+
+  const {
+    address,
+    prefixChars = d?.prefixChars ?? 8,
+    suffixChars = d?.suffixChars ?? 5,
+    truncate = d?.truncate ?? true,
+    separator = d?.separator ?? "...",
+    copyable = d?.copyable ?? true,
+    copyAriaLabel = d?.copyAriaLabel ?? "Copy address",
+    onCopy,
+    addressColor = d?.addressColor ?? "currentColor",
+    separatorColor = d?.separatorColor ?? "var(--btc-ui-color-inactive, #999999)",
+    copyIconColor = d?.copyIconColor ?? "var(--btc-ui-color-inactive, #999999)",
+    copiedLabel = d?.copiedLabel ?? "Copied!",
+    fontFamily = d?.fontFamily ?? ctx?.fontFamily ?? "var(--btc-ui-font-family, inherit)",
+    className,
+    style,
+    ref,
+  } = props;
+
   const [copied, setCopied] = useState(false);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -51,6 +57,7 @@ export function AddressDisplay({
     <span
       ref={ref}
       data-testid="address-display"
+      data-btc-ui=""
       role="group"
       aria-label={address}
       className={className}

@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.3.0
+
+### Minor Changes
+
+- Add BTCUIProvider for app-level component defaults and CSS custom property support
+  - New `BTCUIProvider` component sets default props for all components via React context
+  - Component-scoped defaults with full TypeScript type safety (e.g. `btcAmount={{ animate: false }}`)
+  - Shared `fontFamily` prop applies to all components, overridable per-component
+  - Priority: direct prop > component default > shared default > CSS variable > built-in
+  - New `--btc-ui-font-family` CSS custom property for global font theming
+  - `data-btc-ui` attribute on all component root elements for CSS targeting
+  - Fully backward compatible — provider is optional
+
 ## 1.2.0
 
 ### Minor Changes

@@ -1,22 +1,28 @@
 import { ConfirmationBadgeProps } from "./ConfirmationBadge.types";
+import { useBTCUIContext } from "../../context";
 
 /** Three-state confirmation indicator showing unconfirmed, confirming, or confirmed status. */
-export function ConfirmationBadge({
-  confirmations,
-  threshold = 6,
-  unconfirmedColor = "var(--btc-ui-color-negative, #ef4444)",
-  confirmingColor = "var(--btc-ui-color-warning, #f59e0b)",
-  confirmedColor = "var(--btc-ui-color-positive, #22c55e)",
-  unconfirmedLabel = "Unconfirmed",
-  confirmedLabel = "Confirmed",
-  confirmingAriaLabel,
-  confirmingLabelFormatter = (count: number, thresh: number) => `${count}/${thresh}`,
-  showCount = true,
-  fontFamily = "inherit",
-  className,
-  style,
-  ref,
-}: ConfirmationBadgeProps) {
+export function ConfirmationBadge(props: ConfirmationBadgeProps) {
+  const ctx = useBTCUIContext();
+  const d = ctx?.confirmationBadge;
+
+  const {
+    confirmations,
+    threshold = d?.threshold ?? 6,
+    unconfirmedColor = d?.unconfirmedColor ?? "var(--btc-ui-color-negative, #ef4444)",
+    confirmingColor = d?.confirmingColor ?? "var(--btc-ui-color-warning, #f59e0b)",
+    confirmedColor = d?.confirmedColor ?? "var(--btc-ui-color-positive, #22c55e)",
+    unconfirmedLabel = d?.unconfirmedLabel ?? "Unconfirmed",
+    confirmedLabel = d?.confirmedLabel ?? "Confirmed",
+    confirmingAriaLabel,
+    confirmingLabelFormatter = (count: number, thresh: number) => `${count}/${thresh}`,
+    showCount = d?.showCount ?? true,
+    fontFamily = d?.fontFamily ?? ctx?.fontFamily ?? "var(--btc-ui-font-family, inherit)",
+    className,
+    style,
+    ref,
+  } = props;
+
   const clamped = Math.max(0, Math.trunc(confirmations));
   const isUnconfirmed = clamped === 0;
   const isConfirmed = clamped >= threshold;
@@ -43,6 +49,7 @@ export function ConfirmationBadge({
     <span
       ref={ref}
       data-testid="confirmation-badge"
+      data-btc-ui=""
       role="status"
       aria-label={ariaLabel}
       className={className}
