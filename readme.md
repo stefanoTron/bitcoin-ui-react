@@ -20,6 +20,81 @@ npm install bitcoin-ui-react
 
 Peer dependencies: `react >= 18`, `react-dom >= 18`
 
+## Global Defaults
+
+### BTCUIProvider
+
+Set default props for all components once at the app level, instead of repeating them on every instance.
+
+```tsx
+import { BTCUIProvider } from "bitcoin-ui-react";
+
+<BTCUIProvider
+  fontFamily="monospace"
+  btcAmount={{ animate: false, symbol: "btc" }}
+  addressDisplay={{ prefixChars: 8, suffixChars: 6, copyable: false }}
+  confirmationBadge={{ threshold: 3 }}
+>
+  {/* All components inside inherit these defaults */}
+  <BTCAmount amount={n} />
+  <AddressDisplay address={addr} />
+</BTCUIProvider>;
+```
+
+| Prop                | Type                        | Description                                        |
+| ------------------- | --------------------------- | -------------------------------------------------- |
+| `fontFamily`        | `string`                    | Default font family for all components             |
+| `btcAmount`         | `BTCAmountDefaults`         | Defaults for BTCAmount                             |
+| `btcInput`          | `BTCInputDefaults`          | Defaults for BTCInput                              |
+| `addressDisplay`    | `AddressDisplayDefaults`    | Defaults for AddressDisplay                        |
+| `transactionAmount` | `TransactionAmountDefaults` | Defaults for TransactionAmount                     |
+| `confirmationBadge` | `ConfirmationBadgeDefaults` | Defaults for ConfirmationBadge                     |
+| `balanceDisplay`    | `BalanceDisplayDefaults`    | Defaults for BalanceDisplay                        |
+| `seedPhraseInput`   | `SeedPhraseInputDefaults`   | Defaults for SeedPhraseInput                       |
+
+Each defaults type is a partial pick of the component's props — only visual and behavioral props are included. Per-instance props like `amount`, `address`, `className`, `style`, `ref`, and callbacks are not accepted as defaults. TypeScript enforces this at compile time.
+
+**Priority order** (highest to lowest):
+
+1. Direct prop on the component
+2. Component-scoped default from provider (e.g. `btcAmount.fontFamily`)
+3. Shared default from provider (e.g. `fontFamily`)
+4. CSS custom property (e.g. `--btc-ui-font-family`)
+5. Built-in default
+
+### CSS Theming
+
+All components render a `data-btc-ui` attribute on their root element and support CSS custom properties for theming.
+
+**Typography:**
+
+```css
+/* Target all bitcoin-ui-react components */
+[data-btc-ui] {
+  font-family: "SF Mono", monospace;
+}
+
+/* Or use the CSS custom property */
+:root {
+  --btc-ui-font-family: "SF Mono", monospace;
+}
+```
+
+**Colors (existing):**
+
+| CSS Custom Property          | Fallback      | Used by                                              |
+| ---------------------------- | ------------- | ---------------------------------------------------- |
+| `--btc-ui-color-inactive`    | `#999999`     | BTCAmount, BTCInput, AddressDisplay, BalanceDisplay   |
+| `--btc-ui-color-positive`    | `#22c55e`     | TransactionAmount, ConfirmationBadge                  |
+| `--btc-ui-color-negative`    | `#ef4444`     | TransactionAmount, ConfirmationBadge                  |
+| `--btc-ui-color-warning`     | `#f59e0b`     | ConfirmationBadge                                     |
+| `--btc-ui-color-brand`       | `#f7931a`     | BitcoinIcon                                           |
+| `--btc-ui-color-surface`     | `Canvas`      | SeedPhraseInput dropdown                              |
+| `--btc-ui-color-on-surface`  | `CanvasText`  | SeedPhraseInput dropdown                              |
+| `--btc-ui-font-family`       | `inherit`     | All components                                        |
+
+No breaking changes — the provider and CSS variables are fully opt-in.
+
 ## Components
 
 ### BTCAmount
@@ -210,16 +285,27 @@ import { BalanceDisplay } from "bitcoin-ui-react";
 
 <BalanceDisplay amount={123_456_789} fiatValue={55_432.1} />;
 // Tap the label to cycle: BTC → sats → USD → BTC
+
+// Multi-fiat: cycle through multiple currencies
+<BalanceDisplay
+  amount={123_456_789}
+  fiats={[
+    { code: "USD", value: 55_432.1 },
+    { code: "EUR", value: 51_200.0 },
+  ]}
+/>;
+// Tap the label to cycle: BTC → sats → USD → EUR → BTC
 ```
 
-| Prop              | Type                                        | Default                 | Description                                                              |
-| ----------------- | ------------------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
-| `amount`          | `number`                                    | required                | Balance in satoshis                                                      |
-| `fiatValue`       | `number`                                    | —                       | Fiat value of the balance. If omitted, fiat unit is excluded from toggle |
-| `fiatCode`        | `string`                                    | `'USD'`                 | ISO 4217 currency code for fiat display                                  |
-| `locale`          | `string`                                    | `'en-US'`               | Locale for number formatting (sats grouping and fiat currency)           |
-| `unit`            | `'btc' \| 'sats' \| 'fiat'`                 | —                       | Currently displayed unit. Uncontrolled by default (internal state)       |
-| `onUnitChange`    | `(unit: 'btc' \| 'sats' \| 'fiat') => void` | —                       | Called when the unit changes (via tap)                                   |
+| Prop              | Type                                           | Default                 | Description                                                              |
+| ----------------- | ---------------------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| `amount`          | `number`                                       | required                | Balance in satoshis                                                      |
+| `fiats`           | `FiatEntry[]`                                  | —                       | Multiple fiat currencies. Cycle: BTC → sats → fiat[0] → fiat[1] → … → BTC. Takes precedence over `fiatValue`/`fiatCode` |
+| `fiatValue`       | `number`                                       | —                       | Fiat value of the balance. If omitted, fiat unit is excluded from toggle |
+| `fiatCode`        | `string`                                       | `'USD'`                 | ISO 4217 currency code for fiat display                                  |
+| `locale`          | `string`                                       | `'en-US'`               | Locale for number formatting (sats grouping and fiat currency)           |
+| `unit`            | `BalanceUnit`                                  | —                       | Currently displayed unit. Uncontrolled by default. Use `'fiat:N'` to select a specific fiat entry |
+| `onUnitChange`    | `(unit: BalanceUnit) => void`                  | —                       | Called when the unit changes (via tap). Fires with `'fiat:N'` for multi-fiat |
 | `activeColor`     | `string`                                    | `'currentColor'`        | Color for the amount text                                                |
 | `labelColor`      | `string`                                    | `'#999999'`             | Color for the unit label                                                 |
 | `showToggle`      | `boolean`                                   | `true`                  | Whether the unit label is tappable                                       |
@@ -273,6 +359,29 @@ import { SatsIcon } from "bitcoin-ui-react";
 | `className`       | `string`             | —               | CSS class name                                           |
 | `style`           | `CSSProperties`      | —               | Additional inline styles                                 |
 | `ref`             | `Ref<SVGSVGElement>` | —               | Forwarded ref                                            |
+
+### ErrorBoundary
+
+Catches rendering errors in child components and displays a fallback UI.
+
+```tsx
+import { ErrorBoundary } from "bitcoin-ui-react";
+
+<ErrorBoundary fallback={<p>Something went wrong.</p>}>
+  <BTCAmount amount={sats} />
+</ErrorBoundary>
+
+// Or use a function fallback to show the error message
+<ErrorBoundary fallback={(error) => <p>{error.message}</p>}>
+  <BTCAmount amount={sats} />
+</ErrorBoundary>
+```
+
+| Prop       | Type                                             | Default    | Description                                         |
+| ---------- | ------------------------------------------------ | ---------- | --------------------------------------------------- |
+| `children` | `ReactNode`                                      | required   | Component tree to wrap                              |
+| `fallback` | `ReactNode \| (error: Error) => ReactNode`       | `null`     | Static node or function receiving the caught error  |
+| `onError`  | `(error: Error, errorInfo: ErrorInfo) => void`   | —          | Called when an error is caught                      |
 
 ## Utilities
 
